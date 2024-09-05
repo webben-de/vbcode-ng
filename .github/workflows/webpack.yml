@@ -40,8 +40,12 @@ jobs:
         path: .pnpm
         # An explicit key for restoring and saving the cache
         key: $GITHUB_REF
-          
-          
+    - name: Upload GitHub Pages artifact
+      uses: actions/upload-pages-artifact@v3.0.1
+      with:
+        name: github-pages
+        path: dist/
+              
     - name: Deploy GitHub Pages site
       id: deployment
       uses: actions/deploy-pages@v4.0.5
