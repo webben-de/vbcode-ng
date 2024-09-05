@@ -26,8 +26,8 @@ jobs:
       
     - name: Build
       run: |
-        pnpm install
-        pnpm run build
+        npm ci
+        npm run build
     - name: Cache
       uses: actions/cache@v4.0.2
       with:
