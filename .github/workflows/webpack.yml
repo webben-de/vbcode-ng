@@ -37,14 +37,14 @@ jobs:
       uses: actions/cache@v4.0.2
       with:
         # A list of files, directories, and wildcard patterns to cache and restore
-        path: .pnpm
+        path: ~/.pnpm-store
         # An explicit key for restoring and saving the cache
         key: $GITHUB_REF
     - name: Upload GitHub Pages artifact
       uses: actions/upload-pages-artifact@v3.0.1
       with:
         name: github-pages
-        path: dist/browser/
+        path: dist/
               
         
     - name: Setup Pages
