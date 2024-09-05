@@ -1,1 +1,87 @@
-<app-nx-welcome></app-nx-welcome> <router-outlet></router-outlet>
+<h2>VB Code</h2>
+<div class="flex flex-col p-5">
+  <form
+    action=""
+    [formGroup]="codeInFG"
+    class="flex-col w-full"
+    (submit)="submit()"
+  >
+    <mat-form-field class="w-full">
+      <mat-label>Enter a date range</mat-label>
+      <input matInput formControlName="pl_date" />
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="picker"
+      ></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+    <mat-vertical-stepper [linear]="false" #stepper>
+      <mat-step>
+        <ng-template matStepLabel
+          >Fill out your name:
+          {{ codeInFG.controls.pl_number.value?.name }}</ng-template
+        >
+        <mat-button-toggle-group
+          formControlName="pl_number"
+          (change)="stepper.next()"
+        >
+          @for (item of pl; track $index) {
+          <mat-button-toggle [value]="item">{{ item.nb }}</mat-button-toggle>
+          }
+        </mat-button-toggle-group>
+        <span>{{ codeInFG.controls.pl_number.value?.name }}</span>
+      </mat-step>
+      <mat-step>
+        <ng-template matStepLabel
+          >Art: {{ codeInFG.controls.kind.value?.name }}</ng-template
+        >
+        <mat-button-toggle-group
+          formControlName="kind"
+          (change)="stepper.next()"
+        >
+          @for (item of kind_options; track $index) {
+          <mat-button-toggle [value]="item">{{ item.name }}</mat-button-toggle>
+          }
+        </mat-button-toggle-group>
+      </mat-step>
+      <mat-step>
+        <ng-template matStepLabel
+          >Charactiks: {{ codeInFG.controls.char.value?.name }}</ng-template
+        >
+        <mat-button-toggle-group
+          formControlName="char"
+          (change)="stepper.next()"
+        >
+          @for (item of char_options; track $index) {
+          <mat-button-toggle [value]="item">{{ item.name }}</mat-button-toggle>
+          }
+        </mat-button-toggle-group>
+      </mat-step>
+      <mat-step>
+        <ng-template matStepLabel
+          >Bewertung: {{ codeInFG.controls.grade.value?.name }}</ng-template
+        >
+        <mat-button-toggle-group
+          formControlName="grade"
+          (change)="stepper.next()"
+        >
+          @for (item of grad_options; track $index) {
+          <mat-button-toggle [value]="item">{{ item.name }}</mat-button-toggle>
+          }
+        </mat-button-toggle-group>
+        @if (codeInFG.controls.kind.value && codeInFG.controls.grade.value) {
+
+        <p>
+          {{
+            this.hint_texts[codeInFG.controls.kind.value.abbr][
+              codeInFG.controls.grade.value.abbr
+            ]
+          }}
+        </p>
+        }
+        <hr />
+        <button mat-raised-button type="submit">Submit</button>
+      </mat-step>
+    </mat-vertical-stepper>
+  </form>
+</div>
