@@ -53,6 +53,6 @@ jobs:
       uses: actions/deploy-pages@v4.0.5
       with:
         # GitHub token
-        token: ${{ GITHUB_TOKEN }}
+        token: ${{ env.GITHUB_TOKEN }}
         
           
