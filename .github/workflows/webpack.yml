@@ -2,10 +2,9 @@ name: NodeJS with Webpack
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
-
+    branches: ["main"]
 
 jobs:
   build:
@@ -21,41 +20,39 @@ jobs:
         node-version: [22.x]
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Setup pnpm
-      uses: pnpm/action-setup@v4.0.0
-    - name: Build
-      run: |
-        pnpm install
-        pnpm run build
-    - name: Cache
-      uses: actions/cache@v4.0.2
-      with:
-        # A list of files, directories, and wildcard patterns to cache and restore
-        path: ~/.pnpm-store
-        # An explicit key for restoring and saving the cache
-        key: $GITHUB_REF
-    - name: Upload GitHub Pages artifact
-      uses: actions/upload-pages-artifact@v3.0.1
-      with:
-        name: github-pages
-        path: dist/
-              
-        
-    - name: Setup Pages
-      uses: actions/configure-pages@v5
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.0.0
+      - name: Build
+        run: |
+          pnpm install
+          pnpm run build
+      - name: Cache
+        uses: actions/cache@v4.0.2
+        with:
+          # A list of files, directories, and wildcard patterns to cache and restore
+          path: ~/.pnpm-store
+          # An explicit key for restoring and saving the cache
+          key: $GITHUB_REF
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3.0.1
+        with:
+          name: github-pages
+          path: dist/vbcode-ng/browser
 
-    - name: Deploy GitHub Pages site
-      id: deployment
-      env: 
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      uses: actions/deploy-pages@v4.0.5
-      with:
-        # GitHub token
-        token: ${{ env.GITHUB_TOKEN }}
-      
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Deploy GitHub Pages site
+        id: deployment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/deploy-pages@v4.0.5
+        with:
+          # GitHub token
+          token: ${{ env.GITHUB_TOKEN }}
