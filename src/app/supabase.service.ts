@@ -30,7 +30,10 @@ export class SupabaseService {
       grade: { abbr: string; name: string } | null;
     }>
   ) {
-    this.supabase.from('actions').upsert(value);
+    this.supabase
+      .from('actions')
+      .upsert({ player_id: value?.pl_number?.nb })
+      .select();
   }
   private supabase: SupabaseClient;
   _session: AuthSession | null = null;

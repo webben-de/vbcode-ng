@@ -9,11 +9,6 @@
     "test": "nx test"
   },
   "private": true,
-  "pnpm": {
-    "overrides": {
-      "@supabase/supabase-js>@supabase/auth-js": "2.61.0"
-    }
-  },
   "dependencies": {
     "@angular/animations": "~18.2.0",
     "@angular/cdk": "^18.2.3",
