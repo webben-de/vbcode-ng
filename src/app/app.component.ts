@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { AuthComponent } from './auth.component';
 import { SupabaseService } from './supabase.service';
 import { MatIconModule } from '@angular/material/icon';
+import { initFlowbite } from 'flowbite';
 
 @Component({
   standalone: true,
@@ -20,5 +21,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.supabase.authChanges((_, session) => (this.session = session));
+    initFlowbite();
   }
 }

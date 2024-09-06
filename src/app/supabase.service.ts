@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import {
   type AuthChangeEvent,
   type AuthSession,
@@ -83,6 +83,9 @@ export class SupabaseService {
     };
 
     return this.supabase.from('profiles').upsert(update);
+  }
+  async createEvent(opts: { title: string; date: string }) {
+    return await this.supabase.from('events').insert(opts);
   }
   async getEvents() {
     return (await this.supabase.from('events').select('*')).data as {

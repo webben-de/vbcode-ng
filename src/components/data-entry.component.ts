@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -19,6 +26,7 @@ import { type MatStepper, MatStepperModule } from '@angular/material/stepper';
 import hints from '../app/hints';
 import { SupabaseService } from '../app/supabase.service';
 import { grad_options_list } from './grade-options';
+import { kinds } from './kind-options';
 type PlTyp = {
   id: string;
   trikot: number;
@@ -157,6 +165,9 @@ export class DataEntryComponent implements OnInit {
   player = this.supabase.getPlayers();
   events = this.supabase.getEvents();
   actions = this.supabase.getActions();
+  hits = computed(async () => {
+    return (await this.actions).filter((a) => a.kind === '');
+  });
 
   codeInFG = new FormGroup({
     game_id: new FormControl<string>('', Validators.required),
@@ -171,15 +182,7 @@ export class DataEntryComponent implements OnInit {
   /**
    *
    */
-  kind_options: abbMap[] = [
-    { abbr: 'S', name: 'Serve' },
-    { abbr: 'R', name: 'Recieve' },
-    { abbr: 'A', name: 'A' },
-    { abbr: 'B', name: 'Block' },
-    { abbr: 'D', name: 'Def' },
-    { abbr: 'E', name: 'Set' },
-    { abbr: 'F', name: 'Free' },
-  ];
+  kind_options: abbMap[] = kinds;
   /**
    * 
         
