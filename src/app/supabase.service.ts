@@ -81,7 +81,13 @@ export class SupabaseService {
 		}[];
 	}
 	async getActions() {
-		return (await this.supabase.from("actions").select("*")).data;
+		return (
+			await this.supabase.from("actions").select(`
+			*, 
+			player_id (*),
+			game_id (*)
+			`)
+		).data;
 	}
 	async createAction(value: any) {
 		return (await this.supabase.from("actions").upsert(value).select()).data;
