@@ -123,7 +123,7 @@ export class AppComponent implements OnInit {
 			game_id: this.codeInFG.controls.game_id.value,
 		};
 		try {
-			const a = await this.supabase.createAction(payload);
+			await this.supabase.createAction(payload);
 			this.actions = this.supabase.getActions();
 			this.codeInFG.reset({ pl_date, game_id });
 			this.stepper.reset();
