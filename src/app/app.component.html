@@ -17,21 +17,32 @@
       ></mat-datepicker-toggle>
       <mat-date-range-picker #picker></mat-date-range-picker>
     </mat-form-field>
+    <mat-form-field>
+      <mat-select formControlName="game_id">
+        @for (item of events|async; track $index) {
+        <mat-option [value]="item.id">
+          {{ item.title }}
+        </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
     <mat-vertical-stepper [linear]="false" #stepper>
-      <mat-step>
+      <mat-step [hasError]="!codeInFG.controls.player_id.value">
         <ng-template matStepLabel
           >Fill out your name:
-          {{ codeInFG.controls.pl_number.value?.name }}</ng-template
+          {{ codeInFG.controls.player_id.value?.name }}</ng-template
         >
         <mat-button-toggle-group
-          formControlName="pl_number"
+          formControlName="player_id"
           (change)="stepper.next()"
         >
-          @for (item of pl; track $index) {
-          <mat-button-toggle [value]="item">{{ item.nb }}</mat-button-toggle>
+          @for (item of player|async; track $index) {
+          <mat-button-toggle [value]="item">{{
+            item.trikot
+          }}</mat-button-toggle>
           }
         </mat-button-toggle-group>
-        <span>{{ codeInFG.controls.pl_number.value?.name }}</span>
+        <span>{{ codeInFG.controls.player_id.value?.name }}</span>
       </mat-step>
       <mat-step>
         <ng-template matStepLabel
@@ -90,4 +101,11 @@
 }@else {
 <app-auth></app-auth>
 }
-{{ actions | json }}
+<div class="flex">
+  <ul>
+    @for (item of actions|async; track $index) {
+
+    <li>{{ item | json }}</li>
+    }
+  </ul>
+</div>
