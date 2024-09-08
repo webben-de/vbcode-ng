@@ -6,9 +6,10 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideRouter } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { provideEchartsCore } from 'ngx-echarts';
+import { CanvasRenderer } from 'echarts/renderers';
 import { BarChart } from 'echarts/charts';
 import * as echarts from 'echarts/core';
-echarts.use([BarChart]);
+echarts.use([CanvasRenderer, BarChart]);
 
 export const appConfig: ApplicationConfig = {
   providers: [
