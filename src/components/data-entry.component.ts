@@ -233,7 +233,7 @@ export class DataEntryComponent implements OnInit {
    *
    */
   async submit() {
-    const { game_id } = this.codeInFG.value;
+    const { game_id, game_set } = this.codeInFG.value;
     const payload = {
       player_id: this.codeInFG.controls.player_id.value?.id,
       kind: this.codeInFG.controls.kind.value?.abbr,
@@ -245,7 +245,7 @@ export class DataEntryComponent implements OnInit {
     try {
       await this.supabase.createAction(payload);
       this.actions = this.supabase.getActions();
-      this.codeInFG.reset({ game_id });
+      this.codeInFG.reset({ game_id, game_set });
       this.stepper.reset();
     } catch (error) {
       console.error(error);
