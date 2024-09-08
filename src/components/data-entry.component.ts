@@ -199,6 +199,7 @@ export class DataEntryComponent implements OnInit {
 
   codeInFG = new FormGroup({
     game_id: new FormControl<string>('', Validators.required),
+    game_set: new FormControl<number>(1, Validators.required),
     player_id: new FormControl<PlTyp | null>(null, Validators.required),
     kind: new FormControl<abbMap | null>(null, Validators.required),
     char: new FormControl<abbMap | null>(null, Validators.required),
@@ -239,6 +240,7 @@ export class DataEntryComponent implements OnInit {
       character: this.codeInFG.controls.char.value?.abbr,
       grade: this.codeInFG.controls.grade.value?.abbr,
       game_id: this.codeInFG.controls.game_id.value,
+      game_set: this.codeInFG.controls.game_set.value,
     };
     try {
       await this.supabase.createAction(payload);
