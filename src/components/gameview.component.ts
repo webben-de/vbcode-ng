@@ -42,6 +42,18 @@ import { MatInputModule } from '@angular/material/input';
               }
             </mat-select>
           </mat-form-field>
+          <mat-form-field>
+            <mat-label>Satz:</mat-label>
+
+            <mat-select
+              placeholder="Satz"
+              formControlName="game_set"
+              [value]="'Alle'"
+            >
+              <mat-option value="Alle">Alle</mat-option>
+              <mat-option value="1"> 1 </mat-option>
+            </mat-select>
+          </mat-form-field>
         </form>
         <form [formGroup]="newGameF" (submit)="createNewGame()">
           <mat-form-field>
@@ -136,10 +148,17 @@ export class GameViewComponent implements OnInit {
    */
   gameF = new FormGroup({
     game_id: new FormControl<string>(''),
+    game_set: new FormControl<number | string>('Alle'),
   });
+  /**
+   *
+   */
   pieChartDist: EChartsOption = {
     series: [],
   };
+  /**
+   *
+   */
   newGameF = new FormGroup({
     title: new FormControl(''),
     date: new FormControl(new Date()),

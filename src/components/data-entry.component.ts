@@ -68,15 +68,27 @@ type kindHintMap = {
         class="flex-col w-full"
         (submit)="submit()"
       >
-        <mat-form-field>
-          <mat-select formControlName="game_id">
-            @for (item of events|async; track $index) {
-            <mat-option [value]="item.id" selected>
-              {{ item.title }}
-            </mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        <div class="flex gap-2 justify-between">
+          <mat-form-field>
+            <mat-select formControlName="game_id">
+              @for (item of events|async; track $index) {
+              <mat-option [value]="item.id" selected>
+                {{ item.title }}
+              </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Satz</mat-label>
+            <input
+              matInput
+              type="number"
+              formControlName="game_set"
+              placeholder="Satz"
+              value="1"
+            />
+          </mat-form-field>
+        </div>
         <mat-vertical-stepper [linear]="false" #stepper>
           <mat-step [hasError]="!codeInFG.controls.player_id.value">
             <ng-template matStepLabel
@@ -95,7 +107,7 @@ type kindHintMap = {
             </mat-button-toggle-group>
             <span>{{ codeInFG.controls.player_id.value?.name }}</span>
           </mat-step>
-          <mat-step>
+          <mat-step [hasError]="!codeInFG.controls.kind.value">
             <ng-template matStepLabel
               >Art: {{ codeInFG.controls.kind.value?.name }}</ng-template
             >
@@ -141,7 +153,6 @@ type kindHintMap = {
             </mat-button-toggle-group>
             @if (codeInFG.controls.kind.value && codeInFG.controls.grade.value)
             {
-
             <p>
               {{
                 this.hint_texts[codeInFG.controls.kind.value.abbr][
@@ -151,6 +162,23 @@ type kindHintMap = {
             </p>
             }
             <hr />
+            @if(false){
+
+            <div
+              class="grid grid-cols-3 grid-rows-3 gap-1 items-center justify-center"
+            >
+              <div class="h-8 w-8">1</div>
+              <div class="h-8 w-8">2</div>
+              <div class="h-8 w-8">3</div>
+              <div class="h-8 w-8">4</div>
+              <div class="h-8 w-8">5</div>
+              <div class="h-8 w-8">6</div>
+              <div class="h-8 w-8">7</div>
+              <div class="h-8 w-8">8</div>
+              <div class="h-8 w-8">9</div>
+            </div>
+            }
+
             <button mat-raised-button type="submit">Submit</button>
           </mat-step>
         </mat-vertical-stepper>
