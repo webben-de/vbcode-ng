@@ -1,11 +1,10 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  OnInit,
+  type OnInit,
   ViewChild,
   computed,
   inject,
-  signal,
 } from '@angular/core';
 import {
   FormControl,

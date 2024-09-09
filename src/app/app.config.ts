@@ -4,12 +4,12 @@ import {
 } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter } from '@angular/router';
-import { appRoutes } from './app.routes';
-import { provideEchartsCore } from 'ngx-echarts';
-import { CanvasRenderer } from 'echarts/renderers';
-import { BarChart } from 'echarts/charts';
+import { BarChart, PieChart } from 'echarts/charts';
 import * as echarts from 'echarts/core';
-echarts.use([CanvasRenderer, BarChart]);
+import { CanvasRenderer } from 'echarts/renderers';
+import { provideEchartsCore } from 'ngx-echarts';
+import { appRoutes } from './app.routes';
+echarts.use([CanvasRenderer, BarChart, PieChart]);
 
 export const appConfig: ApplicationConfig = {
   providers: [

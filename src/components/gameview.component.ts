@@ -1,35 +1,37 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
-import { ActionDTO, SupabaseService } from '../app/supabase.service';
-import { MatFormField } from '@angular/material/form-field';
+import { CommonModule } from "@angular/common";
+import { Component, type OnInit, inject } from "@angular/core";
 import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
-import { ActionKind } from './kind-options';
-import { kindFilterPipe } from './filterKind.pipe';
-import { NgxEchartsDirective } from 'ngx-echarts';
-import { EChartsOption } from 'echarts';
-import { MatInputModule } from '@angular/material/input';
+	FormControl,
+	FormGroup,
+	FormsModule,
+	ReactiveFormsModule,
+} from "@angular/forms";
+import { MatFormField } from "@angular/material/form-field";
+import { MatInputModule } from "@angular/material/input";
+import { MatSelectModule } from "@angular/material/select";
+import { RouterModule } from "@angular/router";
+import type { EChartsOption } from "echarts";
+import { NgxEchartsDirective } from "ngx-echarts";
+import { type ActionDTO, SupabaseService } from "../app/supabase.service";
+import { kindFilterPipe } from "./filterKind.pipe";
+import { ActionKind } from "./kind-options";
 
 @Component({
-  selector: 'app-gameview',
-  imports: [
-    CommonModule,
-    kindFilterPipe,
-    MatFormField,
-    MatInputModule,
-    NgxEchartsDirective,
-    FormsModule,
-    ReactiveFormsModule,
-    MatSelectModule,
-  ],
-  standalone: true,
-  template: `
-    <div class="flex flex-col">
+	selector: "app-gameview",
+	imports: [
+		RouterModule,
+		CommonModule,
+		kindFilterPipe,
+		MatFormField,
+		MatInputModule,
+		NgxEchartsDirective,
+		FormsModule,
+		ReactiveFormsModule,
+		MatSelectModule,
+	],
+	standalone: true,
+	template: `
+    <div class="flex flex-col max-w-full overflow-hidden">
       <div class="flex gap-8 p-5">
         <form [formGroup]="gameF">
           <mat-form-field>
@@ -64,8 +66,8 @@ import { MatInputModule } from '@angular/material/input';
         </form>
       </div>
       <hr />
-      <div class="flex  gap-1 p-5">
-        <div class="stats stats-vertical shadow">
+      <div class="flex w-full justify-between p-5">
+        <div class="stats stats-vertical shadow w-1/2">
           <div class="stat">
             <div class="stat-title">Angriffe</div>
             <div class="stat-value text-secondary">
@@ -85,7 +87,7 @@ import { MatInputModule } from '@angular/material/input';
             </div>
           </div>
         </div>
-        <div class="stats stats-vertical shadow">
+        <div class="stats stats-vertical shadow w-1/2">
           <div class="stat">
             <div class="stat-title">Blocks</div>
             <div class="stat-value text-secondary">
@@ -112,9 +114,11 @@ import { MatInputModule } from '@angular/material/input';
           </div>
         </div>
       </div>
+      <button class="btn" [routerLink]="['/gameview',gameF.controls.game_id.value]">Details</button>
       <div echarts [options]="pieChartDist" class="h-40 w-full"></div>
       <hr />
     </div>
+    
     <!-- <ul class="flex">
       @for (item of actions|async; track $index) {
       <li class="flex gap-2 text-pretty h-4 w-full justify-between ">
@@ -128,68 +132,69 @@ import { MatInputModule } from '@angular/material/input';
   `,
 })
 export class GameViewComponent implements OnInit {
-  async createNewGame() {
-    await this.supabase.createEvent(this.newGameF.value as any);
-    this.newGameF.reset();
-  }
-  supabase = inject(SupabaseService);
-  /**
-   *
-   */
-  events = this.supabase.getEvents();
-  /**
-   *
-   */
-  actions?: Promise<ActionDTO[]>;
-  hits: ActionDTO[] | undefined = [];
-  kinds = ActionKind;
-  /**
-   *
-   */
-  gameF = new FormGroup({
-    game_id: new FormControl<string>(''),
-    game_set: new FormControl<number | string>('Alle'),
-  });
-  /**
-   *
-   */
-  pieChartDist: EChartsOption = {
-    series: [],
-  };
-  /**
-   *
-   */
-  newGameF = new FormGroup({
-    title: new FormControl(''),
-    date: new FormControl(new Date()),
-  });
-  /**
-   *
-   */
-  async ngOnInit() {
-    this.events = this.supabase.getEvents();
-    const firstId = (await this.events)[0].id;
-    this.gameF.controls.game_id.setValue(firstId);
-    this.actions = this.supabase.getActionsOfEvent(firstId);
-    await this.refreshHits();
-    const series = [
-      {
-        name: 'Attack',
-        value: (await this.actions).filter((a) => a.kind === ActionKind.Attack)
-          .length,
-      },
-    ];
-    this.pieChartDist.series = series;
+	supabase = inject(SupabaseService);
+	/**
+	 *
+	 */
+	events = this.supabase.getEvents();
+	/**
+	 *
+	 */
+	actions?: Promise<ActionDTO[]>;
+	hits: ActionDTO[] | undefined = [];
+	kinds = ActionKind;
+	/**
+	 *
+	 */
+	gameF = new FormGroup({
+		game_id: new FormControl<string>(""),
+		game_set: new FormControl<number | string>("Alle"),
+	});
+	/**
+	 *
+	 */
+	pieChartDist: EChartsOption = {
+		series: [],
+	};
+	/**
+	 *
+	 */
+	newGameF = new FormGroup({
+		title: new FormControl(""),
+		date: new FormControl(new Date()),
+	});
+	/**
+	 *
+	 */
+	async ngOnInit() {
+		this.events = this.supabase.getEvents();
+		const firstId = (await this.events)[0].id;
+		this.gameF.controls.game_id.setValue(firstId);
+		this.actions = this.supabase.getActionsOfEvent(firstId);
+		await this.refreshHits();
+		const series = [
+			{
+				name: "Attack",
+				value: (await this.actions).filter((a) => a.kind === ActionKind.Attack)
+					.length,
+			},
+		];
+		this.pieChartDist.series = series;
 
-    this.gameF.controls.game_id.valueChanges.subscribe(async (d) => {
-      this.actions = this.supabase.getActionsOfEvent(d || '');
-      await this.refreshHits();
-    });
-  }
+		this.gameF.controls.game_id.valueChanges.subscribe(async (d) => {
+			this.actions = this.supabase.getActionsOfEvent(d || "");
+			await this.refreshHits();
+		});
+	}
 
-  private async refreshHits() {
-    this.hits = (await this.actions)?.filter(
-      (a) => a.kind === ActionKind.Attack
-    );
-  }
+	private async refreshHits() {
+		this.hits = (await this.actions)?.filter(
+			(a) => a.kind === ActionKind.Attack,
+		);
+	}
+
+	async createNewGame() {
+		await this.supabase.createEvent(this.newGameF.value as any);
+		this.newGameF.reset();
+	}
 }
