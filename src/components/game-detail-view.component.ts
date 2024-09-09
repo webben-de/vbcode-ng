@@ -3,7 +3,7 @@ import { Component, type OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import type { EChartsOption } from 'echarts';
 import { NgxEchartsDirective } from 'ngx-echarts';
-import type { ActionDTO } from '../app/supabase.service';
+import { SupabaseService, type ActionDTO } from '../app/supabase.service';
 import { type ActionGrade, grad_options_list } from './grade-options';
 import { ActionKind } from './kind-options';
 
@@ -91,6 +91,7 @@ import { ActionKind } from './kind-options';
 })
 export class GameDetailViewComponent implements OnInit {
   activatedRoute = inject(ActivatedRoute);
+  supabase = inject(SupabaseService);
   grad_options_list = grad_options_list.map((g) => g.name);
   game: any;
   actions: ActionDTO[] = [];
@@ -107,6 +108,7 @@ export class GameDetailViewComponent implements OnInit {
     this.activatedRoute.data.subscribe(({ game, actions }) => {
       const a = actions as ActionDTO[];
       this.game = game;
+      this.supabase.getAces(game.id);
       this.actions = a;
       this.attacks.total = a.filter((a) => a.kind === ActionKind.Attack).length;
       // biome-ignore lint/complexity/noForEach: <explanation>
