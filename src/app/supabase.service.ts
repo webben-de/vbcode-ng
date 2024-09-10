@@ -124,11 +124,14 @@ export class SupabaseService {
     return (
       await this.supabase
         .from('actions')
-        .select('*, player_id(count)')
+        .select('*')
         .eq('game_id', game_id)
         .eq('kind', ActionKind.Serve)
         .eq('grade', ActionGrade['#'])
     ).data;
+  }
+  async getGameStats(game_id: string) {
+    return await this.supabase.rpc('getGameStats', { game_id });
   }
   downLoadImage(path: string) {
     return this.supabase.storage.from('avatars').download(path);
