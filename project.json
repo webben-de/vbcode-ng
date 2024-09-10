@@ -45,10 +45,7 @@
         "outputPath": "dist/vbcode-ng",
         "polyfills": ["zone.js"],
         "scripts": [],
-        "styles": [
-          "@angular/material/prebuilt-themes/azure-blue.css",
-          "./src/styles.scss"
-        ],
+        "styles": ["@angular/material/prebuilt-themes/azure-blue.css", "./src/styles.scss"],
         "tsConfig": "tsconfig.app.json"
       },
       "outputs": ["{options.outputPath}"]
@@ -81,7 +78,9 @@
     "serve-static": {
       "executor": "@nx/web:file-server",
       "options": {
+        "brotli": true,
         "buildTarget": "vbcode-ng:build",
+        "host": "192.168.133.131",
         "port": 4201,
         "spa": true,
         "staticFilePath": "dist/vbcode-ng/browser"

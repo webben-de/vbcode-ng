@@ -17,10 +17,11 @@ import { ActionKind, kindMap, kinds } from './kind-options';
 
 @Component({
   selector: 'app-game-game-detail-view',
+  host: { class: 'flex flex-col p-2' },
   standalone: true,
   imports: [CommonModule, RouterModule, NgxEchartsDirective, MatFormFieldModule, MatSelectModule],
   template: `
-    <h1 class="h1">{{ game.title }}</h1>
+    <h1 class="text-sm truncate">{{ game.title }}</h1>
     <div class="flex flex-col gap-8 p-5">
       <mat-form-field>
         <mat-label>Satz:</mat-label>
@@ -32,7 +33,7 @@ import { ActionKind, kindMap, kinds } from './kind-options';
           }
         </mat-select>
       </mat-form-field>
-      <section class="flex">
+      <section class="flex flex-wrap">
         @for (stat of stats|keyvalue; track $index) {
         <div class="stats shadow flex gap-2">
           <a class="stat" [routerLink]="[]" fragment="co-{{ stat.key }}">
@@ -47,58 +48,48 @@ import { ActionKind, kindMap, kinds } from './kind-options';
       </section>
       <section class="flex flex-col gap-4">
         @for (stat of stats|keyvalue; track $index) {
-        <div class="collapse collapse-arrow bg-base-200" [id]="'co-' + stat.key">
-          <input type="radio" name="acc-attacks" checked="checked" />
-          <div class="collapse-title text-xl font-medium">
-            {{ kindS.get(stat.key) }}
-          </div>
-          <div class="collapse-content">
-            <section class="flex flex-col gap-2">
-              <div class="stats shadow">
-                <div class="stat">
-                  <div class="stat-figure text-primary"></div>
-                  <div class="stat-title">Total {{ kindS.get(stat.key) }}</div>
-                  <div class="stat-value text-primary">
-                    {{ stat.value.total }}
-                  </div>
-                </div>
-              </div>
-              <h4>Nach Bewertung</h4>
-              <div class="stats shadow">
-                @for (grade of grad_options_list; track $index) {
-                <div class="stat">
-                  <div class="stat-title">{{ hintMap.get(stat.key)?.get(grade) }}</div>
-                  <div class="stat-value text-primary">
-                    {{ stat.value.stats[grade] }}
-                  </div>
-                  @if (stat.value.stats[grade]) {
-                  <div class="stat-desc text-primary">
-                    {{ stat.value.stats[grade] / stat.value.total | percent }}
-                  </div>
-                  }
-                </div>
-                }
-              </div>
-              @if (stat.value.charts?.gradePie; as pie) {
-              <div echarts [options]="pie" [initOpts]="{ renderer: 'canvas' }" class="h-40 w-full"></div>
-              }
-              <h4>Anzahl nach Spieler</h4>
-              <div class="stats shadow">
-                @for (item of convertPlayerCountMapToArray(stat.value.by_player); track $index) {
-                <div class="stat">
-                  <div class="stat-title">{{ item[0] }}</div>
-                  <div class="stat-value text-primary">{{ item[1] }}</div>
-                </div>
-                }
-              </div>
-              @if (stat.value.charts?.playerPie; as pie) {
-              <div echarts [options]="pie" [initOpts]="{ renderer: 'canvas' }" class="h-40 w-full"></div>
-              }
-              <hr />
-            </section>
+        <h5 class="">{{ kindS.get(stat.key) }}</h5>
+        <div class="stats stats-vertical  shadow">
+          <div class="stat">
+            <div class="stat-figure text-primary"></div>
+            <div class="stat-title">Total {{ kindS.get(stat.key) }}</div>
+            <div class="stat-value text-primary">
+              {{ stat.value.total }}
+            </div>
           </div>
         </div>
+
+        <h6>Nach Bewertung</h6>
+        <div class="stats stats-vertical  shadow">
+          @for (grade of grad_options_list; track $index) {
+          <div class="stat">
+            <div class="stat-title">{{ hintMap.get(stat.key)?.get(grade) }}</div>
+            <div class="stat-value text-primary">
+              {{ stat.value.stats[grade] }}
+            </div>
+            @if (stat.value.stats[grade]) {
+            <div class="stat-desc text-primary">
+              {{ stat.value.stats[grade] / stat.value.total | percent }}
+            </div>
+            }
+          </div>
+          }
+        </div>
+        @if (stat.value.charts?.gradePie; as pie) {
+        <div echarts [options]="pie" [initOpts]="{ renderer: 'canvas' }" class="h-40 w-full"></div>
         }
+        <h6>Anzahl nach Spieler</h6>
+        <div class="stats stats-vertical shadow">
+          @for (item of convertPlayerCountMapToArray(stat.value.by_player); track $index) {
+          <div class="stat">
+            <div class="stat-title">{{ item[0] }}</div>
+            <div class="stat-value text-primary">{{ item[1] }}</div>
+          </div>
+          }
+        </div>
+        @if (stat.value.charts?.playerPie; as pie) {
+        <div echarts [options]="pie" [initOpts]="{ renderer: 'canvas' }" class="h-40 w-full"></div>
+        } }
         <div class="collapse collapse-arrow bg-base-200">
           <input type="radio" name="acc-attacks" checked="checked" />
           <div class="collapse-title text-xl font-medium">Log</div>
