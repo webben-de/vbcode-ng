@@ -1,18 +1,6 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  type OnInit,
-  ViewChild,
-  computed,
-  inject,
-} from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, type OnInit, ViewChild, computed, inject } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -20,7 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { type MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { ActionsService } from '../services/action.service';
 import { EventsService } from '../services/events.service';
@@ -46,29 +34,10 @@ type kindHintMap = {
 @Component({
   selector: 'app-name',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatButtonToggleModule,
-    MatButtonModule,
-    MatDatepickerModule,
-    MatInputModule,
-    MatSnackBarModule,
-    MatRadioModule,
-    MatSelectModule,
-    CommonModule,
-    MatStepperModule,
-  ],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatButtonToggleModule, MatButtonModule, MatDatepickerModule, MatInputModule, MatSnackBarModule, MatRadioModule, MatSelectModule, CommonModule, MatStepperModule],
   template: `
     <div class="flex flex-col p-5">
-      <form
-        action=""
-        [formGroup]="codeInFG"
-        class="flex-col w-full"
-        (submit)="submit()"
-      >
+      <form action="" [formGroup]="codeInFG" class="flex-col w-full" (submit)="submit()">
         <div class="flex gap-2 justify-between">
           <mat-form-field>
             <mat-select formControlName="game_id">
@@ -81,93 +50,51 @@ type kindHintMap = {
           </mat-form-field>
           <mat-form-field>
             <mat-label>Satz</mat-label>
-            <input
-              matInput
-              type="number"
-              formControlName="game_set"
-              placeholder="Satz"
-              value="1"
-            />
+            <input matInput type="number" formControlName="game_set" placeholder="Satz" value="1" />
           </mat-form-field>
         </div>
         <mat-vertical-stepper [linear]="false" #stepper>
           <mat-step [hasError]="!codeInFG.controls.player_id.value">
-            <ng-template matStepLabel
-              >Fill out your name:
-              {{ codeInFG.controls.player_id.value?.name }}</ng-template
-            >
-            <mat-button-toggle-group
-              formControlName="player_id"
-              (change)="stepper.next()"
-            >
+            <ng-template matStepLabel>Playername: {{ codeInFG.controls.player_id.value?.name }}</ng-template>
+            <mat-button-toggle-group formControlName="player_id" (change)="stepper.next()">
               @for (item of player|async; track $index) {
-              <mat-button-toggle [value]="item">{{
-                item.trikot
-              }}</mat-button-toggle>
+              <mat-button-toggle [value]="item">{{ item.trikot }}</mat-button-toggle>
               }
             </mat-button-toggle-group>
             <span>{{ codeInFG.controls.player_id.value?.name }}</span>
           </mat-step>
           <mat-step [hasError]="!codeInFG.controls.kind.value">
-            <ng-template matStepLabel
-              >Art: {{ codeInFG.controls.kind.value?.name }}</ng-template
-            >
-            <mat-button-toggle-group
-              formControlName="kind"
-              (change)="stepper.next()"
-            >
+            <ng-template matStepLabel>Art: {{ codeInFG.controls.kind.value?.name }}</ng-template>
+            <mat-button-toggle-group formControlName="kind" (change)="stepper.next()">
               @for (item of kind_options; track $index) {
-              <mat-button-toggle [value]="item">{{
-                item.name
-              }}</mat-button-toggle>
+              <mat-button-toggle [value]="item">{{ item.name }}</mat-button-toggle>
               }
             </mat-button-toggle-group>
           </mat-step>
           <mat-step>
-            <ng-template matStepLabel
-              >Charactiks: {{ codeInFG.controls.char.value?.name }}</ng-template
-            >
-            <mat-button-toggle-group
-              formControlName="char"
-              (change)="stepper.next()"
-            >
+            <ng-template matStepLabel>schema: {{ codeInFG.controls.char.value?.name }}</ng-template>
+            <mat-button-toggle-group formControlName="char" (change)="stepper.next()">
               @for (item of char_options; track $index) {
-              <mat-button-toggle [value]="item">{{
-                item.name
-              }}</mat-button-toggle>
+              <mat-button-toggle [value]="item">{{ item.name }}</mat-button-toggle>
               }
             </mat-button-toggle-group>
           </mat-step>
           <mat-step>
-            <ng-template matStepLabel
-              >Bewertung: {{ codeInFG.controls.grade.value?.name }}</ng-template
-            >
-            <mat-button-toggle-group
-              formControlName="grade"
-              (change)="stepper.next()"
-            >
+            <ng-template matStepLabel>Bewertung: {{ codeInFG.controls.grade.value?.name }}</ng-template>
+            <mat-button-toggle-group formControlName="grade" (change)="stepper.next()">
               @for (item of grad_options; track $index) {
-              <mat-button-toggle [value]="item">{{
-                item.name
-              }}</mat-button-toggle>
+              <mat-button-toggle [value]="item">{{ item.name }}</mat-button-toggle>
               }
             </mat-button-toggle-group>
-            @if (codeInFG.controls.kind.value && codeInFG.controls.grade.value)
-            {
+            @if (codeInFG.controls.kind.value && codeInFG.controls.grade.value) {
             <p>
-              {{
-                this.hint_texts[codeInFG.controls.kind.value.abbr][
-                  codeInFG.controls.grade.value.abbr
-                ]
-              }}
+              {{ this.hint_texts[codeInFG.controls.kind.value.abbr][codeInFG.controls.grade.value.abbr] }}
             </p>
             }
             <hr />
             @if(false){
 
-            <div
-              class="grid grid-cols-3 grid-rows-3 gap-1 items-center justify-center"
-            >
+            <div class="grid grid-cols-3 grid-rows-3 gap-1 items-center justify-center">
               <div class="h-8 w-8">1</div>
               <div class="h-8 w-8">2</div>
               <div class="h-8 w-8">3</div>
@@ -191,6 +118,7 @@ export class DataEntryComponent implements OnInit {
   supabase = inject(SupabaseService);
   actionService = inject(ActionsService);
   eventService = inject(EventsService);
+  snacks = inject(MatSnackBar);
   /**
    *
    */
@@ -207,7 +135,9 @@ export class DataEntryComponent implements OnInit {
   hits = computed(async () => {
     return (await this.actions).filter((a) => a.kind === '');
   });
-
+  /**
+   *
+   */
   codeInFG = new FormGroup({
     game_id: new FormControl<string>('', Validators.required),
     game_set: new FormControl<number>(1, Validators.required),
@@ -253,11 +183,12 @@ export class DataEntryComponent implements OnInit {
     try {
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       await this.actionService.createAction(payload as any);
+      this.snacks.open('Created', 'Close', { duration: 500, panelClass: 'success' });
       this.actions = this.actionService.getActions();
       this.codeInFG.reset({ game_id, game_set });
       this.stepper.reset();
     } catch (error) {
-      console.error(error);
+      this.snacks.open('Error', 'Close', { duration: 1000, panelClass: 'error' });
     }
   }
   async ngOnInit() {

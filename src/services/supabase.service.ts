@@ -1,12 +1,5 @@
 import { Injectable, signal } from '@angular/core';
-import {
-  type AuthChangeEvent,
-  type AuthSession,
-  type Session,
-  type SupabaseClient,
-  type User,
-  createClient,
-} from '@supabase/supabase-js';
+import { type AuthChangeEvent, type AuthSession, type Session, type SupabaseClient, type User, createClient } from '@supabase/supabase-js';
 import { ActionGrade } from '../components/grade-options';
 import { ActionKind } from '../components/kind-options';
 import { environment } from '../environments/environment';
@@ -27,10 +20,7 @@ export class SupabaseService {
   _session: AuthSession | null = null;
 
   constructor() {
-    this.supabase = createClient(
-      environment.supabaseUrl,
-      environment.supabaseKey
-    );
+    this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
   }
 
   get session() {
@@ -41,16 +31,10 @@ export class SupabaseService {
   }
 
   profile(user: User) {
-    return this.supabase
-      .from('profiles')
-      .select('username, website, avatar_url')
-      .eq('id', user.id)
-      .single();
+    return this.supabase.from('profiles').select('username, website, avatar_url').eq('id', user.id).single();
   }
 
-  authChanges(
-    callback: (event: AuthChangeEvent, session: Session | null) => void
-  ) {
+  authChanges(callback: (event: AuthChangeEvent, session: Session | null) => void) {
     return this.supabase.auth.onAuthStateChange(callback);
   }
 
@@ -75,11 +59,9 @@ export class SupabaseService {
   }
 
   async getPlayers() {
-    return (await this.supabase.from('players').select('*')).data as {
-      id: string;
-      name: string;
-      trikot: number;
-    }[];
+    const data: PlayerDTO[] | null = (await this.supabase.from('players').select('*')).data;
+    if (!data) return [];
+    return data.sort((a, b) => a.trikot - b.trikot);
   }
 
   async getGameStats(game_id: string) {
@@ -93,3 +75,8 @@ export class SupabaseService {
     return this.supabase.storage.from('avatars').upload(filePath, file);
   }
 }
+export type PlayerDTO = {
+  id: string;
+  name: string;
+  trikot: number;
+};
