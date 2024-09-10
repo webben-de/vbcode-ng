@@ -7,9 +7,10 @@ import {
   type User,
   createClient,
 } from '@supabase/supabase-js';
-import { environment } from '../environments/environment';
-import { ActionKind } from '../components/kind-options';
 import { ActionGrade } from '../components/grade-options';
+import { ActionKind } from '../components/kind-options';
+import { environment } from '../environments/environment';
+import type { ActionDTO } from '../types/ActionDTO';
 
 export interface Profile {
   id?: string;
@@ -22,26 +23,7 @@ export interface Profile {
   providedIn: 'root',
 })
 export class SupabaseService {
-  async getEvent(arg0: string) {
-    const data = (await this.supabase.from('events').select('*').eq('id', arg0))
-      .data;
-    if (data && data?.length > 0) return data[0];
-  }
-  async getActionsOfEvent(d: string) {
-    return (
-      await this.supabase
-        .from('actions')
-        .select(
-          `
-			*, 
-			player_id (*),
-			game_id (*)
-			`
-        )
-        .eq('game_id', d)
-    ).data as ActionDTO[];
-  }
-  private supabase: SupabaseClient;
+  public supabase: SupabaseClient;
   _session: AuthSession | null = null;
 
   constructor() {
@@ -91,16 +73,7 @@ export class SupabaseService {
 
     return this.supabase.from('profiles').upsert(update);
   }
-  async createEvent(opts: { title: string; date: string }) {
-    return await this.supabase.from('events').insert(opts);
-  }
-  async getEvents() {
-    return (await this.supabase.from('events').select('*')).data as {
-      id: string;
-      title: string;
-      date: Date;
-    }[];
-  }
+
   async getPlayers() {
     return (await this.supabase.from('players').select('*')).data as {
       id: string;
@@ -108,28 +81,7 @@ export class SupabaseService {
       trikot: number;
     }[];
   }
-  async getActions() {
-    return (
-      await this.supabase.from('actions').select(`
-			*, 
-			player_id (*),
-			game_id (*)
-			`)
-    ).data as ActionDTO[];
-  }
-  async createAction(value: any) {
-    return (await this.supabase.from('actions').upsert(value).select()).data;
-  }
-  async getAces(game_id: string) {
-    return (
-      await this.supabase
-        .from('actions')
-        .select('*')
-        .eq('game_id', game_id)
-        .eq('kind', ActionKind.Serve)
-        .eq('grade', ActionGrade['#'])
-    ).data;
-  }
+
   async getGameStats(game_id: string) {
     return await this.supabase.rpc('getGameStats', { game_id });
   }
@@ -140,28 +92,4 @@ export class SupabaseService {
   uploadAvatar(filePath: string, file: File) {
     return this.supabase.storage.from('avatars').upload(filePath, file);
   }
-}
-
-export interface ActionDTO {
-  id: number;
-  created_at: Date;
-  kind: string;
-  character: string;
-  grade: string;
-  game_id: GameID;
-  player_id: PlayerID;
-}
-
-export interface GameID {
-  id: string;
-  date: Date;
-  title: string;
-  created_at: Date;
-}
-
-export interface PlayerID {
-  id: string;
-  name: string;
-  trikot: number;
-  created_at: Date;
 }

@@ -3,8 +3,10 @@ import type { ActivatedRouteSnapshot, Route } from '@angular/router';
 import { DataEntryComponent } from '../components/data-entry.component';
 import { GameDetailViewComponent } from '../components/game-detail-view.component';
 import { GameViewComponent } from '../components/gameview.component';
+import { ActionsService } from '../services/action.service';
+import { EventsService } from '../services/events.service';
+import { SupabaseService } from '../services/supabase.service';
 import { AppComponent } from './app.component';
-import { SupabaseService } from './supabase.service';
 
 export const appRoutes: Route[] = [
   {
@@ -16,20 +18,29 @@ export const appRoutes: Route[] = [
     component: GameDetailViewComponent,
     resolve: {
       actions: actionResolver(),
-      game: (route: ActivatedRouteSnapshot) => {
-        // biome-ignore lint/style/noNonNullAssertion: <explanation>
-        return inject(SupabaseService).getEvent(route.paramMap.get('id')!);
-      },
+      game: eventResolver(),
     },
   },
   { path: 'dataentry', component: DataEntryComponent },
   { path: '*', component: AppComponent },
 ];
+
+function eventResolver() {
+  return (route: ActivatedRouteSnapshot) => {
+    const id = route.paramMap.get('id');
+    if (!id) return;
+    return inject(EventsService).getEvent(id);
+  };
+}
+
+/**
+ *
+ * @returns
+ */
 function actionResolver() {
   return (route: ActivatedRouteSnapshot) => {
-    return inject(SupabaseService).getActionsOfEvent(
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
-      route.paramMap.get('id')!
-    );
+    const id = route.paramMap.get('id');
+    if (!id) return;
+    return inject(ActionsService).getActionsOfEvent(id);
   };
 }

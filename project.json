@@ -68,7 +68,8 @@
     "serve": {
       "configurations": {
         "development": {
-          "buildTarget": "vbcode-ng:build:development"
+          "buildTarget": "vbcode-ng:build:development",
+          "port": 4201
         },
         "production": {
           "buildTarget": "vbcode-ng:build:production"
