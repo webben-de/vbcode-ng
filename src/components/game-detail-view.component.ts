@@ -3,156 +3,61 @@ import { CommonModule } from '@angular/common';
 import { Component, type OnInit, inject } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import type { EChartsOption } from 'echarts';
 import { NgxEchartsDirective } from 'ngx-echarts';
 import type { ActionDTO } from 'src/types/ActionDTO';
 import { ActionsService } from '../services/action.service';
 import type { EventDTO } from '../services/events.service';
 import { SupabaseService } from '../services/supabase.service';
-import { ActionGrade, grad_options_list } from './grade-options';
-import { ActionKind, kinds } from './kind-options';
+import { hintMap } from '../types/hints';
+import { defaults } from './defaults';
+import { type ActionGrade, grad_options_list } from './grade-options';
+import { ActionKind, kindMap, kinds } from './kind-options';
 
-const defaults:
-  | {
-      [x in ActionKind]: {
-        title?: string;
-        total: number;
-        most_player: { [x: string]: number };
-        stats: {
-          [x in ActionGrade]: number;
-        };
-        charts?: {
-          gradePie: EChartsOption;
-          playerPie: EChartsOption;
-        };
-      };
-    } = {
-  [ActionKind.Serve]: {
-    title: 'Serve',
-    total: 0,
-    most_player: {},
-    stats: {
-      [ActionGrade['#']]: 0,
-      [ActionGrade['+']]: 0,
-      [ActionGrade['!']]: 0,
-      [ActionGrade['/']]: 0,
-      [ActionGrade['-']]: 0,
-      [ActionGrade['=']]: 0,
-    },
-  },
-  [ActionKind.Recieve]: {
-    title: 'Recieve',
-    total: 0,
-    most_player: {},
-    stats: {
-      [ActionGrade['#']]: 0,
-      [ActionGrade['+']]: 0,
-      [ActionGrade['!']]: 0,
-      [ActionGrade['/']]: 0,
-      [ActionGrade['-']]: 0,
-      [ActionGrade['=']]: 0,
-    },
-  },
-  [ActionKind.Attack]: {
-    total: 0,
-    most_player: {},
-    stats: {
-      [ActionGrade['#']]: 0,
-      [ActionGrade['+']]: 0,
-      [ActionGrade['!']]: 0,
-      [ActionGrade['/']]: 0,
-      [ActionGrade['-']]: 0,
-      [ActionGrade['=']]: 0,
-    },
-  },
-  [ActionKind.Block]: {
-    total: 0,
-    most_player: {},
-    stats: {
-      [ActionGrade['#']]: 0,
-      [ActionGrade['+']]: 0,
-      [ActionGrade['!']]: 0,
-      [ActionGrade['/']]: 0,
-      [ActionGrade['-']]: 0,
-      [ActionGrade['=']]: 0,
-    },
-  },
-  [ActionKind.Def]: {
-    total: 0,
-    most_player: {},
-    stats: {
-      [ActionGrade['#']]: 0,
-      [ActionGrade['+']]: 0,
-      [ActionGrade['!']]: 0,
-      [ActionGrade['/']]: 0,
-      [ActionGrade['-']]: 0,
-      [ActionGrade['=']]: 0,
-    },
-  },
-  [ActionKind.Set]: {
-    total: 0,
-    most_player: {},
-    stats: {
-      [ActionGrade['#']]: 0,
-      [ActionGrade['+']]: 0,
-      [ActionGrade['!']]: 0,
-      [ActionGrade['/']]: 0,
-      [ActionGrade['-']]: 0,
-      [ActionGrade['=']]: 0,
-    },
-  },
-  [ActionKind.Free]: {
-    total: 0,
-    most_player: {},
-    stats: {
-      [ActionGrade['#']]: 0,
-      [ActionGrade['+']]: 0,
-      [ActionGrade['!']]: 0,
-      [ActionGrade['/']]: 0,
-      [ActionGrade['-']]: 0,
-      [ActionGrade['=']]: 0,
-    },
-  },
-};
 @Component({
   selector: 'app-game-game-detail-view',
   standalone: true,
-  imports: [
-    CommonModule,
-    NgxEchartsDirective,
-    MatFormFieldModule,
-    MatSelectModule,
-  ],
+  imports: [CommonModule, RouterModule, NgxEchartsDirective, MatFormFieldModule, MatSelectModule],
   template: `
     <h1 class="h1">{{ game.title }}</h1>
     <div class="flex flex-col gap-8 p-5">
       <mat-form-field>
         <mat-label>Satz:</mat-label>
 
-        <mat-select
-          placeholder="Satz"
-          formControlName="game_set"
-          [value]="'Alle'"
-          (valueChange)="reloadSet($event)"
-        >
+        <mat-select placeholder="Satz" formControlName="game_set" [value]="'Alle'" (valueChange)="reloadSet($event)">
           <mat-option value="Alle">Alle</mat-option>
           @for (item of sets; track $index) {
           <mat-option [value]="item"> {{ item }} </mat-option>
           }
         </mat-select>
       </mat-form-field>
+      <section class="flex">
+        @for (stat of stats|keyvalue; track $index) {
+        <div class="stats shadow flex gap-2">
+          <a class="stat" [routerLink]="[]" fragment="co-{{ stat.key }}">
+            <div class="stat-figure text-primary"></div>
+            <div class="stat-title">{{ kindS.get(stat.key) }}</div>
+            <div class="stat-value text-primary">
+              {{ stat.value.total }}
+            </div>
+          </a>
+        </div>
+        }
+      </section>
       <section class="flex flex-col gap-4">
         @for (stat of stats|keyvalue; track $index) {
-        <div class="collapse collapse-arrow bg-base-200">
+        <div class="collapse collapse-arrow bg-base-200" [id]="'co-' + stat.key">
           <input type="radio" name="acc-attacks" checked="checked" />
-          <div class="collapse-title text-xl font-medium">{{ stat.key }}</div>
+          <div class="collapse-title text-xl font-medium">
+            {{ kindS.get(stat.key) }}
+          </div>
           <div class="collapse-content">
             <section class="flex flex-col gap-2">
               <div class="stats shadow">
                 <div class="stat">
                   <div class="stat-figure text-primary"></div>
-                  <div class="stat-title">Total {{ stat.key }}</div>
+                  <div class="stat-title">Total {{ kindS.get(stat.key) }}</div>
                   <div class="stat-value text-primary">
                     {{ stat.value.total }}
                   </div>
@@ -160,44 +65,34 @@ const defaults:
               </div>
               <h4>Nach Bewertung</h4>
               <div class="stats shadow">
-                @for (item of grad_options_list; track $index) {
+                @for (grade of grad_options_list; track $index) {
                 <div class="stat">
-                  <div class="stat-title">{{ item }}</div>
+                  <div class="stat-title">{{ hintMap.get(stat.key)?.get(grade) }}</div>
                   <div class="stat-value text-primary">
-                    {{ stat.value.stats[item] }}
+                    {{ stat.value.stats[grade] }}
                   </div>
-                  @if (stat.value.stats[item]) {
+                  @if (stat.value.stats[grade]) {
                   <div class="stat-desc text-primary">
-                    {{ stat.value.stats[item] / stat.value.total | percent }}
+                    {{ stat.value.stats[grade] / stat.value.total | percent }}
                   </div>
                   }
                 </div>
                 }
               </div>
               @if (stat.value.charts?.gradePie; as pie) {
-              <div
-                echarts
-                [options]="pie"
-                [initOpts]="{ renderer: 'canvas' }"
-                class="h-40 w-full"
-              ></div>
+              <div echarts [options]="pie" [initOpts]="{ renderer: 'canvas' }" class="h-40 w-full"></div>
               }
-              <h4>Nach Spieler</h4>
+              <h4>Anzahl nach Spieler</h4>
               <div class="stats shadow">
-                @for (item of stat.value.most_player|keyvalue; track $index) {
+                @for (item of convertPlayerCountMapToArray(stat.value.by_player); track $index) {
                 <div class="stat">
-                  <div class="stat-title">{{ item.key }}</div>
-                  <div class="stat-value text-primary">{{ item.value }}</div>
+                  <div class="stat-title">{{ item[0] }}</div>
+                  <div class="stat-value text-primary">{{ item[1] }}</div>
                 </div>
                 }
               </div>
               @if (stat.value.charts?.playerPie; as pie) {
-              <div
-                echarts
-                [options]="pie"
-                [initOpts]="{ renderer: 'canvas' }"
-                class="h-40 w-full"
-              ></div>
+              <div echarts [options]="pie" [initOpts]="{ renderer: 'canvas' }" class="h-40 w-full"></div>
               }
               <hr />
             </section>
@@ -217,18 +112,11 @@ const defaults:
                 </div>
                 <div class="chat-header">
                   {{ item.player_id.name }}
-                  <time class="text-xs opacity-50">{{
-                    item.created_at | date : 'short'
-                  }}</time>
+                  <time class="text-xs opacity-50">{{ item.created_at | date : 'short' }}</time>
                 </div>
                 <div class="dropdown w-full">
-                  <div class="chat-bubble" role="button" [tabindex]="$index">
-                    {{ item.kind }} - {{ item.character }} - {{ item.grade }}
-                  </div>
-                  <ul
-                    [tabindex]="$index"
-                    class="dropdown-content menu bg-base-100 rounded-box z-[5000] w-52 p-2 shadow"
-                  >
+                  <div class="chat-bubble" role="button" [tabindex]="$index">{{ item.kind }} - {{ item.character }} - {{ item.grade }}</div>
+                  <ul [tabindex]="$index" class="dropdown-content menu bg-base-100 rounded-box z-[5000] w-52 p-2 shadow">
                     <li (click)="deleteAction(item.id)"><a>Delete this</a></li>
                   </ul>
                 </div>
@@ -246,6 +134,7 @@ const defaults:
 export class GameDetailViewComponent implements OnInit {
   currentSet: string | number | undefined;
   stats = defaults;
+  kindS = kindMap;
 
   activatedRoute = inject(ActivatedRoute);
   supabase = inject(SupabaseService);
@@ -256,16 +145,11 @@ export class GameDetailViewComponent implements OnInit {
   grad_options_list = grad_options_list.map((g) => g.name);
   game!: EventDTO;
   actions: ActionDTO[] = [];
-  attacks: {
-    total: number;
-    most_player: { [x: string]: number };
-    stats: {
-      [x in ActionGrade]?: number;
-    };
-  } = { total: 0, most_player: {}, stats: {} };
+
   gradePie: EChartsOption = {};
   playerPie: EChartsOption = {};
   sets: number[] = [1];
+  hintMap = hintMap;
   /**
    *
    */
@@ -306,50 +190,20 @@ export class GameDetailViewComponent implements OnInit {
       .filter((a) => a.kind === kind)
       .map((a) => a.player_id.name)
       .forEach((player) => {
-        if (this.stats[kind].most_player[player])
-          this.stats[kind].most_player[player] += 1;
-        else this.stats[kind].most_player[player] = 1;
+        const v = this.stats[kind].by_player.get(player);
+        if (v) this.stats[kind].by_player.set(player, v + 1);
+        else this.stats[kind].by_player.set(player, 1);
       });
-    this.stats[kind].most_player = Object.fromEntries(
-      Object.entries(this.stats[kind].most_player).sort(
-        (a: any, b: any) => a[1] - b[1]
-      )
-    );
 
     // biome-ignore lint/complexity/noForEach: <explanation>
     grad_options_list.forEach(({ name }) => {
-      this.stats[kind].stats[name] = a.filter(
-        (a) => a.grade === name && a.kind === kind
-      ).length;
+      this.stats[kind].stats[name] = a.filter((a) => a.grade === name && a.kind === kind).length;
     });
     this.updateCharts(kind);
   }
-  private aggregateAttacks(a: ActionDTO[]) {
-    this.attacks = { total: 0, most_player: {}, stats: {} };
-
-    this.attacks.total = a.filter((a) => a.kind === ActionKind.Attack).length;
-
-    // biome-ignore lint/complexity/noForEach: <explanation>
-    this.actions
-      .filter((a) => a.kind === ActionKind.Attack)
-      .map((a) => a.player_id.name)
-      .forEach((player) => {
-        if (this.attacks.most_player[player])
-          this.attacks.most_player[player] += 1;
-        else this.attacks.most_player[player] = 1;
-      });
-    this.attacks.most_player = Object.fromEntries(
-      Object.entries(this.attacks.most_player).sort((a, b) => a[1] - b[1])
-    );
-
-    // biome-ignore lint/complexity/noForEach: <explanation>
-    grad_options_list.forEach(({ name }) => {
-      this.attacks.stats[name] = a.filter(
-        (a) => a.grade === name && a.kind === ActionKind.Attack
-      ).length;
-    });
+  convertPlayerCountMapToArray(map: Map<any, number>) {
+    return Array.from(map.entries()).sort((a, b) => b[1] - a[1]);
   }
-
   private updateCharts(kind: ActionKind) {
     if (!this.stats[kind].charts)
       this.stats[kind].charts = {
@@ -372,7 +226,7 @@ export class GameDetailViewComponent implements OnInit {
       {
         type: 'pie',
         radius: '50%',
-        data: Object.entries(this.stats[kind].most_player).map((v) => ({
+        data: Object.entries(this.stats[kind].by_player).map((v) => ({
           value: v[1],
           name: v[0],
         })),
@@ -386,13 +240,8 @@ export class GameDetailViewComponent implements OnInit {
   async reloadSet($event?: number | string) {
     this.currentSet = $event;
 
-    if (!$event || $event === 'Alle')
-      this.actions = await this.actionsService.getActionsOfEvent(this.game.id);
-    else
-      this.actions = await this.actionsService.getActionsOfEventOfSet(
-        this.game.id,
-        $event as number
-      );
+    if (!$event || $event === 'Alle') this.actions = await this.actionsService.getActionsOfEvent(this.game.id);
+    else this.actions = await this.actionsService.getActionsOfEventOfSet(this.game.id, $event as number);
     this.updateStats(this.actions, this.game);
   }
   async deleteAction(arg0: number) {

@@ -17,3 +17,12 @@ export enum ActionKind {
   'Set' = 'E',
   'Free' = 'F',
 }
+export const kindMap = new Map<ActionKind | string, string>();
+
+kindMap.set(ActionKind.Serve, 'Serve');
+kindMap.set(ActionKind.Recieve, 'Recieve');
+kindMap.set(ActionKind.Attack, 'Attack');
+kindMap.set(ActionKind.Block, 'Block');
+kindMap.set(ActionKind.Def, 'Def');
+kindMap.set(ActionKind.Set, 'Set');
+kindMap.set(ActionKind.Free, 'Free');
