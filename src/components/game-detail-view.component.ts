@@ -171,6 +171,7 @@ export class GameDetailViewComponent implements OnInit {
     // const aces = await this.actionsService.getAcesOfEvent(game.id);
     // const stats = await this.supabase.getGameStats(game.id);
     this.actions = a;
+    this.sets = Array.from(new Set(a.map((a) => a.game_set)));
 
     this.generateStats(a, ActionKind.Attack);
     this.generateStats(a, ActionKind.Set);

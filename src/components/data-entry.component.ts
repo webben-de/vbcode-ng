@@ -138,7 +138,6 @@ type abbMap = {
                 <input type="hidden" [matChipInputFor]="chipGrid4" />
               </mat-chip-grid>
             </mat-form-field>
-            {{ codeInFG.value | json }}
             @if (codeInFG.controls.kind.value && codeInFG.controls.grade.value) {
             <p>
               {{ this.hint_texts.get(codeInFG.controls.kind.value) }}
