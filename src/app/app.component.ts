@@ -1,10 +1,10 @@
 import { Component, type OnInit, inject } from '@angular/core';
 import { provideNativeDateAdapter } from '@angular/material/core';
-import { RouterModule } from '@angular/router';
-import { AuthComponent } from './auth.component';
-import { SupabaseService } from './supabase.service';
 import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
 import { initFlowbite } from 'flowbite';
+import { SupabaseService } from '../services/supabase.service';
+import { AuthComponent } from './auth.component';
 
 @Component({
   standalone: true,
@@ -12,7 +12,6 @@ import { initFlowbite } from 'flowbite';
   imports: [RouterModule, AuthComponent, MatIconModule],
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
   supabase = inject(SupabaseService);
@@ -20,6 +19,7 @@ export class AppComponent implements OnInit {
   session = this.supabase.session;
 
   ngOnInit() {
+    // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
     this.supabase.authChanges((_, session) => (this.session = session));
     initFlowbite();
   }

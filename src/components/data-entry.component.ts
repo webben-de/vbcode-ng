@@ -22,8 +22,10 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { type MatStepper, MatStepperModule } from '@angular/material/stepper';
-import hints from '../app/hints';
-import { SupabaseService } from '../app/supabase.service';
+import { ActionsService } from '../services/action.service';
+import { EventsService } from '../services/events.service';
+import { SupabaseService } from '../services/supabase.service';
+import hints from '../types/hints';
 import { grad_options_list } from './grade-options';
 import { kinds } from './kind-options';
 type PlTyp = {
@@ -187,11 +189,21 @@ type kindHintMap = {
 })
 export class DataEntryComponent implements OnInit {
   supabase = inject(SupabaseService);
+  actionService = inject(ActionsService);
+  eventService = inject(EventsService);
+  /**
+   *
+   */
   @ViewChild('stepper') stepper!: MatStepper;
-
+  /**
+   *
+   */
   player = this.supabase.getPlayers();
-  events = this.supabase.getEvents();
-  actions = this.supabase.getActions();
+  events = this.eventService.getEvents();
+  actions = this.actionService.getActions();
+  /**
+   *
+   */
   hits = computed(async () => {
     return (await this.actions).filter((a) => a.kind === '');
   });
@@ -204,16 +216,13 @@ export class DataEntryComponent implements OnInit {
     char: new FormControl<abbMap | null>(null, Validators.required),
     grade: new FormControl<abbMap | null>(null, Validators.required),
   });
-
   hint_texts: kindHintMap = hints;
-
   /**
    *
    */
   kind_options: abbMap[] = kinds;
   /**
-   * 
-        
+   *
    */
   char_options: abbMap[] = [
     { abbr: 'H', name: 'High' },
@@ -242,8 +251,9 @@ export class DataEntryComponent implements OnInit {
       game_set: this.codeInFG.controls.game_set.value,
     };
     try {
-      await this.supabase.createAction(payload);
-      this.actions = this.supabase.getActions();
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      await this.actionService.createAction(payload as any);
+      this.actions = this.actionService.getActions();
       this.codeInFG.reset({ game_id, game_set });
       this.stepper.reset();
     } catch (error) {

@@ -1,6 +1,6 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import { ActionDTO } from '../app/supabase.service';
-import { ActionKind } from './kind-options';
+import { Pipe, type PipeTransform } from '@angular/core';
+import type { ActionDTO } from 'src/types/ActionDTO';
+import type { ActionKind } from '../components/kind-options';
 
 @Pipe({ name: 'kindFilter', standalone: true })
 export class kindFilterPipe implements PipeTransform {
