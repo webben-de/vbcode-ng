@@ -105,10 +105,13 @@ export class GameDetailViewComponent implements OnInit {
   gradePie: EChartsOption = {};
   playerPie: EChartsOption = {};
   ngOnInit() {
-    this.activatedRoute.data.subscribe(({ game, actions }) => {
+    this.activatedRoute.data.subscribe(async ({ game, actions }) => {
       const a = actions as ActionDTO[];
       this.game = game;
-      this.supabase.getAces(game.id);
+      const aces = await this.supabase.getAces(game.id);
+      console.log(aces);
+      const stats = await this.supabase.getGameStats(game.id);
+      console.log(stats);
       this.actions = a;
       this.attacks.total = a.filter((a) => a.kind === ActionKind.Attack).length;
       // biome-ignore lint/complexity/noForEach: <explanation>
