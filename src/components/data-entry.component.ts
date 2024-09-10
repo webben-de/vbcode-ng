@@ -3,6 +3,7 @@ import { Component, type OnInit, ViewChild, computed, inject } from '@angular/co
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -13,9 +14,9 @@ import { type MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { ActionsService } from '../services/action.service';
 import { EventsService } from '../services/events.service';
 import { SupabaseService } from '../services/supabase.service';
-import hints from '../types/hints';
+import { hintMap } from '../types/hints';
 import { grad_options_list } from './grade-options';
-import { kinds } from './kind-options';
+import { type ActionKind, kindMap, kinds } from './kind-options';
 type PlTyp = {
   id: string;
   trikot: number;
@@ -25,16 +26,26 @@ type abbMap = {
   abbr: string;
   name: string;
 };
-type kindHintMap = {
-  [kind: string]: {
-    [grade: string]: string;
-  };
-};
 
 @Component({
   selector: 'app-name',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatButtonToggleModule, MatButtonModule, MatDatepickerModule, MatInputModule, MatSnackBarModule, MatRadioModule, MatSelectModule, CommonModule, MatStepperModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatButtonToggleModule,
+    MatButtonModule,
+    MatDatepickerModule,
+    MatInputModule,
+    MatSnackBarModule,
+    MatRadioModule,
+    MatSelectModule,
+    CommonModule,
+    MatStepperModule,
+    MatChipsModule,
+  ],
   template: `
     <div class="flex flex-col p-5">
       <form action="" [formGroup]="codeInFG" class="flex-col w-full" (submit)="submit()">
@@ -56,39 +67,81 @@ type kindHintMap = {
         <mat-vertical-stepper [linear]="false" #stepper>
           <mat-step [hasError]="!codeInFG.controls.player_id.value">
             <ng-template matStepLabel>Playername: {{ codeInFG.controls.player_id.value?.name }}</ng-template>
-            <mat-button-toggle-group formControlName="player_id" (change)="stepper.next()">
-              @for (item of player|async; track $index) {
-              <mat-button-toggle [value]="item">{{ item.trikot }}</mat-button-toggle>
-              }
-            </mat-button-toggle-group>
-            <span>{{ codeInFG.controls.player_id.value?.name }}</span>
+
+            <div class="flex flex-col">
+              <mat-form-field class="w-full">
+                <mat-chip-grid #chipGrid>
+                  @for (item of player|async; track $index) {
+                  <mat-chip-row class="min-w-12" (click)="codeInFG.controls.player_id.setValue(item); stepper.next()">
+                    {{ item.trikot }}
+                  </mat-chip-row>
+                  }@empty {
+                  <mat-chip-row>x </mat-chip-row>
+                  }
+                  <input type="hidden" [matChipInputFor]="chipGrid" />
+                </mat-chip-grid>
+              </mat-form-field>
+              <span>{{ codeInFG.controls.player_id.value?.name }}</span>
+            </div>
           </mat-step>
           <mat-step [hasError]="!codeInFG.controls.kind.value">
-            <ng-template matStepLabel>Art: {{ codeInFG.controls.kind.value?.name }}</ng-template>
-            <mat-button-toggle-group formControlName="kind" (change)="stepper.next()">
-              @for (item of kind_options; track $index) {
-              <mat-button-toggle [value]="item">{{ item.name }}</mat-button-toggle>
+            <ng-template matStepLabel
+              >Art: @if (codeInFG.controls.kind.value) {
+              <span>{{ kind_options.get(codeInFG.controls.kind.value) }}</span>
               }
-            </mat-button-toggle-group>
+            </ng-template>
+
+            <mat-form-field class="w-full">
+              <mat-chip-grid #chipGrid2>
+                @for (item of kind_options; track $index) {
+                <mat-chip-row class="min-w-12" (click)="codeInFG.controls.kind.setValue(item[0]); stepper.next()">
+                  {{ item[1] }}
+                </mat-chip-row>
+                }@empty {
+                <mat-chip-row>x </mat-chip-row>
+                }
+                <input type="hidden" [matChipInputFor]="chipGrid2" />
+              </mat-chip-grid>
+            </mat-form-field>
           </mat-step>
           <mat-step>
             <ng-template matStepLabel>schema: {{ codeInFG.controls.char.value?.name }}</ng-template>
-            <mat-button-toggle-group formControlName="char" (change)="stepper.next()">
-              @for (item of char_options; track $index) {
-              <mat-button-toggle [value]="item">{{ item.name }}</mat-button-toggle>
-              }
-            </mat-button-toggle-group>
+            <mat-form-field class="w-full">
+              <mat-chip-grid #chipGrid3>
+                @for (item of char_options; track $index) {
+                <mat-chip-row class="min-w-12" (click)="codeInFG.controls.char.setValue(item); stepper.next()">
+                  {{ item.name }}
+                </mat-chip-row>
+                }@empty {
+                <mat-chip-row>x </mat-chip-row>
+                }
+                <input type="hidden" [matChipInputFor]="chipGrid3" />
+              </mat-chip-grid>
+            </mat-form-field>
           </mat-step>
           <mat-step>
             <ng-template matStepLabel>Bewertung: {{ codeInFG.controls.grade.value?.name }}</ng-template>
-            <mat-button-toggle-group formControlName="grade" (change)="stepper.next()">
+            <!-- <mat-button-toggle-group formControlName="grade" (change)="stepper.next()">
               @for (item of grad_options; track $index) {
               <mat-button-toggle [value]="item">{{ item.name }}</mat-button-toggle>
               }
-            </mat-button-toggle-group>
+            </mat-button-toggle-group> -->
+            <mat-form-field class="w-full ">
+              <mat-chip-grid #chipGrid4>
+                @for (item of grad_options; track $index) {
+                <mat-chip-row class="min-w-12" (click)="codeInFG.controls.char.setValue(item); stepper.next()">
+                  {{ item.name }}
+                </mat-chip-row>
+                }@empty {
+                <mat-chip-row>x </mat-chip-row>
+                }
+                <input type="hidden" [matChipInputFor]="chipGrid4" />
+              </mat-chip-grid>
+            </mat-form-field>
+            {{ codeInFG.value | json }}
             @if (codeInFG.controls.kind.value && codeInFG.controls.grade.value) {
             <p>
-              {{ this.hint_texts[codeInFG.controls.kind.value.abbr][codeInFG.controls.grade.value.abbr] }}
+              {{ this.hint_texts.get(codeInFG.controls.kind.value) }}
             </p>
             }
             <hr />
@@ -142,15 +195,15 @@ export class DataEntryComponent implements OnInit {
     game_id: new FormControl<string>('', Validators.required),
     game_set: new FormControl<number>(1, Validators.required),
     player_id: new FormControl<PlTyp | null>(null, Validators.required),
-    kind: new FormControl<abbMap | null>(null, Validators.required),
+    kind: new FormControl<ActionKind | string | null>(null, Validators.required),
     char: new FormControl<abbMap | null>(null, Validators.required),
     grade: new FormControl<abbMap | null>(null, Validators.required),
   });
-  hint_texts: kindHintMap = hints;
+  hint_texts = hintMap;
   /**
    *
    */
-  kind_options: abbMap[] = kinds;
+  kind_options: Map<string | ActionKind, string> = kindMap;
   /**
    *
    */
@@ -174,7 +227,7 @@ export class DataEntryComponent implements OnInit {
     const { game_id, game_set } = this.codeInFG.value;
     const payload = {
       player_id: this.codeInFG.controls.player_id.value?.id,
-      kind: this.codeInFG.controls.kind.value?.abbr,
+      kind: this.codeInFG.controls.kind.value,
       character: this.codeInFG.controls.char.value?.abbr,
       grade: this.codeInFG.controls.grade.value?.abbr,
       game_id: this.codeInFG.controls.game_id.value,
@@ -183,12 +236,18 @@ export class DataEntryComponent implements OnInit {
     try {
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       await this.actionService.createAction(payload as any);
-      this.snacks.open('Created', 'Close', { duration: 500, panelClass: 'success' });
+      this.snacks.open('Created', 'Close', {
+        duration: 500,
+        panelClass: 'success',
+      });
       this.actions = this.actionService.getActions();
       this.codeInFG.reset({ game_id, game_set });
       this.stepper.reset();
     } catch (error) {
-      this.snacks.open('Error', 'Close', { duration: 1000, panelClass: 'error' });
+      this.snacks.open('Error', 'Close', {
+        duration: 1000,
+        panelClass: 'error',
+      });
     }
   }
   async ngOnInit() {
