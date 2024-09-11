@@ -172,10 +172,7 @@ export class GameDetailViewComponent implements OnInit {
 
   private async updateStats(a: ActionDTO[], game: EventDTO) {
     this.game = game;
-    // const aces = await this.actionsService.getAcesOfEvent(game.id);
-    // const stats = await this.supabase.getGameStats(game.id);
     this.actions = a;
-    // this.sets = Array.from(new Set(a.map((a) => a.game_set)));
 
     this.generateStats(a, ActionKind.Attack);
     this.generateStats(a, ActionKind.Set);
@@ -194,16 +191,33 @@ export class GameDetailViewComponent implements OnInit {
     };
   }
   generateGradeRadar(a: ActionDTO[] = this.actions) {
-    const greatesHits = a.filter((a) => a.grade === ActionGrade['#']);
+    const greatestHits = a.filter((a) => a.grade === ActionGrade['#']);
     const worstHits = a.filter((a) => a.grade === ActionGrade['=']);
-    const gCounts = countBy(greatesHits, 'kind');
+    const gCounts = countBy(greatestHits, 'kind');
+    const alphaASCGoods = [
+      gCounts[ActionKind.Attack],
+      gCounts[ActionKind.Block],
+      gCounts[ActionKind.Def],
+      gCounts[ActionKind.Free],
+      gCounts[ActionKind.Serve],
+      gCounts[ActionKind.Set],
+    ];
     const wCounts = countBy(worstHits, 'kind');
+    const alphaASCBads = [
+      wCounts[ActionKind.Attack],
+      wCounts[ActionKind.Block],
+      wCounts[ActionKind.Def],
+      wCounts[ActionKind.Free],
+      wCounts[ActionKind.Serve],
+      wCounts[ActionKind.Set],
+    ];
+
     this.charts.perfectGradeRadar = {
       title: {
         text: 'Perfect/Failures ',
       },
       legend: {
-        data: ['Perfect', 'Worst'],
+        data: ['Perfect Grade', 'Failures'],
       },
       radar: {
         // shape: 'circle',
@@ -219,7 +233,7 @@ export class GameDetailViewComponent implements OnInit {
 
           data: [
             {
-              value: Object.values(gCounts),
+              value: alphaASCGoods,
               name: 'Perfect Grade',
               label: {
                 show: true,
@@ -227,7 +241,7 @@ export class GameDetailViewComponent implements OnInit {
               },
             },
             {
-              value: Object.values(wCounts),
+              value: alphaASCBads,
               name: 'Failures',
               itemStyle: { color: 'red' },
               lineStyle: {
@@ -246,11 +260,10 @@ export class GameDetailViewComponent implements OnInit {
 
   private generateStats(a: ActionDTO[], kind: ActionKind) {
     if (!this.stats[kind]) return;
-    this.stats[kind].total = a.filter((a) => a.kind === kind).length;
 
+    this.stats[kind].total = a.filter((a) => a.kind === kind).length;
     // biome-ignore lint/complexity/noForEach: <explanation>
-    this.actions
-      .filter((a) => a.kind === kind)
+    a.filter((a) => a.kind === kind)
       .map((a) => a.player_id.name)
       .forEach((player) => {
         const v = this.stats[kind].by_player.get(player);
@@ -259,8 +272,8 @@ export class GameDetailViewComponent implements OnInit {
       });
 
     // biome-ignore lint/complexity/noForEach: <explanation>
-    grad_options_list.forEach(({ name }) => {
-      this.stats[kind].stats[name] = a.filter((a) => a.grade === name && a.kind === kind).length;
+    grad_options_list.forEach(({ name: grade }) => {
+      this.stats[kind].stats[grade] = a.filter((a) => a.grade === grade && a.kind === kind).length;
     });
     this.updateCharts(kind);
   }
@@ -305,10 +318,15 @@ export class GameDetailViewComponent implements OnInit {
 
     if (!$event || $event === 'Alle') this.actions = await this.actionsService.getActionsOfEvent(this.game.id);
     else this.actions = await this.actionsService.getActionsOfEventOfSet(this.game.id, $event as number);
+    this.stats = defaults;
     this.updateStats(this.actions, this.game);
   }
-  async deleteAction(arg0: number) {
-    const arg1 = arg0;
-    return await this.actionsService.deleteAction(arg0);
+  /**
+   *
+   * @param id
+   * @returns
+   */
+  async deleteAction(id: number) {
+    return await this.actionsService.deleteAction(id);
   }
 }
