@@ -5,17 +5,18 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import type { EChartsOption } from 'echarts';
+import { countBy, groupBy } from 'lodash';
 import { NgxEchartsDirective } from 'ngx-echarts';
 import type { ActionDTO } from 'src/types/ActionDTO';
 import { defaults } from '../components/defaults';
 import { grad_options_list } from '../components/grade-options';
-import { kindMap } from '../components/kind-options';
+import { kindMap, kinds } from '../components/kind-options';
 import { ActionsService } from '../services/action.service';
 import { SupabaseService } from '../services/supabase.service';
+import { ActionGrade } from '../types/ActionGrade';
 import { ActionKind } from '../types/ActionKind';
 import type { EventDTO } from '../types/EventDTO';
 import { hintMap } from '../types/hints';
-
 @Component({
   selector: 'app-game-game-detail-view',
   host: { class: 'flex flex-col p-2' },
@@ -34,7 +35,7 @@ import { hintMap } from '../types/hints';
           }
         </mat-select>
       </mat-form-field>
-      <section class="flex flex-wrap">
+      <section class="flex flex-wrap gap-16">
         @for (stat of stats|keyvalue; track $index) {
         <div class="stats shadow flex gap-2">
           <a class="stat" [routerLink]="[]" fragment="co-{{ stat.key }}">
@@ -43,9 +44,15 @@ import { hintMap } from '../types/hints';
             <div class="stat-value text-primary">
               {{ stat.value.total }}
             </div>
+            <div class="stat-desc text-primary">
+              {{ stat.value.total / actions.length | percent }}
+            </div>
           </a>
         </div>
         }
+        <div class="flex w-full">
+          <div echarts [options]="this.charts.perfectGradeRadar" [initOpts]="{ renderer: 'canvas' }" class="w-full h-full"></div>
+        </div>
       </section>
       <section class="flex flex-col gap-4">
         @for (stat of stats|keyvalue; track $index) {
@@ -127,7 +134,13 @@ export class GameDetailViewComponent implements OnInit {
   currentSet: string | number | undefined;
   stats = defaults;
   kindS = kindMap;
-
+  charts: {
+    perfectGradeRadar: EChartsOption;
+    worstGradeRadar: EChartsOption;
+  } = {
+    perfectGradeRadar: {},
+    worstGradeRadar: {},
+  };
   activatedRoute = inject(ActivatedRoute);
   supabase = inject(SupabaseService);
   actionsService = inject(ActionsService);
@@ -153,7 +166,6 @@ export class GameDetailViewComponent implements OnInit {
       this.sets = Array.from(new Set(a.map((a) => a.game_set)));
     });
     this.actionsService.actions$.subscribe((a) => {
-      console.log(a);
       this.reloadSet(this.currentSet);
     });
   }
@@ -163,7 +175,7 @@ export class GameDetailViewComponent implements OnInit {
     // const aces = await this.actionsService.getAcesOfEvent(game.id);
     // const stats = await this.supabase.getGameStats(game.id);
     this.actions = a;
-    this.sets = Array.from(new Set(a.map((a) => a.game_set)));
+    // this.sets = Array.from(new Set(a.map((a) => a.game_set)));
 
     this.generateStats(a, ActionKind.Attack);
     this.generateStats(a, ActionKind.Set);
@@ -172,6 +184,64 @@ export class GameDetailViewComponent implements OnInit {
     this.generateStats(a, ActionKind.Free);
     this.generateStats(a, ActionKind.Recieve);
     this.generateStats(a, ActionKind.Serve);
+    this.aggregateGrade(a);
+    this.generateGradeRadar();
+  }
+  aggregateGrade(a: ActionDTO[]) {
+    return {
+      best_actions: a.filter((a) => a.grade === ActionGrade['#']),
+      worst_actions: a.filter((a) => a.grade === ActionGrade['=']),
+    };
+  }
+  generateGradeRadar(a: ActionDTO[] = this.actions) {
+    const greatesHits = a.filter((a) => a.grade === ActionGrade['#']);
+    const worstHits = a.filter((a) => a.grade === ActionGrade['=']);
+    const gCounts = countBy(greatesHits, 'kind');
+    const wCounts = countBy(worstHits, 'kind');
+    this.charts.perfectGradeRadar = {
+      title: {
+        text: 'Perfect/Failures ',
+      },
+      legend: {
+        data: ['Perfect', 'Worst'],
+      },
+      radar: {
+        // shape: 'circle',
+        indicator: kinds.map((k) => ({
+          name: this.kindS.get(k.abbr),
+          max: Math.max(...Object.values(gCounts), ...Object.values(wCounts)),
+        })),
+      },
+      series: [
+        {
+          name: 'Perfect vs Worst',
+          type: 'radar',
+
+          data: [
+            {
+              value: Object.values(gCounts),
+              name: 'Perfect Grade',
+              label: {
+                show: true,
+                formatter: (params: any) => params.value,
+              },
+            },
+            {
+              value: Object.values(wCounts),
+              name: 'Failures',
+              itemStyle: { color: 'red' },
+              lineStyle: {
+                color: 'red',
+              },
+              label: {
+                show: true,
+                formatter: (params: any) => params.value,
+              },
+            },
+          ],
+        },
+      ],
+    } as any;
   }
 
   private generateStats(a: ActionDTO[], kind: ActionKind) {
