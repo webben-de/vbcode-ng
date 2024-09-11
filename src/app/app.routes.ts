@@ -11,11 +11,11 @@ import { AppComponent } from './app.component';
 
 export const appRoutes: Route[] = [
   {
-    path: 'gameview',
+    path: 'report',
     component: GameViewComponent,
   },
   {
-    path: 'gameview/:id',
+    path: 'report/details/:id',
     component: GameDetailViewComponent,
     resolve: {
       actions: actionResolver(),

@@ -21,7 +21,7 @@ import { ActionKind } from '../types/ActionKind';
   template: `
     <div class="flex flex-col max-w-full overflow-hidden">
       <div class="flex gap-8 p-5">
-        <form [formGroup]="gameF">
+        <form [formGroup]="gameF" class="flex gap-4">
           <mat-form-field>
             <mat-label>Game:</mat-label>
             <mat-select formControlName="game_id">
@@ -40,13 +40,6 @@ import { ActionKind } from '../types/ActionKind';
               <mat-option value="1"> 1 </mat-option>
             </mat-select>
           </mat-form-field>
-        </form>
-        <form [formGroup]="newGameF" (submit)="createNewGame()">
-          <mat-form-field>
-            <mat-label>New Game:</mat-label>
-            <input matInput formControlName="title" />
-          </mat-form-field>
-          <button mat-button type="submit">submit</button>
         </form>
       </div>
       <hr />
@@ -98,7 +91,7 @@ import { ActionKind } from '../types/ActionKind';
           </div>
         </div>
       </div>
-      <button class="btn" [routerLink]="['/gameview', gameF.controls.game_id.value]">Details</button>
+      <button class="btn" [routerLink]="['/report', 'details', gameF.controls.game_id.value]">Details</button>
       <div echarts [options]="pieChartDist" class="h-40 w-full"></div>
       <hr />
     </div>
