@@ -8,12 +8,7 @@ import { SupabaseService } from '../services/supabase.service';
   selector: 'app-auth',
   templateUrl: './auth.component.html',
   standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    MatFormFieldModule,
-  ],
+  imports: [FormsModule, ReactiveFormsModule, MatInputModule, MatFormFieldModule],
 })
 export class AuthComponent {
   supabase = inject(SupabaseService);
@@ -32,7 +27,6 @@ export class AuthComponent {
       const password = this.signInForm.value.password as string;
       const { error } = await this.supabase.signInPW(email, password);
       if (error) throw error;
-      alert('Check your email for the login link!');
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);

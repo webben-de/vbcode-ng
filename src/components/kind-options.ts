@@ -1,3 +1,5 @@
+import { ActionKind } from '../types/ActionKind';
+
 export const kinds = [
   { abbr: 'S', name: 'Serve' },
   { abbr: 'R', name: 'Recieve' },
@@ -8,15 +10,6 @@ export const kinds = [
   { abbr: 'F', name: 'Free' },
 ];
 
-export enum ActionKind {
-  'Serve' = 'S',
-  'Recieve' = 'R',
-  'Attack' = 'A',
-  'Block' = 'B',
-  'Def' = 'D',
-  'Set' = 'E',
-  'Free' = 'F',
-}
 export const kindMap = new Map<ActionKind | string, string>();
 
 kindMap.set(ActionKind.Serve, 'Serve');

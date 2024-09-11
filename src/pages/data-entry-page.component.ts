@@ -11,12 +11,13 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { type MatStepper, MatStepperModule } from '@angular/material/stepper';
+import { grad_options_list } from '../components/grade-options';
+import { kindMap } from '../components/kind-options';
 import { ActionsService } from '../services/action.service';
 import { EventsService } from '../services/events.service';
 import { SupabaseService } from '../services/supabase.service';
+import type { ActionKind } from '../types/ActionKind';
 import { hintMap } from '../types/hints';
-import { grad_options_list } from './grade-options';
-import { type ActionKind, kindMap, kinds } from './kind-options';
 type PlTyp = {
   id: string;
   trikot: number;
@@ -252,6 +253,6 @@ export class DataEntryComponent implements OnInit {
   async ngOnInit() {
     const e = await this.events;
     if (!e) return;
-    this.codeInFG.controls.game_id.setValue(e[0].id);
+    if (e[0].id) this.codeInFG.controls.game_id.setValue(e[0].id);
   }
 }

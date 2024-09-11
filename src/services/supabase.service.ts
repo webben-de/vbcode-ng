@@ -1,9 +1,7 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { type AuthChangeEvent, type AuthSession, type Session, type SupabaseClient, type User, createClient } from '@supabase/supabase-js';
-import { ActionGrade } from '../components/grade-options';
-import { ActionKind } from '../components/kind-options';
 import { environment } from '../environments/environment';
-import type { ActionDTO } from '../types/ActionDTO';
+import type { PlayerDTO } from '../types/PlayerDTO';
 
 export interface Profile {
   id?: string;
@@ -75,8 +73,3 @@ export class SupabaseService {
     return this.supabase.storage.from('avatars').upload(filePath, file);
   }
 }
-export type PlayerDTO = {
-  id: string;
-  name: string;
-  trikot: number;
-};
