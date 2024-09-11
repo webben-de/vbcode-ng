@@ -1,8 +1,8 @@
-import { Injectable, inject, signal, ɵDeferBlockBehavior } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ActionGrade } from '../components/grade-options';
-import { ActionKind } from '../components/kind-options';
 import type { ActionDTO } from '../types/ActionDTO';
+import { ActionGrade } from '../types/ActionGrade';
+import { ActionKind } from '../types/ActionKind';
 import { SupabaseService } from './supabase.service';
 export const TABLENAME_ACTIONS = 'actions';
 
@@ -16,8 +16,7 @@ export class ActionsService {
    * @returns
    */
   async deleteAction(arg0: number) {
-    return (await this.supabase.from(TABLENAME_ACTIONS).delete().eq('id', arg0))
-      .data;
+    return (await this.supabase.from(TABLENAME_ACTIONS).delete().eq('id', arg0)).data;
   }
   supabase = inject(SupabaseService).supabase;
   /**
@@ -26,21 +25,10 @@ export class ActionsService {
    * @returns
    */
   async getActionsOfEvent(game_id: string) {
-    return (
-      await this.supabase
-        .from(TABLENAME_ACTIONS)
-        .select('*, player_id (*),game_id (*) ')
-        .eq('game_id', game_id)
-    ).data as ActionDTO[];
+    return (await this.supabase.from(TABLENAME_ACTIONS).select('*, player_id (*),game_id (*) ').eq('game_id', game_id)).data as ActionDTO[];
   }
   async getActionsOfEventOfSet(game_id: string, set: number) {
-    return (
-      await this.supabase
-        .from(TABLENAME_ACTIONS)
-        .select('*, player_id (*),game_id (*) ')
-        .eq('game_id', game_id)
-        .eq('game_set', set)
-    ).data as ActionDTO[];
+    return (await this.supabase.from(TABLENAME_ACTIONS).select('*, player_id (*),game_id (*) ').eq('game_id', game_id).eq('game_set', set)).data as ActionDTO[];
   }
   /**
    *
@@ -61,29 +49,26 @@ export class ActionsService {
    * @returns
    */
   async createAction(value: Partial<ActionDTO>) {
-    return (await this.supabase.from(TABLENAME_ACTIONS).upsert(value).select())
-      .data;
+    return (await this.supabase.from(TABLENAME_ACTIONS).upsert(value).select()).data;
   }
+  /**
+   *
+   * @param game_id
+   * @returns
+   */
   async getAcesOfEvent(game_id: string) {
-    return (
-      await this.supabase
-        .from(TABLENAME_ACTIONS)
-        .select('*')
-        .eq('game_id', game_id)
-        .eq('kind', ActionKind.Serve)
-        .eq('grade', ActionGrade['#'])
-    ).data;
+    return (await this.supabase.from(TABLENAME_ACTIONS).select('*').eq('game_id', game_id).eq('kind', ActionKind.Serve).eq('grade', ActionGrade['#'])).data;
   }
+  /**
+   *
+   */
   actionChangesChannel = this.supabase
     .channel('actions-all-channel')
-    .on(
-      'postgres_changes',
-      { event: '*', schema: 'public', table: 'actions' },
-      (payload) => {
-        console.log('Change received!', payload);
-        this.actions$.next(payload);
-      }
-    )
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'actions' }, (payload) => {
+      console.log('Change received!', payload);
+      this.actions$.next(payload);
+    })
     .subscribe();
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   actions$ = new BehaviorSubject(null as any);
 }

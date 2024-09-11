@@ -7,13 +7,14 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import type { EChartsOption } from 'echarts';
 import { NgxEchartsDirective } from 'ngx-echarts';
 import type { ActionDTO } from 'src/types/ActionDTO';
+import { defaults } from '../components/defaults';
+import { grad_options_list } from '../components/grade-options';
+import { kindMap } from '../components/kind-options';
 import { ActionsService } from '../services/action.service';
-import type { EventDTO } from '../services/events.service';
 import { SupabaseService } from '../services/supabase.service';
+import { ActionKind } from '../types/ActionKind';
+import type { EventDTO } from '../types/EventDTO';
 import { hintMap } from '../types/hints';
-import { defaults } from './defaults';
-import { type ActionGrade, grad_options_list } from './grade-options';
-import { ActionKind, kindMap, kinds } from './kind-options';
 
 @Component({
   selector: 'app-game-game-detail-view',

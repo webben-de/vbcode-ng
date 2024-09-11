@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import type { EventDTO, createEventDTO } from '../types/EventDTO';
 import { SupabaseService } from './supabase.service';
 
 @Injectable({
@@ -12,8 +13,7 @@ export class EventsService {
    * @returns
    */
   async getEvent(id: string) {
-    const data = (await this.supabase.from('events').select('*').eq('id', id))
-      .data;
+    const data = (await this.supabase.from('events').select('*').eq('id', id)).data;
     if (data && data?.length > 0) return data[0] as EventDTO;
     return {};
   }
@@ -29,13 +29,7 @@ export class EventsService {
    * @param opts
    * @returns
    */
-  async createEvent(opts: { title: string; date: string }) {
+  async createEvent(opts: createEventDTO) {
     return await this.supabase.from('events').insert(opts);
   }
-}
-
-export interface EventDTO {
-  id: string;
-  title: string;
-  date: Date;
 }

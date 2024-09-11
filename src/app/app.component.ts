@@ -1,7 +1,7 @@
 import { Component, type OnInit, inject } from '@angular/core';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { initFlowbite } from 'flowbite';
 import { SupabaseService } from '../services/supabase.service';
 import { AuthComponent } from './auth.component';
@@ -15,12 +15,15 @@ import { AuthComponent } from './auth.component';
 })
 export class AppComponent implements OnInit {
   supabase = inject(SupabaseService);
+  router = inject(Router);
 
   session = this.supabase.session;
 
   ngOnInit() {
-    // biome-ignore lint/suspicious/noAssignInExpressions: <explanation>
-    this.supabase.authChanges((_, session) => (this.session = session));
+    this.supabase.authChanges((_, session) => {
+      this.session = session;
+      this.router.navigate(['/gameview']);
+    });
     initFlowbite();
   }
 }

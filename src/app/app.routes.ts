@@ -1,11 +1,12 @@
 import { inject } from '@angular/core';
 import type { ActivatedRouteSnapshot, Route } from '@angular/router';
-import { DataEntryComponent } from '../components/data-entry.component';
-import { GameDetailViewComponent } from '../components/game-detail-view.component';
-import { GameViewComponent } from '../components/gameview.component';
+import { CreateGamePageComponent } from '../pages/create-game-page.component';
+import { DataEntryComponent } from '../pages/data-entry-page.component';
+import { GameDetailViewComponent } from '../pages/game-detail-view-page.component';
+import { GamesListPageComponent } from '../pages/games-list-page.component';
+import { GameViewComponent } from '../pages/gameview-page.component';
 import { ActionsService } from '../services/action.service';
 import { EventsService } from '../services/events.service';
-import { SupabaseService } from '../services/supabase.service';
 import { AppComponent } from './app.component';
 
 export const appRoutes: Route[] = [
@@ -21,6 +22,8 @@ export const appRoutes: Route[] = [
       game: eventResolver(),
     },
   },
+  { path: 'create-game', component: CreateGamePageComponent },
+  { path: 'games', component: GamesListPageComponent },
   { path: 'dataentry', component: DataEntryComponent },
   { path: '*', component: AppComponent },
 ];

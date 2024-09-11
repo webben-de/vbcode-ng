@@ -1,11 +1,12 @@
 import type { EChartsOption } from 'echarts';
-import { ActionGrade } from './grade-options';
-import { ActionKind } from './kind-options';
+import { ActionGrade } from '../types/ActionGrade';
+import { ActionKind } from '../types/ActionKind';
 
 export const defaults: {
   [x in ActionKind]: {
     title?: string;
     total: number;
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     by_player: Map<string | any, number>;
     stats: {
       [x in ActionGrade]: number;
