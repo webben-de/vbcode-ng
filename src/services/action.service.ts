@@ -36,11 +36,13 @@ export class ActionsService {
    */
   async getActions() {
     return (
-      await this.supabase.from(TABLENAME_ACTIONS).select(`
+      await this.supabase.from(TABLENAME_ACTIONS).select(
+        `
 			*, 
 			player_id (*),
 			game_id (*)
-			`)
+			`
+      )
     ).data as ActionDTO[];
   }
   /**
