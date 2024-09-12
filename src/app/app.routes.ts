@@ -1,5 +1,5 @@
 import { inject } from '@angular/core';
-import type { ActivatedRouteSnapshot, Route } from '@angular/router';
+import { Router, type ActivatedRouteSnapshot, type CanActivateFn, type Route } from '@angular/router';
 import { CreateGamePageComponent } from '../pages/create-game-page.component';
 import { DataEntryComponent } from '../pages/data-entry-page.component';
 import { GameDetailViewComponent } from '../pages/game-detail-view-page.component';
@@ -8,6 +8,8 @@ import { GameViewComponent } from '../pages/gameview-page.component';
 import { ActionsService } from '../services/action.service';
 import { EventsService } from '../services/events.service';
 import { AppComponent } from './app.component';
+import { SupabaseService } from '../services/supabase.service';
+import { AuthComponent } from './auth.component';
 
 export const appRoutes: Route[] = [
   {
@@ -22,9 +24,10 @@ export const appRoutes: Route[] = [
       game: eventResolver(),
     },
   },
-  { path: 'create-game', component: CreateGamePageComponent },
+  { path: 'create-game', component: CreateGamePageComponent, canActivate: [authenticationGuard()] },
   { path: 'games', component: GamesListPageComponent },
-  { path: 'dataentry', component: DataEntryComponent },
+  { path: 'dataentry', component: DataEntryComponent, canActivate: [authenticationGuard()] },
+  { path: 'login', component: AuthComponent },
   { path: '*', component: AppComponent },
 ];
 
@@ -36,6 +39,17 @@ function eventResolver() {
   };
 }
 
+export function authenticationGuard(): CanActivateFn {
+  return () => {
+    const supabase = inject(SupabaseService);
+    const router = inject(Router);
+
+    if (supabase.session) {
+      return true;
+    }
+    return router.navigate(['/login']);
+  };
+}
 /**
  *
  * @returns

@@ -36,12 +36,11 @@
         </button>
       </div>
     </div>
-    @if (session) {
 
     <router-outlet></router-outlet>
-    }@else {
+    <!-- @if (!session) {
     <app-auth></app-auth>
-    }
+    } -->
   </mat-drawer-content>
 </mat-drawer-container>
 
