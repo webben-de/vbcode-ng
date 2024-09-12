@@ -1,24 +1,27 @@
-<div class="row flex-center flex">
-  <div class="col-6 form-widget" aria-live="polite">
-    <h1 class="text-lg">(SVB) Code</h1>
-    <p class="description">Sign in via magic link with your email below</p>
-    <button mat-button (click)="googleLogin()">Login with Google</button>
-    <form [formGroup]="signInForm" (ngSubmit)="onSubmit()" class="form-widget">
-      <div>
-        <label for="email">Email</label>
-        <mat-form-field>
-          <input id="email" matInput formControlName="email" class="inputField" type="email" placeholder="Your email" />
-        </mat-form-field>
-        <label for="password">Pass</label>
-        <mat-form-field>
-          <input id="password" matInput formControlName="password" class="inputField" type="password" />
-        </mat-form-field>
+<div class="flex flex-col">
+  <div class="flex flex-col p-8 gap-8" aria-live="polite">
+    <h1 class="text-lg">(SVB) Code Login</h1>
+    <div class="flex divide-x-2 h-full">
+      <form [formGroup]="signInForm" (ngSubmit)="onSubmit()" class="p-4">
+        <div>
+          <label for="email">Email</label>
+          <mat-form-field>
+            <input id="email" matInput formControlName="email" class="inputField" type="email" placeholder="Your email" />
+          </mat-form-field>
+          <label for="password">Pass</label>
+          <mat-form-field>
+            <input id="password" matInput formControlName="password" class="inputField" type="password" />
+          </mat-form-field>
+        </div>
+        <div>
+          <button type="submit" mat-raised-button [disabled]="loading">
+            {{ loading ? 'Loading' : 'Login' }}
+          </button>
+        </div>
+      </form>
+      <div class="flex items-center justify-center w-1/2">
+        <button class="" mat-raised-button (click)="googleLogin()">Login with Google</button>
       </div>
-      <div>
-        <button type="submit" class="button block" [disabled]="loading">
-          {{ loading ? 'Loading' : 'Send magic link' }}
-        </button>
-      </div>
-    </form>
+    </div>
   </div>
 </div>
