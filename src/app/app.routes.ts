@@ -15,6 +15,7 @@ export const appRoutes: Route[] = [
   {
     path: 'report',
     component: GameViewComponent,
+    canActivate: [authenticationGuard()],
   },
   {
     path: 'report/details/:id',
@@ -24,8 +25,9 @@ export const appRoutes: Route[] = [
       game: eventResolver(),
     },
   },
-  { path: 'create-game', component: CreateGamePageComponent, canActivate: [authenticationGuard()] },
+  { path: 'games/create', component: CreateGamePageComponent, canActivate: [authenticationGuard()] },
   { path: 'games', component: GamesListPageComponent },
+  { path: 'dataentry/:id', component: DataEntryComponent, canActivate: [authenticationGuard()] },
   { path: 'dataentry', component: DataEntryComponent, canActivate: [authenticationGuard()] },
   { path: 'login', component: AuthComponent },
   { path: '*', component: AppComponent },

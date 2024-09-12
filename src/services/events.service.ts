@@ -6,6 +6,9 @@ import { SupabaseService } from './supabase.service';
   providedIn: 'root',
 })
 export class EventsService {
+  async deleteEvent(arg0: string) {
+    return (await this.supabase.from('events').delete().eq('id', arg0)).data;
+  }
   supabase = inject(SupabaseService).supabase;
   /**
    *
@@ -30,6 +33,6 @@ export class EventsService {
    * @returns
    */
   async createEvent(opts: createEventDTO) {
-    return await this.supabase.from('events').insert(opts);
+    return ((await this.supabase.from('events').insert(opts).select()).data as EventDTO[])[0];
   }
 }
