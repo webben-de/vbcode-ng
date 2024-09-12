@@ -14,7 +14,7 @@ import { kindMap, kinds } from '../components/kind-options';
 import { ActionsService } from '../services/action.service';
 import { SupabaseService } from '../services/supabase.service';
 import { ActionGrade, ActionGradeColorMap } from '../types/ActionGrade';
-import type { ActionKind } from '../types/ActionKind';
+import { ActionKind } from '../types/ActionKind';
 import type { EventDTO } from '../types/EventDTO';
 import { hintMap } from '../types/hints';
 @Component({
@@ -171,8 +171,16 @@ export class GameDetailViewComponent implements OnInit {
     const gCounts = countBy(greatestHits, 'kind');
     const dataSeries = this.groupedByGradeByKind.map((e: any) => {
       return {
-        value: Object.values(e[1]),
-        name: e[0],
+        value: [
+          e[1][ActionKind.Attack],
+          e[1][ActionKind.Block],
+          e[1][ActionKind.Def],
+          e[1][ActionKind.Free],
+          e[1][ActionKind.Recieve],
+          e[1][ActionKind.Serve],
+          e[1][ActionKind.Set],
+        ],
+        name: gradDescriptionMap.get(e[0]),
         lineStyle: {
           color: ActionGradeColorMap.get(e[0]),
         },
@@ -190,7 +198,14 @@ export class GameDetailViewComponent implements OnInit {
         show: false,
       } as TitleComponentOption,
       legend: {
-        data: [ActionGrade['#'], ActionGrade['!'], ActionGrade['+'], ActionGrade['-'], ActionGrade['/'], ActionGrade['=']],
+        data: [
+          gradDescriptionMap.get(ActionGrade['#']),
+          gradDescriptionMap.get(ActionGrade['!']),
+          gradDescriptionMap.get(ActionGrade['+']),
+          gradDescriptionMap.get(ActionGrade['/']),
+          gradDescriptionMap.get(ActionGrade['-']),
+          gradDescriptionMap.get(ActionGrade['=']),
+        ],
       },
       radar: {
         // shape: 'circle',
