@@ -13,8 +13,8 @@ import { gradDescriptionMap, grad_options_list, gradePrios } from '../components
 import { kindMap, kinds } from '../components/kind-options';
 import { ActionsService } from '../services/action.service';
 import { SupabaseService } from '../services/supabase.service';
-import { ActionGrade } from '../types/ActionGrade';
-import { ActionKind } from '../types/ActionKind';
+import { ActionGrade, ActionGradeColorMap } from '../types/ActionGrade';
+import type { ActionKind } from '../types/ActionKind';
 import type { EventDTO } from '../types/EventDTO';
 import { hintMap } from '../types/hints';
 @Component({
@@ -125,10 +125,12 @@ export class GameDetailViewComponent implements OnInit {
   groupedByKind: [string, ActionDTO[]][] = [];
   groupedByGrade: [string, ActionDTO[]][] = [];
   groupedByKindByPlayer: any;
-  groupedByKindByGrade: any;
+  // groupedByKindByGrade: [ActionKind | string, { [x in ActionGrade]: number }][] = [];
+  groupedByKindByGrade: any[] = [];
   groupedByKindByGradeAndPlayer: any;
   groupedByPlayer: [string, ActionDTO[]][] = [];
   gradDescriptionMap = gradDescriptionMap;
+  groupedByGradeByKind: any;
   /**
    *
    */
@@ -154,6 +156,7 @@ export class GameDetailViewComponent implements OnInit {
     });
     this.groupedByKindByPlayer = this.groupedByKind.map((e) => [e[0], countBy(e[1], 'player_id.name')]);
     this.groupedByKindByGrade = this.groupedByKind.map((e) => [e[0], countBy(e[1], 'grade')]);
+    this.groupedByGradeByKind = this.groupedByGrade.map((e) => [e[0], countBy(e[1], 'kind')]);
     this.groupedByKindByGradeAndPlayer = Object.entries(
       groupBy(a, (a) => {
         return `${a.kind}_${a.player_id.name}`;
@@ -166,23 +169,20 @@ export class GameDetailViewComponent implements OnInit {
     const greatestHits = a.filter((a) => a.grade === ActionGrade['#']);
     const worstHits = a.filter((a) => a.grade === ActionGrade['=']);
     const gCounts = countBy(greatestHits, 'kind');
-    const alphaASCGoods = [
-      gCounts[ActionKind.Attack],
-      gCounts[ActionKind.Block],
-      gCounts[ActionKind.Def],
-      gCounts[ActionKind.Free],
-      gCounts[ActionKind.Serve],
-      gCounts[ActionKind.Set],
-    ];
+    const dataSeries = this.groupedByGradeByKind.map((e: any) => {
+      return {
+        value: Object.values(e[1]),
+        name: e[0],
+        lineStyle: {
+          color: ActionGradeColorMap.get(e[0]),
+        },
+        itemStyle: {
+          color: ActionGradeColorMap.get(e[0]),
+        },
+      };
+    });
+
     const wCounts = countBy(worstHits, 'kind');
-    const alphaASCBads = [
-      wCounts[ActionKind.Attack],
-      wCounts[ActionKind.Block],
-      wCounts[ActionKind.Def],
-      wCounts[ActionKind.Free],
-      wCounts[ActionKind.Serve],
-      wCounts[ActionKind.Set],
-    ];
 
     this.charts.perfectGradeRadar = {
       title: {
@@ -190,7 +190,7 @@ export class GameDetailViewComponent implements OnInit {
         show: false,
       } as TitleComponentOption,
       legend: {
-        data: ['Perfect', 'Fails'],
+        data: [ActionGrade['#'], ActionGrade['!'], ActionGrade['+'], ActionGrade['-'], ActionGrade['/'], ActionGrade['=']],
       },
       radar: {
         // shape: 'circle',
@@ -203,29 +203,7 @@ export class GameDetailViewComponent implements OnInit {
         {
           name: 'Perfect vs Worst',
           type: 'radar',
-
-          data: [
-            {
-              value: alphaASCGoods,
-              name: 'Perfect',
-              label: {
-                show: true,
-                formatter: (params: any) => params.value,
-              },
-            },
-            {
-              value: alphaASCBads,
-              name: 'Fails',
-              itemStyle: { color: 'red' },
-              lineStyle: {
-                color: 'red',
-              },
-              label: {
-                show: true,
-                formatter: (params: any) => params.value,
-              },
-            },
-          ],
+          data: [...dataSeries],
         },
       ],
     } as any;
