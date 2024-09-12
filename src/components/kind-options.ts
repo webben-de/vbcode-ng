@@ -12,10 +12,10 @@ export const kinds = [
 
 export const kindMap = new Map<ActionKind | string, string>();
 
-kindMap.set(ActionKind.Attack, 'Attack');
+kindMap.set(ActionKind.Attack, 'Angriff');
 kindMap.set(ActionKind.Block, 'Block');
-kindMap.set(ActionKind.Def, 'Def');
-kindMap.set(ActionKind.Free, 'Free');
-kindMap.set(ActionKind.Recieve, 'Recieve');
-kindMap.set(ActionKind.Serve, 'Serve');
-kindMap.set(ActionKind.Set, 'Set');
+kindMap.set(ActionKind.Def, 'Defense');
+kindMap.set(ActionKind.Free, 'Dankeball');
+kindMap.set(ActionKind.Recieve, 'Annahme');
+kindMap.set(ActionKind.Serve, 'Aufschläge');
+kindMap.set(ActionKind.Set, 'Zuspiel');
