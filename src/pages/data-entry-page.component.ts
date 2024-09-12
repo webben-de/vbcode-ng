@@ -130,7 +130,7 @@ type abbMap = {
             <mat-form-field class="w-full ">
               <mat-chip-grid #chipGrid4>
                 @for (item of grad_options; track $index) {
-                <mat-chip-row class="min-w-12" (click)="codeInFG.controls.char.setValue(item); stepper.next()">
+                <mat-chip-row class="min-w-12" (click)="codeInFG.controls.grade.setValue(item); stepper.next()">
                   {{ item.name }}
                 </mat-chip-row>
                 }@empty {
