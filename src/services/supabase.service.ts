@@ -36,7 +36,7 @@ export class SupabaseService {
     return this.supabase.auth.onAuthStateChange(callback);
   }
   signInGoogle() {
-    return this.supabase.auth.signInWithOAuth({ provider: 'google' });
+    return this.supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: '/' } });
   }
   signInOTP(email: string) {
     return this.supabase.auth.signInWithOtp({ email });
