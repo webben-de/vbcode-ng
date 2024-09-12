@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Component, type OnInit, inject } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import type { EChartsOption, TitleComponentOption } from 'echarts';
 import { countBy, groupBy, sortBy } from 'lodash';
 import { NgxEchartsDirective } from 'ngx-echarts';
@@ -17,13 +17,25 @@ import { ActionGrade, ActionGradeColorMap } from '../types/ActionGrade';
 import { ActionKind } from '../types/ActionKind';
 import type { EventDTO } from '../types/EventDTO';
 import { hintMap } from '../types/hints';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { EventsService } from '../services/events.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-game-game-detail-view',
   host: { class: 'flex flex-col p-5 gap-4' },
   standalone: true,
-  imports: [CommonModule, RouterModule, NgxEchartsDirective, MatFormFieldModule, MatSelectModule],
+  imports: [CommonModule, RouterModule, NgxEchartsDirective, MatFormFieldModule, MatSelectModule, MatButtonModule, MatIconModule],
   template: `
-    <h1 class="!text-sm font-medium truncate">{{ game.title }}</h1>
+    <div class="flex justify-between items-center">
+      <h1 class="!text-sm font-medium truncate">{{ game.title }}</h1>
+      <div class="flex gap-4">
+        <button mat-fab [routerLink]="['/dataentry', game.id]"><mat-icon>add</mat-icon></button>
+        @if(game.owner){
+        <button mat-fab (click)="deleteEvent(game.id)"><mat-icon>delete</mat-icon></button>
+        }
+      </div>
+    </div>
     <div class="flex flex-col gap-8 ">
       <mat-form-field>
         <mat-label>Satz:</mat-label>
@@ -100,6 +112,12 @@ export class GameDetailViewComponent implements OnInit {
   activatedRoute = inject(ActivatedRoute);
   supabase = inject(SupabaseService);
   actionsService = inject(ActionsService);
+  eventService = inject(EventsService);
+  router = inject(Router);
+  snack = inject(MatSnackBar);
+  /**
+   *
+   */
   currentSet: string | number | undefined;
   stats = defaults;
   kindS = kindMap;
@@ -275,5 +293,13 @@ export class GameDetailViewComponent implements OnInit {
    */
   async deleteAction(id: number) {
     return await this.actionsService.deleteAction(id);
+  }
+  async deleteEvent(arg0: string) {
+    try {
+      await this.eventService.deleteEvent(arg0);
+      this.router.navigate(['/games']);
+    } catch (error) {
+      this.snack.open('Error deleteing eVent');
+    }
   }
 }

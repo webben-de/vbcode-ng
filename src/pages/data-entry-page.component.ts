@@ -18,6 +18,7 @@ import { EventsService } from '../services/events.service';
 import { SupabaseService } from '../services/supabase.service';
 import type { ActionKind } from '../types/ActionKind';
 import { hintMap } from '../types/hints';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 type PlTyp = {
   id: string;
   trikot: number;
@@ -34,6 +35,7 @@ type abbMap = {
   imports: [
     CommonModule,
     FormsModule,
+    RouterModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatButtonToggleModule,
@@ -172,6 +174,8 @@ export class DataEntryComponent implements OnInit {
   actionService = inject(ActionsService);
   eventService = inject(EventsService);
   snacks = inject(MatSnackBar);
+  router = inject(Router);
+  route = inject(ActivatedRoute);
   /**
    *
    */
@@ -254,5 +258,10 @@ export class DataEntryComponent implements OnInit {
     const e = await this.events;
     if (!e) return;
     if (e[0].id) this.codeInFG.controls.game_id.setValue(e[0].id);
+
+    const paramid = this.route.snapshot.paramMap.get('id');
+    if (paramid) {
+      this.codeInFG.controls.game_id.setValue(paramid);
+    }
   }
 }

@@ -10,14 +10,6 @@ export const TABLENAME_ACTIONS = 'actions';
   providedIn: 'root',
 })
 export class ActionsService {
-  /**
-   *
-   * @param arg0
-   * @returns
-   */
-  async deleteAction(arg0: number) {
-    return (await this.supabase.from(TABLENAME_ACTIONS).delete().eq('id', arg0)).data;
-  }
   supabase = inject(SupabaseService).supabase;
   /**
    *
@@ -27,6 +19,12 @@ export class ActionsService {
   async getActionsOfEvent(game_id: string) {
     return (await this.supabase.from(TABLENAME_ACTIONS).select('*, player_id (*),game_id (*) ').eq('game_id', game_id)).data as ActionDTO[];
   }
+  /**
+   *
+   * @param game_id
+   * @param set
+   * @returns
+   */
   async getActionsOfEventOfSet(game_id: string, set: number) {
     return (await this.supabase.from(TABLENAME_ACTIONS).select('*, player_id (*),game_id (*) ').eq('game_id', game_id).eq('game_set', set)).data as ActionDTO[];
   }
@@ -60,6 +58,14 @@ export class ActionsService {
    */
   async getAcesOfEvent(game_id: string) {
     return (await this.supabase.from(TABLENAME_ACTIONS).select('*').eq('game_id', game_id).eq('kind', ActionKind.Serve).eq('grade', ActionGrade['#'])).data;
+  }
+  /**
+   *
+   * @param arg0
+   * @returns
+   */
+  async deleteAction(arg0: number) {
+    return (await this.supabase.from(TABLENAME_ACTIONS).delete().eq('id', arg0)).data;
   }
   /**
    *
