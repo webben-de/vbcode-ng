@@ -5,11 +5,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import type { EChartsOption } from 'echarts';
-import { countBy, groupBy } from 'lodash';
+import { countBy, groupBy, sortBy } from 'lodash';
 import { NgxEchartsDirective } from 'ngx-echarts';
 import type { ActionDTO } from 'src/types/ActionDTO';
 import { defaults } from '../components/defaults';
-import { grad_options_list } from '../components/grade-options';
+import { grad_options_list, gradePrios } from '../components/grade-options';
 import { kindMap, kinds } from '../components/kind-options';
 import { ActionsService } from '../services/action.service';
 import { SupabaseService } from '../services/supabase.service';
@@ -19,12 +19,12 @@ import type { EventDTO } from '../types/EventDTO';
 import { hintMap } from '../types/hints';
 @Component({
   selector: 'app-game-game-detail-view',
-  host: { class: 'flex flex-col p-2' },
+  host: { class: 'flex flex-col p-5 gap-4' },
   standalone: true,
   imports: [CommonModule, RouterModule, NgxEchartsDirective, MatFormFieldModule, MatSelectModule],
   template: `
-    <h1 class="text-sm truncate">{{ game.title }}</h1>
-    <div class="flex flex-col gap-8 p-5">
+    <h1 class="!text-sm font-medium truncate">{{ game.title }}</h1>
+    <div class="flex flex-col gap-8 ">
       <mat-form-field>
         <mat-label>Satz:</mat-label>
 
@@ -36,16 +36,16 @@ import { hintMap } from '../types/hints';
         </mat-select>
       </mat-form-field>
       <section class="flex flex-wrap gap-16">
-        @for (stat of stats|keyvalue; track $index) {
+        @for (stat of groupedByKind; track $index) {
         <div class="stats shadow flex gap-2">
-          <a class="stat" [routerLink]="[]" fragment="co-{{ stat.key }}">
+          <a class="stat" [routerLink]="[]" fragment="co-{{ stat[0] }}">
             <div class="stat-figure text-primary"></div>
-            <div class="stat-title">{{ kindS.get(stat.key) }}</div>
+            <div class="stat-title">{{ kindS.get(stat[0]) }}</div>
             <div class="stat-value text-primary">
-              {{ stat.value.total }}
+              {{ stat[1].length }}
             </div>
             <div class="stat-desc text-primary">
-              {{ stat.value.total / actions.length | percent }}
+              {{ stat[1].length / actions.length | percent }}
             </div>
           </a>
         </div>
@@ -54,79 +54,44 @@ import { hintMap } from '../types/hints';
           <div echarts [options]="this.charts.perfectGradeRadar" [initOpts]="{ renderer: 'canvas' }" class="w-full h-full"></div>
         </div>
       </section>
-      <section class="flex flex-col gap-4">
-        @for (stat of stats|keyvalue; track $index) {
-        <h5 class="">{{ kindS.get(stat.key) }}</h5>
-        <div class="stats stats-vertical  shadow">
-          <div class="stat">
-            <div class="stat-figure text-primary"></div>
-            <div class="stat-title">Total {{ kindS.get(stat.key) }}</div>
+      <section>
+        <h6>Alle Kontakt nach Bewertung</h6>
+        <div class="stats shadow flex flex-wrap">
+          @for (grade of groupedByGrade; track $index) {
+          <div class="stat w-1/2">
+            <div class="stat-title">{{ grade[0] }}</div>
             <div class="stat-value text-primary">
-              {{ stat.value.total }}
+              {{ grade[1].length }}
             </div>
-          </div>
-        </div>
-
-        <h6>Nach Bewertung</h6>
-        <div class="stats stats-vertical  shadow">
-          @for (grade of grad_options_list; track $index) {
-          <div class="stat">
-            <div class="stat-title">{{ hintMap.get(stat.key)?.get(grade) }}</div>
-            <div class="stat-value text-primary">
-              {{ stat.value.stats[grade] }}
-            </div>
-            @if (stat.value.stats[grade]) {
             <div class="stat-desc text-primary">
-              {{ stat.value.stats[grade] / stat.value.total | percent }}
+              {{ grade[1].length / actions.length | percent }}
             </div>
-            }
           </div>
           }
         </div>
-        @if (stat.value.charts?.gradePie; as pie) {
+        <!-- @if (stat[1].charts?.gradePie; as pie) {
         <div echarts [options]="pie" [initOpts]="{ renderer: 'canvas' }" class="h-40 w-full"></div>
-        }
-        <h6>Anzahl nach Spieler</h6>
-        <div class="stats stats-vertical shadow">
-          @for (item of convertPlayerCountMapToArray(stat.value.by_player); track $index) {
-          <div class="stat">
-            <div class="stat-title">{{ item[0] }}</div>
-            <div class="stat-value text-primary">{{ item[1] }}</div>
-          </div>
-          }
-        </div>
-        @if (stat.value.charts?.playerPie; as pie) {
-        <div echarts [options]="pie" [initOpts]="{ renderer: 'canvas' }" class="h-40 w-full"></div>
-        } }
-        <div class="collapse collapse-arrow bg-base-200">
-          <input type="radio" name="acc-attacks" checked="checked" />
-          <div class="collapse-title text-xl font-medium">Log</div>
-          <div class="collapse-content !pb-20">
-            <section>
-              @for (item of actions; track $index) {
-
-              <div class="chat chat-start">
-                <div class="chat-image avatar">
-                  <div class="w-10 rounded-full"></div>
-                </div>
-                <div class="chat-header">
-                  {{ item.player_id.name }}
-                  <time class="text-xs opacity-50">{{ item.created_at | date : 'short' }}</time>
-                </div>
-                <div class="dropdown w-full">
-                  <div class="chat-bubble" role="button" [tabindex]="$index">{{ item.kind }} - {{ item.character }} - {{ item.grade }}</div>
-                  <ul [tabindex]="$index" class="dropdown-content menu bg-base-100 rounded-box z-[5000] w-52 p-2 shadow">
-                    <li (click)="deleteAction(item.id)"><a>Delete this</a></li>
-                  </ul>
-                </div>
-              </div>
-              }
-            </section>
-          </div>
-        </div>
+        } -->
       </section>
-
-      <hr />
+      <section>
+        <h6>Alle Kontakt nach Spieler</h6>
+        <div class="stats shadow flex flex-wrap">
+          @for (item of groupedByPlayer; track $index) {
+          <div class="stat w-1/2">
+            <div class="stat-title">{{ item[0] }}</div>
+            <div class="stat-value text-primary">
+              {{ item[1].length }}
+            </div>
+            <div class="stat-desc text-primary">
+              {{ item[1].length / actions.length | percent }}
+            </div>
+          </div>
+          }
+        </div>
+        <!-- @if (stat[1].charts?.gradePie; as pie) {
+        <div echarts [options]="pie" [initOpts]="{ renderer: 'canvas' }" class="h-40 w-full"></div>
+        } -->
+      </section>
     </div>
   `,
 })
@@ -155,6 +120,12 @@ export class GameDetailViewComponent implements OnInit {
   playerPie: EChartsOption = {};
   sets: number[] = [1];
   hintMap = hintMap;
+  groupedByKind: [string, ActionDTO[]][] = [];
+  groupedByGrade: [string, ActionDTO[]][] = [];
+  groupedByKindByPlayer: any;
+  groupedByKindByGrade: any;
+  groupedByKindByGradeAndPlayer: any;
+  groupedByPlayer: [string, ActionDTO[]][] = [];
   /**
    *
    */
@@ -173,23 +144,21 @@ export class GameDetailViewComponent implements OnInit {
   private async updateStats(a: ActionDTO[], game: EventDTO) {
     this.game = game;
     this.actions = a;
-
-    this.generateStats(a, ActionKind.Attack);
-    this.generateStats(a, ActionKind.Set);
-    this.generateStats(a, ActionKind.Block);
-    this.generateStats(a, ActionKind.Def);
-    this.generateStats(a, ActionKind.Free);
-    this.generateStats(a, ActionKind.Recieve);
-    this.generateStats(a, ActionKind.Serve);
-    this.aggregateGrade(a);
+    this.groupedByPlayer = sortBy(Object.entries(groupBy(a, 'player_id.name')), (a) => a[1]).reverse();
+    this.groupedByKind = Object.entries(groupBy(a, 'kind'));
+    this.groupedByGrade = sortBy(Object.entries(groupBy(a, 'grade')), (a) => {
+      return gradePrios.get(a[0]) || 0;
+    });
+    this.groupedByKindByPlayer = this.groupedByKind.map((e) => [e[0], countBy(e[1], 'player_id.name')]);
+    this.groupedByKindByGrade = this.groupedByKind.map((e) => [e[0], countBy(e[1], 'grade')]);
+    this.groupedByKindByGradeAndPlayer = Object.entries(
+      groupBy(a, (a) => {
+        return `${a.kind}_${a.player_id.name}`;
+      })
+    ).map((e) => [e[0], groupBy(e[1], 'grade')]);
     this.generateGradeRadar();
   }
-  aggregateGrade(a: ActionDTO[]) {
-    return {
-      best_actions: a.filter((a) => a.grade === ActionGrade['#']),
-      worst_actions: a.filter((a) => a.grade === ActionGrade['=']),
-    };
-  }
+
   generateGradeRadar(a: ActionDTO[] = this.actions) {
     const greatestHits = a.filter((a) => a.grade === ActionGrade['#']);
     const worstHits = a.filter((a) => a.grade === ActionGrade['=']);
@@ -260,6 +229,10 @@ export class GameDetailViewComponent implements OnInit {
 
   private generateStats(a: ActionDTO[], kind: ActionKind) {
     if (!this.stats[kind]) return;
+
+    // ----
+    // const groupedByKindByPlayerByGrade = groupedByKindByPlayerE.map((e) => [e[0], countBy(e[1][1], 'grade')]);
+    // const groupedByKindByPlayerE = Object.entries(groupedByKindByPlayer);
 
     this.stats[kind].total = a.filter((a) => a.kind === kind).length;
     // biome-ignore lint/complexity/noForEach: <explanation>
