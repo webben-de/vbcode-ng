@@ -35,7 +35,9 @@ export class SupabaseService {
   authChanges(callback: (event: AuthChangeEvent, session: Session | null) => void) {
     return this.supabase.auth.onAuthStateChange(callback);
   }
-
+  signInGoogle() {
+    return this.supabase.auth.signInWithOAuth({ provider: 'google' });
+  }
   signInOTP(email: string) {
     return this.supabase.auth.signInWithOtp({ email });
   }

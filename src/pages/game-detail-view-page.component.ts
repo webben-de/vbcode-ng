@@ -4,12 +4,12 @@ import { Component, type OnInit, inject } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import type { EChartsOption } from 'echarts';
+import type { EChartsOption, TitleComponentOption } from 'echarts';
 import { countBy, groupBy, sortBy } from 'lodash';
 import { NgxEchartsDirective } from 'ngx-echarts';
 import type { ActionDTO } from 'src/types/ActionDTO';
 import { defaults } from '../components/defaults';
-import { grad_options_list, gradePrios } from '../components/grade-options';
+import { gradDescriptionMap, grad_options_list, gradePrios } from '../components/grade-options';
 import { kindMap, kinds } from '../components/kind-options';
 import { ActionsService } from '../services/action.service';
 import { SupabaseService } from '../services/supabase.service';
@@ -35,10 +35,11 @@ import { hintMap } from '../types/hints';
           }
         </mat-select>
       </mat-form-field>
-      <section class="flex flex-wrap gap-16">
-        @for (stat of groupedByKind; track $index) {
-        <div class="stats shadow flex gap-2">
-          <a class="stat" [routerLink]="[]" fragment="co-{{ stat[0] }}">
+      <section class=" ">
+        <h6>Nach Aktionsart</h6>
+        <div class="stats shadow flex flex-wrap">
+          @for (stat of groupedByKind; track $index) {
+          <a class="stat w-1/2" [routerLink]="[]" fragment="co-{{ stat[0] }}">
             <div class="stat-figure text-primary"></div>
             <div class="stat-title">{{ kindS.get(stat[0]) }}</div>
             <div class="stat-value text-primary">
@@ -48,8 +49,8 @@ import { hintMap } from '../types/hints';
               {{ stat[1].length / actions.length | percent }}
             </div>
           </a>
+          }
         </div>
-        }
         <div class="flex w-full">
           <div echarts [options]="this.charts.perfectGradeRadar" [initOpts]="{ renderer: 'canvas' }" class="w-full h-full"></div>
         </div>
@@ -59,7 +60,7 @@ import { hintMap } from '../types/hints';
         <div class="stats shadow flex flex-wrap">
           @for (grade of groupedByGrade; track $index) {
           <div class="stat w-1/2">
-            <div class="stat-title">{{ grade[0] }}</div>
+            <div class="stat-title">{{ gradDescriptionMap.get(grade[0]) }}</div>
             <div class="stat-value text-primary">
               {{ grade[1].length }}
             </div>
@@ -96,6 +97,9 @@ import { hintMap } from '../types/hints';
   `,
 })
 export class GameDetailViewComponent implements OnInit {
+  activatedRoute = inject(ActivatedRoute);
+  supabase = inject(SupabaseService);
+  actionsService = inject(ActionsService);
   currentSet: string | number | undefined;
   stats = defaults;
   kindS = kindMap;
@@ -106,9 +110,7 @@ export class GameDetailViewComponent implements OnInit {
     perfectGradeRadar: {},
     worstGradeRadar: {},
   };
-  activatedRoute = inject(ActivatedRoute);
-  supabase = inject(SupabaseService);
-  actionsService = inject(ActionsService);
+
   /**
    *
    */
@@ -126,6 +128,7 @@ export class GameDetailViewComponent implements OnInit {
   groupedByKindByGrade: any;
   groupedByKindByGradeAndPlayer: any;
   groupedByPlayer: [string, ActionDTO[]][] = [];
+  gradDescriptionMap = gradDescriptionMap;
   /**
    *
    */
@@ -184,9 +187,10 @@ export class GameDetailViewComponent implements OnInit {
     this.charts.perfectGradeRadar = {
       title: {
         text: 'Perfect/Failures ',
-      },
+        show: false,
+      } as TitleComponentOption,
       legend: {
-        data: ['Perfect Grade', 'Failures'],
+        data: ['Perfect', 'Fails'],
       },
       radar: {
         // shape: 'circle',
@@ -203,7 +207,7 @@ export class GameDetailViewComponent implements OnInit {
           data: [
             {
               value: alphaASCGoods,
-              name: 'Perfect Grade',
+              name: 'Perfect',
               label: {
                 show: true,
                 formatter: (params: any) => params.value,
@@ -211,7 +215,7 @@ export class GameDetailViewComponent implements OnInit {
             },
             {
               value: alphaASCBads,
-              name: 'Failures',
+              name: 'Fails',
               itemStyle: { color: 'red' },
               lineStyle: {
                 color: 'red',
@@ -227,29 +231,6 @@ export class GameDetailViewComponent implements OnInit {
     } as any;
   }
 
-  private generateStats(a: ActionDTO[], kind: ActionKind) {
-    if (!this.stats[kind]) return;
-
-    // ----
-    // const groupedByKindByPlayerByGrade = groupedByKindByPlayerE.map((e) => [e[0], countBy(e[1][1], 'grade')]);
-    // const groupedByKindByPlayerE = Object.entries(groupedByKindByPlayer);
-
-    this.stats[kind].total = a.filter((a) => a.kind === kind).length;
-    // biome-ignore lint/complexity/noForEach: <explanation>
-    a.filter((a) => a.kind === kind)
-      .map((a) => a.player_id.name)
-      .forEach((player) => {
-        const v = this.stats[kind].by_player.get(player);
-        if (v) this.stats[kind].by_player.set(player, v + 1);
-        else this.stats[kind].by_player.set(player, 1);
-      });
-
-    // biome-ignore lint/complexity/noForEach: <explanation>
-    grad_options_list.forEach(({ name: grade }) => {
-      this.stats[kind].stats[grade] = a.filter((a) => a.grade === grade && a.kind === kind).length;
-    });
-    this.updateCharts(kind);
-  }
   convertPlayerCountMapToArray(map: Map<any, number>) {
     return Array.from(map.entries()).sort((a, b) => b[1] - a[1]);
   }

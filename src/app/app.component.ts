@@ -1,12 +1,12 @@
 import { Component, type OnInit, inject } from '@angular/core';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { Router, RouterModule } from '@angular/router';
 import { initFlowbite } from 'flowbite';
 import { SupabaseService } from '../services/supabase.service';
 import { AuthComponent } from './auth.component';
-import { MatListModule } from '@angular/material/list';
 
 @Component({
   standalone: true,
@@ -16,6 +16,9 @@ import { MatListModule } from '@angular/material/list';
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit {
+  logout() {
+    this.supabase.signOut();
+  }
   supabase = inject(SupabaseService);
   router = inject(Router);
 
