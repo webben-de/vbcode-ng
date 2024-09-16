@@ -23,11 +23,7 @@ import { SupabaseService } from '../services/supabase.service';
 import type { ActionKind } from '../types/ActionKind';
 import type { PlayerDTO } from '../types/PlayerDTO';
 import { hintMap } from '../types/hints';
-type PlTyp = {
-  id: string;
-  trikot: number;
-  name: string;
-};
+
 type abbMap = {
   abbr: string;
   name: string;
@@ -62,7 +58,7 @@ type abbMap = {
         <div class="flex gap-2 justify-between">
           <div class="flex items-center">
             <mat-form-field>
-              <mat-select formControlName="game_id" #game>
+              <mat-select formControlName="game_id" #game (valueChange)="changeEvent($event)">
                 @for (item of events|async; track $index) {
                 <mat-option [value]="item.id" selected>
                   {{ item?.title }}
@@ -81,7 +77,14 @@ type abbMap = {
         </div>
         <mat-vertical-stepper [linear]="false" #stepper>
           <mat-step [hasError]="!codeInFG.controls.player_id.value">
-            <ng-template matStepLabel>Playername: {{ codeInFG.controls.player_id.value?.name }}</ng-template>
+            <ng-template matStepLabel>
+              <div class="flex">
+                <span>Spieler:</span>
+                <span>{{ codeInFG.controls.player_id.value?.name }}</span>
+                <span>({{ codeInFG.controls.player_id.value?.trikot }})</span>
+                <span>({{ codeInFG.controls.player_id.value?.roles }})</span>
+              </div>
+            </ng-template>
             <div class="flex flex-col gap-4">
               <mat-slide-toggle #toggleName>{{ toggleName.checked ? 'Trikot' : 'Name' }}</mat-slide-toggle>
               <mat-form-field class="w-full">
@@ -210,7 +213,7 @@ export class DataEntryComponent implements OnInit {
   codeInFG = new FormGroup({
     game_id: new FormControl<string>('', Validators.required),
     game_set: new FormControl<number>(1, Validators.required),
-    player_id: new FormControl<PlTyp | null>(null, Validators.required),
+    player_id: new FormControl<PlayerDTO | null>(null, Validators.required),
     kind: new FormControl<ActionKind | string | null>(null, Validators.required),
     char: new FormControl<abbMap | null>(null, Validators.required),
     grade: new FormControl<abbMap | null>(null, Validators.required),
@@ -270,8 +273,17 @@ export class DataEntryComponent implements OnInit {
   async ngOnInit() {
     const e = await this.events;
     if (!e) return;
-    if (e[0].id) this.codeInFG.controls.game_id.setValue(e[0].id);
-    const event = await this.eventService.getEvent(e[0].id);
+    if (e[0].id) {
+      this.codeInFG.controls.game_id.setValue(e[0].id);
+      const event = await this.eventService.getEvent(e[0].id);
+      const players = await this.playerService.getPlayerList(event?.attendees);
+      if (players) {
+        this.player = players;
+      }
+    }
+  }
+  async changeEvent($event: any) {
+    const event = await this.eventService.getEvent($event);
     const players = await this.playerService.getPlayerList(event?.attendees);
     if (players) {
       this.player = players;

@@ -9,5 +9,5 @@ export interface createEventDTO {
   visibility: 'Public' | 'Private';
 }
 export interface EventDTO extends createEventDTO {
-  id: string;
+  id?: string;
 }

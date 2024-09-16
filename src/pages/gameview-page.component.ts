@@ -141,6 +141,7 @@ export class GameViewComponent implements OnInit {
   async ngOnInit() {
     this.events = this.eventsService.getEvents();
     const firstId = (await this.events)[0].id;
+    if (!firstId) return;
     this.gameF.controls.game_id.setValue(firstId);
     this.actions = this.actionsService.getActionsOfEvent(firstId);
     await this.refreshHits();
