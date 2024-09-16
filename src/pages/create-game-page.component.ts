@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, type OnInit, inject } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -12,6 +12,7 @@ import { PlayerService } from '../services/player.service';
 import { TeamsService } from '../services/teams.service';
 import type { EventDTO, createEventDTO } from '../types/EventDTO';
 import type { PlayerDTO } from '../types/PlayerDTO';
+import { SupabaseService } from '../services/supabase.service';
 
 @Component({
   selector: 'app-create-game-page',
@@ -29,13 +30,10 @@ import type { PlayerDTO } from '../types/PlayerDTO';
           <mat-label>Date</mat-label>
           <input matInput type="date" formControlName="date" placeholder="Friendship" />
         </mat-form-field>
-        <mat-form-field>
-          <mat-label>Gegner</mat-label>
-          <input matInput placeholder="Gegener" formControlName="opponent" />
-        </mat-form-field>
+
         <mat-form-field class="w-full">
           <mat-label>Home</mat-label>
-          <mat-select formControlName="home_team" (valueChange)="OnHomeTeamChange()" #homeTeam>
+          <mat-select formControlName="home_team" (valueChange)="OnHomeTeamChange($event)" #homeTeam>
             <mat-option *ngFor="let item of teams | async" [value]="item.id">
               {{ item.name }}
             </mat-option>
@@ -44,6 +42,20 @@ import type { PlayerDTO } from '../types/PlayerDTO';
             <a [routerLink]="['/teams', homeTeam.value]"> Edit this team </a>
           </mat-hint>
         </mat-form-field>
+        <h5>Start Rotation</h5>
+        <div class="grid grid-cols-3">
+          @for(a of createGameForm.controls.home_team_start_rotation.controls ; track $index){
+
+          <mat-form-field>
+            <mat-label>{{ $index + 1 }}</mat-label>
+            <mat-select [formControl]="a">
+              @for (item of attendeesOptions; track $index) {
+              <mat-option [value]="item?.id"> {{ item?.trikot }} - {{ item?.name }} </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          }
+        </div>
         <mat-form-field class="w-full">
           <mat-label>Away</mat-label>
           <mat-select formControlName="away_team">
@@ -54,11 +66,12 @@ import type { PlayerDTO } from '../types/PlayerDTO';
         </mat-form-field>
         <mat-form-field class="w-full">
           <mat-label>Attendees</mat-label>
-          <mat-select placeholder="Players" formControlName="attendees" [multiple]="true">
+          <mat-select placeholder="Players" formControlName="attendees" [multiple]="true" #attendes>
             <mat-option *ngFor="let item of attendeesOptions" [value]="item?.id"> {{ item?.name }} ({{ item?.trikot }}) </mat-option>
           </mat-select>
         </mat-form-field>
         <button mat-button [type]="'submit'">Submit</button>
+        <pre><code>{{this.createGameForm}}</code></pre>
       </form>
       <hr />
       <p><a [routerLink]="['/games']">See all your games here</a></p>
@@ -70,6 +83,7 @@ export class CreateGamePageComponent implements OnInit {
   router = inject(Router);
   snack = inject(MatSnackBar);
   eventsService = inject(EventsService);
+  supabase = inject(SupabaseService);
   playerService = inject(PlayerService);
   teamService = inject(TeamsService);
   teams = this.teamService.getTeams();
@@ -80,9 +94,25 @@ export class CreateGamePageComponent implements OnInit {
     title: new FormControl<string>('', Validators.required),
     date: new FormControl<Date>(new Date(), Validators.required),
     attendees: new FormControl<string[]>([]),
-    home_team: new FormControl<string>(''),
-    away_team: new FormControl<string>(''),
-    owner: new FormControl<string>(''),
+    home_team: new FormControl<string | undefined>(undefined),
+    home_team_start_rotation: new FormArray([
+      new FormControl<string | null>(null),
+      new FormControl<string | null>(null),
+      new FormControl<string | null>(null),
+      new FormControl<string | null>(null),
+      new FormControl<string | null>(null),
+      new FormControl<string | null>(null),
+    ]),
+    away_team_start_rotation: new FormArray([
+      new FormControl<string | null>(null),
+      new FormControl<string | null>(null),
+      new FormControl<string | null>(null),
+      new FormControl<string | null>(null),
+      new FormControl<string | null>(null),
+      new FormControl<string | null>(null),
+    ]),
+    away_team: new FormControl<string | undefined>(undefined),
+    owner: new FormControl<string>(this.supabase.session?.user.id!),
     shared_with: new FormControl<string[]>([]),
     visibility: new FormControl<'Public' | 'Private'>('Private'),
   });
@@ -90,32 +120,35 @@ export class CreateGamePageComponent implements OnInit {
    *
    */
   async createGame() {
-    const payload = this.createGameForm.value as createEventDTO;
+    const payload = this.createGameForm.value as createEventDTO | EventDTO;
     try {
       const event = await this.eventsService.createEvent(payload);
-      this.createGameForm.reset();
+      // this.createGameForm.reset();
       this.snack
         .open('Event create', 'open', { duration: 5000 })
         .onAction()
         .subscribe(() => {
-          this.router.navigate(['/report', 'details', event.id]);
+          // this.router.navigate(['/report', 'details', event[0]?.id]);
         });
     } catch (error) {
       // biome-ignore lint/style/useTemplate: <explanation>
       this.snack.open('Error creating Event:' + error, 'OK', { duration: 2000 });
     }
   }
-  async OnHomeTeamChange() {
-    const homeTeam = this.createGameForm.get('home_team')?.value;
-    if (homeTeam) {
-      const team = await this.teamService.getTeam(homeTeam);
-      this.attendeesOptions = (await Promise.all(team.players.map(async (id) => await this.playerService.getPlayer(id)))).map((d) => d) || [];
-    }
+  /**
+   *
+   */
+  async OnHomeTeamChange($event?: any) {
+    const team = await this.teamService.getTeam($event);
+    this.attendeesOptions = await this.playerService.getPlayerList(team.players);
   }
+  /**
+   *
+   */
   ngOnInit(): void {
     this.route.data.subscribe((data) => {
       if (data['game']) this.createGameForm.patchValue(data['game'] as EventDTO);
-      this.OnHomeTeamChange();
+      this.OnHomeTeamChange(this.createGameForm.controls.home_team.value);
     });
   }
 }

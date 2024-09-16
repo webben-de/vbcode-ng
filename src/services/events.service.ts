@@ -31,7 +31,17 @@ export class EventsService {
    * @param opts
    * @returns
    */
-  async createEvent(opts: createEventDTO) {
-    return await this.supabase.from('events').upsert(opts);
+  async createEvent(opts: EventDTO) {
+    if (opts?.id === null) opts.id = undefined;
+    try {
+      if (!opts.id) {
+        return await this.supabase.from('events').insert(opts);
+      } else {
+        return await this.supabase.from('events').upsert(opts);
+      }
+    } catch (error) {
+      console.error(error);
+      throw new Error(error as string);
+    }
   }
 }
