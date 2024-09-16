@@ -1,14 +1,15 @@
 import { inject } from '@angular/core';
-import { Router, type ActivatedRouteSnapshot, type CanActivateFn, type Route } from '@angular/router';
+import { type ActivatedRouteSnapshot, type CanActivateFn, type Route, Router } from '@angular/router';
 import { CreateGamePageComponent } from '../pages/create-game-page.component';
+import { CreateTeamPageComponent } from '../pages/create-team-page.component';
 import { DataEntryComponent } from '../pages/data-entry-page.component';
-import { GameDetailViewComponent } from '../pages/game-detail-view-page.component';
 import { GamesListPageComponent } from '../pages/games-list-page.component';
 import { GameViewComponent } from '../pages/gameview-page.component';
 import { ActionsService } from '../services/action.service';
 import { EventsService } from '../services/events.service';
-import { AppComponent } from './app.component';
 import { SupabaseService } from '../services/supabase.service';
+import { TeamsService } from '../services/teams.service';
+import { AppComponent } from './app.component';
 import { AuthComponent } from './auth.component';
 
 export const appRoutes: Route[] = [
@@ -19,13 +20,16 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'report/details/:id',
-    component: GameDetailViewComponent,
+    component: GameViewComponent,
     resolve: {
       actions: actionResolver(),
       game: eventResolver(),
     },
   },
   { path: 'games/create', component: CreateGamePageComponent, canActivate: [authenticationGuard()] },
+  { path: 'edit-game/:id', component: CreateGamePageComponent, resolve: { game: eventResolver() } },
+  { path: 'teams', component: CreateTeamPageComponent },
+  { path: 'teams/:id', component: CreateTeamPageComponent, resolve: { team: teamResolver() } },
   { path: 'games', component: GamesListPageComponent },
   { path: 'dataentry/:id', component: DataEntryComponent, canActivate: [authenticationGuard()] },
   { path: 'dataentry', component: DataEntryComponent, canActivate: [authenticationGuard()] },
@@ -38,6 +42,13 @@ function eventResolver() {
     const id = route.paramMap.get('id');
     if (!id) return;
     return inject(EventsService).getEvent(id);
+  };
+}
+function teamResolver() {
+  return (route: ActivatedRouteSnapshot) => {
+    const id = route.paramMap.get('id');
+    if (!id) return;
+    return inject(TeamsService).getTeam(id);
   };
 }
 

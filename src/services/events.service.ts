@@ -16,9 +16,8 @@ export class EventsService {
    * @returns
    */
   async getEvent(id: string) {
-    const data = (await this.supabase.from('events').select('*').eq('id', id)).data;
-    if (data && data?.length > 0) return data[0] as EventDTO;
-    return {};
+    const data = (await this.supabase.from('events').select('*').eq('id', id).limit(1).single()).data;
+    return data;
   }
   /**
    *
@@ -33,6 +32,6 @@ export class EventsService {
    * @returns
    */
   async createEvent(opts: createEventDTO) {
-    return ((await this.supabase.from('events').insert(opts).select()).data as EventDTO[])[0];
+    return await this.supabase.from('events').upsert(opts);
   }
 }

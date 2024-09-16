@@ -1,10 +1,14 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { CommonModule } from '@angular/common';
 import { Component, type OnInit, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import type { EChartsOption, TitleComponentOption } from 'echarts';
+import jsPDF from 'jspdf';
 import { countBy, groupBy, sortBy } from 'lodash';
 import { NgxEchartsDirective } from 'ngx-echarts';
 import type { ActionDTO } from 'src/types/ActionDTO';
@@ -12,15 +16,12 @@ import { defaults } from '../components/defaults';
 import { gradDescriptionMap, grad_options_list, gradePrios } from '../components/grade-options';
 import { kindMap, kinds } from '../components/kind-options';
 import { ActionsService } from '../services/action.service';
+import { EventsService } from '../services/events.service';
 import { SupabaseService } from '../services/supabase.service';
 import { ActionGrade, ActionGradeColorMap } from '../types/ActionGrade';
 import { ActionKind } from '../types/ActionKind';
 import type { EventDTO } from '../types/EventDTO';
 import { hintMap } from '../types/hints';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { EventsService } from '../services/events.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-game-game-detail-view',
   host: { class: 'flex flex-col p-5 gap-4' },
@@ -36,7 +37,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
         }
       </div>
     </div>
-    <div class="flex flex-col gap-8 ">
+    <div class="flex flex-col gap-8 " id="export">
       <mat-form-field>
         <mat-label>Satz:</mat-label>
 
@@ -105,10 +106,22 @@ import { MatSnackBar } from '@angular/material/snack-bar';
         <div echarts [options]="pie" [initOpts]="{ renderer: 'canvas' }" class="h-40 w-full"></div>
         } -->
       </section>
+      <!-- <button mat-raised-button (click)="export()">Export</button> -->
     </div>
   `,
 })
 export class GameDetailViewComponent implements OnInit {
+  /**
+   * create a pdf of the current view
+   */
+  async export() {
+    const pdf = new jsPDF();
+    const element = document.getElementById('export');
+    if (element) {
+      const pdfexport = await pdf.html(element?.innerHTML).save('test.pdf');
+      console.log(pdfexport);
+    }
+  }
   activatedRoute = inject(ActivatedRoute);
   supabase = inject(SupabaseService);
   actionsService = inject(ActionsService);
@@ -177,7 +190,7 @@ export class GameDetailViewComponent implements OnInit {
     this.groupedByGradeByKind = this.groupedByGrade.map((e) => [e[0], countBy(e[1], 'kind')]);
     this.groupedByKindByGradeAndPlayer = Object.entries(
       groupBy(a, (a) => {
-        return `${a.kind}_${a.player_id.name}`;
+        return `${a.kind}_${a.player_id?.name}`;
       })
     ).map((e) => [e[0], groupBy(e[1], 'grade')]);
     this.generateGradeRadar();
