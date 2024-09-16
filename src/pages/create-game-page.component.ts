@@ -5,12 +5,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { Router, RouterModule } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { EventsService } from '../services/events.service';
 import { PlayerService } from '../services/player.service';
-import { SupabaseService } from '../services/supabase.service';
+import { TeamsService } from '../services/teams.service';
 import type { EventDTO, createEventDTO } from '../types/EventDTO';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import type { PlayerDTO } from '../types/PlayerDTO';
 
 @Component({
   selector: 'app-create-game-page',
@@ -33,9 +34,28 @@ import { MatSnackBar } from '@angular/material/snack-bar';
           <input matInput placeholder="Gegener" formControlName="opponent" />
         </mat-form-field>
         <mat-form-field class="w-full">
+          <mat-label>Home</mat-label>
+          <mat-select formControlName="home_team" (valueChange)="OnHomeTeamChange()" #homeTeam>
+            <mat-option *ngFor="let item of teams | async" [value]="item.id">
+              {{ item.name }}
+            </mat-option>
+          </mat-select>
+          <mat-hint>
+            <a [routerLink]="['/teams', homeTeam.value]"> Edit this team </a>
+          </mat-hint>
+        </mat-form-field>
+        <mat-form-field class="w-full">
+          <mat-label>Away</mat-label>
+          <mat-select formControlName="away_team">
+            <mat-option *ngFor="let item of teams | async" [value]="item.id">
+              {{ item.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="w-full">
           <mat-label>Attendees</mat-label>
           <mat-select placeholder="Players" formControlName="attendees" [multiple]="true">
-            <mat-option *ngFor="let item of players | async" [value]="item.id"> {{ item.name }} ({{ item.trikot }}) </mat-option>
+            <mat-option *ngFor="let item of attendeesOptions" [value]="item?.id"> {{ item?.name }} ({{ item?.trikot }}) </mat-option>
           </mat-select>
         </mat-form-field>
         <button mat-button [type]="'submit'">Submit</button>
@@ -46,22 +66,25 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   `,
 })
 export class CreateGamePageComponent implements OnInit {
-  snack = inject(MatSnackBar);
+  route = inject(ActivatedRoute);
   router = inject(Router);
+  snack = inject(MatSnackBar);
   eventsService = inject(EventsService);
   playerService = inject(PlayerService);
-  supa = inject(SupabaseService);
-  /**
-   *
-   */
+  teamService = inject(TeamsService);
+  teams = this.teamService.getTeams();
   players = this.playerService.getPlayers();
+  attendeesOptions: (PlayerDTO | null)[] = [];
   createGameForm = new FormGroup({
-    // id: new FormControl<string | undefined>(undefined),
+    id: new FormControl<string | undefined>(undefined),
     title: new FormControl<string>('', Validators.required),
     date: new FormControl<Date>(new Date(), Validators.required),
     attendees: new FormControl<string[]>([]),
-    owner: new FormControl<string | null>(null, Validators.required),
-    opponent: new FormControl<string | null>(null, Validators.required),
+    home_team: new FormControl<string>(''),
+    away_team: new FormControl<string>(''),
+    owner: new FormControl<string>(''),
+    shared_with: new FormControl<string[]>([]),
+    visibility: new FormControl<'Public' | 'Private'>('Private'),
   });
   /**
    *
@@ -78,11 +101,21 @@ export class CreateGamePageComponent implements OnInit {
           this.router.navigate(['/report', 'details', event.id]);
         });
     } catch (error) {
+      // biome-ignore lint/style/useTemplate: <explanation>
       this.snack.open('Error creating Event:' + error, 'OK', { duration: 2000 });
     }
   }
-
+  async OnHomeTeamChange() {
+    const homeTeam = this.createGameForm.get('home_team')?.value;
+    if (homeTeam) {
+      const team = await this.teamService.getTeam(homeTeam);
+      this.attendeesOptions = (await Promise.all(team.players.map(async (id) => await this.playerService.getPlayer(id)))).map((d) => d) || [];
+    }
+  }
   ngOnInit(): void {
-    if (this.supa._session) this.createGameForm.controls.owner.setValue(this.supa._session.user.id);
+    this.route.data.subscribe((data) => {
+      if (data['game']) this.createGameForm.patchValue(data['game'] as EventDTO);
+      this.OnHomeTeamChange();
+    });
   }
 }

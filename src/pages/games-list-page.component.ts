@@ -1,15 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, type OnInit, inject } from '@angular/core';
-import { MatListModule } from '@angular/material/list';
-import { EventsService } from '../services/events.service';
-import { RouterModule } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
+import { Component, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { RouterLink } from '@angular/router';
+import { EventsService } from '../services/events.service';
 
 @Component({
   selector: 'app-game-list-page',
   standalone: true,
-  imports: [MatListModule, CommonModule, RouterModule, MatButtonModule, MatIconModule],
+  imports: [MatListModule, CommonModule, RouterLink, MatIconModule],
   template: `
     <h2>Your Events</h2>
     <div class="flex flex-col">
@@ -35,8 +34,7 @@ import { MatIconModule } from '@angular/material/icon';
     </div>
   `,
 })
-export class GamesListPageComponent implements OnInit {
+export class GamesListPageComponent {
   eventsService = inject(EventsService);
   events = this.eventsService.getEvents();
-  ngOnInit(): void {}
 }

@@ -6,19 +6,23 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { type MatStepper, MatStepperModule } from '@angular/material/stepper';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { grad_options_list } from '../components/grade-options';
 import { kindMap } from '../components/kind-options';
 import { ActionsService } from '../services/action.service';
 import { EventsService } from '../services/events.service';
+import { PlayerService } from '../services/player.service';
 import { SupabaseService } from '../services/supabase.service';
 import type { ActionKind } from '../types/ActionKind';
+import type { PlayerDTO } from '../types/PlayerDTO';
 import { hintMap } from '../types/hints';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 type PlTyp = {
   id: string;
   trikot: number;
@@ -42,26 +46,34 @@ type abbMap = {
     MatButtonModule,
     MatDatepickerModule,
     MatInputModule,
+    MatSlideToggleModule,
     MatSnackBarModule,
     MatRadioModule,
     MatSelectModule,
     CommonModule,
     MatStepperModule,
     MatChipsModule,
+    MatIconModule,
+    RouterModule,
   ],
   template: `
     <div class="flex flex-col p-5">
       <form action="" [formGroup]="codeInFG" class="flex-col w-full" (submit)="submit()">
         <div class="flex gap-2 justify-between">
-          <mat-form-field>
-            <mat-select formControlName="game_id">
-              @for (item of events|async; track $index) {
-              <mat-option [value]="item.id" selected>
-                {{ item.title }}
-              </mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
+          <div class="flex items-center">
+            <mat-form-field>
+              <mat-select formControlName="game_id" #game>
+                @for (item of events|async; track $index) {
+                <mat-option [value]="item.id" selected>
+                  {{ item?.title }}
+                </mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <a mat-icon-button [routerLink]="['/edit-game', game.value]" routerLinkActive="router-link-active">
+              <mat-icon>edit</mat-icon>
+            </a>
+          </div>
           <mat-form-field>
             <mat-label>Satz</mat-label>
             <input matInput type="number" formControlName="game_set" placeholder="Satz" value="1" />
@@ -70,13 +82,13 @@ type abbMap = {
         <mat-vertical-stepper [linear]="false" #stepper>
           <mat-step [hasError]="!codeInFG.controls.player_id.value">
             <ng-template matStepLabel>Playername: {{ codeInFG.controls.player_id.value?.name }}</ng-template>
-
-            <div class="flex flex-col">
+            <div class="flex flex-col gap-4">
+              <mat-slide-toggle #toggleName>{{ toggleName.checked ? 'Trikot' : 'Name' }}</mat-slide-toggle>
               <mat-form-field class="w-full">
                 <mat-chip-grid #chipGrid>
-                  @for (item of player|async; track $index) {
+                  @for (item of player; track $index) {
                   <mat-chip-row class="min-w-12" (click)="codeInFG.controls.player_id.setValue(item); stepper.next()">
-                    {{ item.trikot }}
+                    {{ toggleName.checked ? item.name : item.trikot }}
                   </mat-chip-row>
                   }@empty {
                   <mat-chip-row>x </mat-chip-row>
@@ -183,7 +195,7 @@ export class DataEntryComponent implements OnInit {
   /**
    *
    */
-  player = this.supabase.getPlayers();
+  player: PlayerDTO[] = [];
   events = this.eventService.getEvents();
   actions = this.actionService.getActions();
   /**
@@ -224,6 +236,7 @@ export class DataEntryComponent implements OnInit {
    *
    */
   grad_options: abbMap[] = grad_options_list;
+  playerService = inject(PlayerService);
   /**
    *
    */
@@ -258,10 +271,10 @@ export class DataEntryComponent implements OnInit {
     const e = await this.events;
     if (!e) return;
     if (e[0].id) this.codeInFG.controls.game_id.setValue(e[0].id);
-
-    const paramid = this.route.snapshot.paramMap.get('id');
-    if (paramid) {
-      this.codeInFG.controls.game_id.setValue(paramid);
+    const event = await this.eventService.getEvent(e[0].id);
+    const players = await this.playerService.getPlayerList(event?.attendees);
+    if (players) {
+      this.player = players;
     }
   }
 }
