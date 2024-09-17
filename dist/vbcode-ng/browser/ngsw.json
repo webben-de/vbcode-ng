@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1726578105077,
+  "timestamp": 1726591278780,
   "index": "https://svb.web-ben.de/index.html",
   "assetGroups": [
     {
@@ -13,18 +13,18 @@
       "urls": [
         "https://svb.web-ben.de/chunk-EL2NI3EA.js",
         "https://svb.web-ben.de/chunk-FVJUHK3C.js",
-        "https://svb.web-ben.de/chunk-H3F5GOPA.js",
         "https://svb.web-ben.de/chunk-LUWGYK6C.js",
         "https://svb.web-ben.de/chunk-OXINPKYA.js",
+        "https://svb.web-ben.de/chunk-P4OA5AP7.js",
         "https://svb.web-ben.de/chunk-SECEFDB3.js",
-        "https://svb.web-ben.de/chunk-UFDG5QW2.js",
+        "https://svb.web-ben.de/chunk-XN2JUYKK.js",
         "https://svb.web-ben.de/chunk-XZ5BW6PV.js",
         "https://svb.web-ben.de/favicon.ico",
         "https://svb.web-ben.de/index.html",
-        "https://svb.web-ben.de/main-TMBHYX5T.js",
+        "https://svb.web-ben.de/main-3LNSRTLF.js",
         "https://svb.web-ben.de/manifest.webmanifest",
         "https://svb.web-ben.de/polyfills-DXJ4KTXW.js",
-        "https://svb.web-ben.de/styles-U6L7TREU.css"
+        "https://svb.web-ben.de/styles-2KYWV4SS.css"
       ],
       "patterns": []
     },
@@ -73,11 +73,11 @@
   "hashTable": {
     "https://svb.web-ben.de/chunk-EL2NI3EA.js": "77ba6d8185534a8d20f5c4840f060a775b586b08",
     "https://svb.web-ben.de/chunk-FVJUHK3C.js": "155f1a0ff6a5735316bde530803f62d92d1df25c",
-    "https://svb.web-ben.de/chunk-H3F5GOPA.js": "1f20e243266c2af51010c3dad4bbb448d3a93cff",
     "https://svb.web-ben.de/chunk-LUWGYK6C.js": "6bc252520b6feb86f075ef2557083b0044403e26",
     "https://svb.web-ben.de/chunk-OXINPKYA.js": "6e6e0b52842ad038443132c31f2bc530a9dfe4f1",
+    "https://svb.web-ben.de/chunk-P4OA5AP7.js": "40c894bc7309efaecea0276c3ef341b4447a3e10",
     "https://svb.web-ben.de/chunk-SECEFDB3.js": "9e38a2e18cda508cfd301aff2feb502c40eb41a9",
-    "https://svb.web-ben.de/chunk-UFDG5QW2.js": "e16025f0259848b99ec173229181d8210badd718",
+    "https://svb.web-ben.de/chunk-XN2JUYKK.js": "cb476f1325fe5d577b542c379bd7d4e2532d1bcb",
     "https://svb.web-ben.de/chunk-XZ5BW6PV.js": "f1d1729e00347f3b8c1274d34e443f8c9a7c562a",
     "https://svb.web-ben.de/favicon.ico": "4e23d0f9b6ddaf3c9ddef90dbaed2342941297b5",
     "https://svb.web-ben.de/icons/icon-128x128.png": "f912963bdc6d5a38d8f1dd0afbaab2ce8d657acb",
@@ -88,8 +88,8 @@
     "https://svb.web-ben.de/icons/icon-512x512.png": "1de182f76f7329dfa8f9fcdd1fdcdd695bea6a99",
     "https://svb.web-ben.de/icons/icon-72x72.png": "aa88a6096bd973be7f6d7a5489bfa6bc2463f8c4",
     "https://svb.web-ben.de/icons/icon-96x96.png": "7fb8f59c30ce2ff12c700321a0b39e14b3dc8f95",
-    "https://svb.web-ben.de/index.html": "2bc0eb87462e86314341c2b80bb4a2ae09a62c07",
-    "https://svb.web-ben.de/main-TMBHYX5T.js": "0bfe6695f613e3e9ee3965b437a17bba8a75e717",
+    "https://svb.web-ben.de/index.html": "038c71a8086f0008fd559d1046bbe789bb63450c",
+    "https://svb.web-ben.de/main-3LNSRTLF.js": "c2d1291836124ff8537a33212db746ff1dec2170",
     "https://svb.web-ben.de/manifest.webmanifest": "f677562220225ca1b29b475f1deea63109789a6f",
     "https://svb.web-ben.de/media/league-spartan-latin-ext-wght-normal-4T5O5SJY.woff2": "e6d1c54410b320dd6c34a85259444e7b204cd9ba",
     "https://svb.web-ben.de/media/league-spartan-latin-wght-normal-TRIG2WAE.woff2": "5ac8ea32ad1434f65d9deba384986ba07e6592a2",
@@ -111,7 +111,7 @@
     "https://svb.web-ben.de/media/noto-sans-vietnamese-400-normal-VDAOFCNQ.woff": "81bd22fdfc0640b851696a5dc193e44cab3fc0b6",
     "https://svb.web-ben.de/media/noto-sans-vietnamese-400-normal-ZYURYFYW.woff2": "aea48a102edb0a38c912010f64dd5a851cdea43c",
     "https://svb.web-ben.de/polyfills-DXJ4KTXW.js": "d45c76c5960bab3ace7fd6d211b9579456241f8a",
-    "https://svb.web-ben.de/styles-U6L7TREU.css": "a99e8f120bb01fc84b3737bfc5a3712d0e73d32d",
+    "https://svb.web-ben.de/styles-2KYWV4SS.css": "56cd26cfaaae551e7ee78d2016242da82d91ab3d",
     "https://svb.web-ben.de/trikot.svg": "3025d4990e25064fb03fca0ece4365fa43bcae48",
     "https://svb.web-ben.de/volleyball.svg": "db0809818da2d7985defea975dd0e91a0f7b3f63"
   },

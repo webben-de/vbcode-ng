@@ -2,8 +2,9 @@ import { Component, type OnInit, ViewChild, inject } from '@angular/core';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { type MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { dispatch, select } from '@ngxs/store';
@@ -13,11 +14,23 @@ import { SupabaseService } from '../services/supabase.service';
 import { ROUTES } from './ROUTES';
 import { AuthComponent } from './auth.component';
 import { SessionState, setAuthSession } from './session.state';
+import { CommonModule } from '@angular/common';
 
 @Component({
   standalone: true,
   providers: [provideNativeDateAdapter()],
-  imports: [RouterModule, AuthComponent, MatIconModule, MatSidenavModule, MatListModule, MatSnackBarModule, ButtomNavComponent, TranslocoModule],
+  imports: [
+    RouterModule,
+    AuthComponent,
+    MatIconModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatListModule,
+    MatSnackBarModule,
+    ButtomNavComponent,
+    TranslocoModule,
+    CommonModule,
+  ],
   selector: 'app-root',
   templateUrl: './app.component.html',
 })
@@ -39,9 +52,6 @@ export class AppComponent implements OnInit {
    *
    */
   ngOnInit() {
-    this.supabase.authChanges((_, session) => {
-      this.setSession(session);
-    });
     this.#toggleDrawerOnNavEnd();
   }
   /**
