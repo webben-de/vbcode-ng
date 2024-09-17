@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1726614371098,
+  "timestamp": 1726614688839,
   "index": "https://svb.web-ben.de/index.html",
   "assetGroups": [
     {
@@ -25,10 +25,10 @@
         "https://svb.web-ben.de/chunk-YF6KOPIF.js",
         "https://svb.web-ben.de/favicon.ico",
         "https://svb.web-ben.de/index.html",
-        "https://svb.web-ben.de/main-F726USYK.js",
+        "https://svb.web-ben.de/main-H7NX656G.js",
         "https://svb.web-ben.de/manifest.webmanifest",
         "https://svb.web-ben.de/polyfills-DXJ4KTXW.js",
-        "https://svb.web-ben.de/styles-EAMJKF46.css"
+        "https://svb.web-ben.de/styles-53CSNOZH.css"
       ],
       "patterns": []
     },
@@ -96,8 +96,8 @@
     "https://svb.web-ben.de/icons/icon-512x512.png": "1de182f76f7329dfa8f9fcdd1fdcdd695bea6a99",
     "https://svb.web-ben.de/icons/icon-72x72.png": "aa88a6096bd973be7f6d7a5489bfa6bc2463f8c4",
     "https://svb.web-ben.de/icons/icon-96x96.png": "7fb8f59c30ce2ff12c700321a0b39e14b3dc8f95",
-    "https://svb.web-ben.de/index.html": "3a63dc5109a8cbb471ccc7875c5cffadf258328b",
-    "https://svb.web-ben.de/main-F726USYK.js": "442c200ad25a70f69262726d2a6ad739119b3382",
+    "https://svb.web-ben.de/index.html": "ff7961c8e59699c0d961b2f19b20a7c0d99d8859",
+    "https://svb.web-ben.de/main-H7NX656G.js": "725bd836de986217358a596130ef0946ed6c538d",
     "https://svb.web-ben.de/manifest.webmanifest": "f677562220225ca1b29b475f1deea63109789a6f",
     "https://svb.web-ben.de/media/league-spartan-latin-ext-wght-normal-4T5O5SJY.woff2": "e6d1c54410b320dd6c34a85259444e7b204cd9ba",
     "https://svb.web-ben.de/media/league-spartan-latin-wght-normal-TRIG2WAE.woff2": "5ac8ea32ad1434f65d9deba384986ba07e6592a2",
@@ -119,7 +119,7 @@
     "https://svb.web-ben.de/media/noto-sans-vietnamese-400-normal-VDAOFCNQ.woff": "81bd22fdfc0640b851696a5dc193e44cab3fc0b6",
     "https://svb.web-ben.de/media/noto-sans-vietnamese-400-normal-ZYURYFYW.woff2": "aea48a102edb0a38c912010f64dd5a851cdea43c",
     "https://svb.web-ben.de/polyfills-DXJ4KTXW.js": "d45c76c5960bab3ace7fd6d211b9579456241f8a",
-    "https://svb.web-ben.de/styles-EAMJKF46.css": "dab5db6f91a8d9aa97c5fa25b6c9a69862e925ba",
+    "https://svb.web-ben.de/styles-53CSNOZH.css": "a26af5eda97ed904cf2a27e894b48ace208df2d9",
     "https://svb.web-ben.de/trikot.svg": "3025d4990e25064fb03fca0ece4365fa43bcae48",
     "https://svb.web-ben.de/volleyball.svg": "db0809818da2d7985defea975dd0e91a0f7b3f63"
   },
