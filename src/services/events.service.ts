@@ -16,7 +16,7 @@ export class EventsService {
    * @returns
    */
   async getEvent(id: string) {
-    const data = (await this.supabase.from('events').select('*').eq('id', id).limit(1).single()).data;
+    const data = (await this.supabase.from('events').select('*').eq('id', id).limit(1).single()).data as EventDTO;
     return data;
   }
   /**

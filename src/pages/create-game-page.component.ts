@@ -44,17 +44,54 @@ import { SupabaseService } from '../services/supabase.service';
         </mat-form-field>
         <h5>Start Rotation</h5>
         <div class="grid grid-cols-3">
-          @for(a of createGameForm.controls.home_team_start_rotation.controls ; track $index){
-
           <mat-form-field>
-            <mat-label>{{ $index + 1 }}</mat-label>
-            <mat-select [formControl]="a">
+            <mat-label>{{ 4 }}</mat-label>
+            <mat-select [formControl]="createGameForm.controls.home_team_start_rotation.controls[4]">
               @for (item of attendeesOptions; track $index) {
               <mat-option [value]="item?.id"> {{ item?.trikot }} - {{ item?.name }} </mat-option>
               }
             </mat-select>
           </mat-form-field>
-          }
+          <mat-form-field>
+            <mat-label>{{ 3 }}</mat-label>
+            <mat-select [formControl]="createGameForm.controls.home_team_start_rotation.controls[3]">
+              @for (item of attendeesOptions; track $index) {
+              <mat-option [value]="item?.id"> {{ item?.trikot }} - {{ item?.name }} </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>{{ 2 }}</mat-label>
+            <mat-select [formControl]="createGameForm.controls.home_team_start_rotation.controls[2]">
+              @for (item of attendeesOptions; track $index) {
+              <mat-option [value]="item?.id"> {{ item?.trikot }} - {{ item?.name }} </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>{{ 5 }}</mat-label>
+            <mat-select [formControl]="createGameForm.controls.home_team_start_rotation.controls[5]">
+              @for (item of attendeesOptions; track $index) {
+              <mat-option [value]="item?.id"> {{ item?.trikot }} - {{ item?.name }} </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>{{ 6 }}</mat-label>
+            <mat-select [formControl]="createGameForm.controls.home_team_start_rotation.controls[6]">
+              @for (item of attendeesOptions; track $index) {
+              <mat-option [value]="item?.id"> {{ item?.trikot }} - {{ item?.name }} </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>{{ 1 }}</mat-label>
+            <mat-select [formControl]="createGameForm.controls.home_team_start_rotation.controls[1]">
+              @for (item of attendeesOptions; track $index) {
+              <mat-option [value]="item?.id"> {{ item?.trikot }} - {{ item?.name }} </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
         </div>
         <mat-form-field class="w-full">
           <mat-label>Away</mat-label>
@@ -95,14 +132,14 @@ export class CreateGamePageComponent implements OnInit {
     date: new FormControl<Date>(new Date(), Validators.required),
     attendees: new FormControl<string[]>([]),
     home_team: new FormControl<string | undefined>(undefined),
-    home_team_start_rotation: new FormArray([
-      new FormControl<string | null>(null),
-      new FormControl<string | null>(null),
-      new FormControl<string | null>(null),
-      new FormControl<string | null>(null),
-      new FormControl<string | null>(null),
-      new FormControl<string | null>(null),
-    ]),
+    home_team_start_rotation: new FormGroup({
+      1: new FormControl<string | null>(null),
+      2: new FormControl<string | null>(null),
+      3: new FormControl<string | null>(null),
+      4: new FormControl<string | null>(null),
+      5: new FormControl<string | null>(null),
+      6: new FormControl<string | null>(null),
+    }),
     away_team_start_rotation: new FormArray([
       new FormControl<string | null>(null),
       new FormControl<string | null>(null),
