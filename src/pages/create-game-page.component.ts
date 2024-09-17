@@ -7,7 +7,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { TranslocoModule } from '@jsverse/transloco';
+import { select } from '@ngxs/store';
 import { ROUTES } from 'src/app/ROUTES';
+import { SessionState } from '../app/session.state';
 import { EventsService } from '../services/events.service';
 import { PlayerService } from '../services/player.service';
 import { SupabaseService } from '../services/supabase.service';
@@ -18,14 +21,24 @@ import type { PlayerDTO } from '../types/PlayerDTO';
 @Component({
   selector: 'app-create-game-page',
   standalone: true,
-  imports: [MatFormFieldModule, MatButtonModule, MatInputModule, FormsModule, ReactiveFormsModule, MatSelectModule, CommonModule, RouterModule],
+  imports: [
+    MatFormFieldModule,
+    MatButtonModule,
+    MatInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatSelectModule,
+    CommonModule,
+    RouterModule,
+    TranslocoModule,
+  ],
   template: `
     <div class="flex flex-col items-start gap-8 h-full p-8">
-      <h2>Create a new Game</h2>
+      <h2>{{ 'create-a-new-game' | transloco }}</h2>
       <form [formGroup]="createGameForm" #form (submit)="createGame()" class="flex flex-col w-full">
         <mat-form-field class="w-full">
-          <mat-label>Title</mat-label>
-          <input matInput placeholder="Friendship" formControlName="title" />
+          <mat-label>{{ 'title' | transloco }}</mat-label>
+          <input matInput formControlName="title" />
         </mat-form-field>
         <mat-form-field class="w-full">
           <mat-select formControlName="visibility">
@@ -35,22 +48,24 @@ import type { PlayerDTO } from '../types/PlayerDTO';
           </mat-select>
         </mat-form-field>
         <mat-form-field class="w-full">
-          <mat-label>Date</mat-label>
-          <input matInput type="date" formControlName="date" placeholder="Friendship" />
+          <mat-label>{{ 'date' | transloco }}</mat-label>
+          <input matInput type="date" formControlName="date" />
         </mat-form-field>
 
         <mat-form-field class="w-full">
-          <mat-label>Home</mat-label>
+          <mat-label>{{ 'home-team' | transloco }}</mat-label>
           <mat-select formControlName="home_team" (valueChange)="OnHomeTeamChange($event)" #homeTeam>
-            <mat-option *ngFor="let item of teams | async" [value]="item.id">
+            @for (item of teams|async; track $index) {
+            <mat-option [value]="item.id">
               {{ item.name }}
             </mat-option>
+            }
           </mat-select>
           <mat-hint>
-            <a [routerLink]="['/' + ROUTES.teams, homeTeam.value]"> Edit this team </a>
+            <a [routerLink]="[ROUTES.root + ROUTES.teams, homeTeam.value]"> {{ 'edit-this-team' | transloco }} </a>
           </mat-hint>
         </mat-form-field>
-        <h5>Start Rotation</h5>
+        <h5>{{ 'start-rotation' | transloco }}</h5>
         <div class="grid grid-cols-3">
           <mat-form-field>
             <mat-label>{{ 4 }}</mat-label>
@@ -102,24 +117,29 @@ import type { PlayerDTO } from '../types/PlayerDTO';
           </mat-form-field>
         </div>
         <mat-form-field class="w-full">
-          <mat-label>Away</mat-label>
+          <mat-label>{{ 'away-team' | transloco }}</mat-label>
           <mat-select formControlName="away_team">
-            <mat-option *ngFor="let item of teams | async" [value]="item.id">
+            @for (item of teams|async; track $index) {
+            <mat-option [value]="item.id">
               {{ item.name }}
             </mat-option>
+            }
           </mat-select>
         </mat-form-field>
         <mat-form-field class="w-full">
-          <mat-label>Attendees</mat-label>
+          <mat-label>{{ 'attendees' | transloco }}</mat-label>
           <mat-select placeholder="Players" formControlName="attendees" [multiple]="true" #attendes>
-            <mat-option *ngFor="let item of attendeesOptions" [value]="item?.id"> {{ item?.name }} ({{ item?.trikot }}) </mat-option>
+            @for (item of attendeesOptions; track $index) {
+            <mat-option [value]="item?.id"> {{ item?.name }} ({{ item?.trikot }}) </mat-option>
+            }
           </mat-select>
         </mat-form-field>
-        <button mat-button [type]="'submit'">Submit</button>
-        <pre><code>{{this.createGameForm}}</code></pre>
+        <button mat-button [type]="'submit'">{{ 'submit' | transloco }}</button>
       </form>
       <hr />
-      <p><a [routerLink]="[ROUTES.games]">See all your games here</a></p>
+      <p>
+        <a [routerLink]="[ROUTES.games]">{{ 'see-all-your-games-here' | transloco }}</a>
+      </p>
     </div>
   `,
 })
@@ -135,6 +155,10 @@ export class CreateGamePageComponent implements OnInit {
   supabase = inject(SupabaseService);
   playerService = inject(PlayerService);
   teamService = inject(TeamsService);
+  /**
+   *
+   */
+  session = select(SessionState.session);
   /**
    *
    */
@@ -164,7 +188,7 @@ export class CreateGamePageComponent implements OnInit {
       new FormControl<string | null>(null),
     ]),
     away_team: new FormControl<string | undefined>(undefined),
-    owner: new FormControl<string>(this.supabase.session?.user.id!),
+    owner: new FormControl<string>(this.session()!.user.id, Validators.required),
     shared_with: new FormControl<string[]>([]),
     visibility: new FormControl<'Public' | 'Private'>('Private'),
   });
@@ -174,7 +198,7 @@ export class CreateGamePageComponent implements OnInit {
   async createGame() {
     const payload = this.createGameForm.value as createEventDTO | EventDTO;
     try {
-      const event = await this.eventsService.createEvent(payload);
+      await this.eventsService.createEvent(payload);
       // this.createGameForm.reset();
       this.snack
         .open('Event create', 'open', { duration: 5000 })
@@ -190,7 +214,8 @@ export class CreateGamePageComponent implements OnInit {
   /**
    *
    */
-  async OnHomeTeamChange($event?: any) {
+  async OnHomeTeamChange($event?: string) {
+    if (!$event) return;
     const team = await this.teamService.getTeam($event);
     this.attendeesOptions = await this.playerService.getPlayerList(team.players);
   }
@@ -199,8 +224,10 @@ export class CreateGamePageComponent implements OnInit {
    */
   ngOnInit(): void {
     this.route.data.subscribe((data) => {
+      // biome-ignore lint/complexity/useLiteralKeys: <explanation>
       if (data['game']) this.createGameForm.patchValue(data['game'] as EventDTO);
-      this.OnHomeTeamChange(this.createGameForm.controls.home_team.value);
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      this.OnHomeTeamChange(this.createGameForm.controls.home_team.value as any);
     });
   }
 }

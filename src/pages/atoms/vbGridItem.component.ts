@@ -4,10 +4,11 @@ import type { PlayerDTO } from '../../types/PlayerDTO';
 
 @Component({
   selector: 'app-grid-item',
+  host: { class: 'p-5 border border-1 flex justify-center items-center h-full' },
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="flex flex-col justify-center items-center w-20 h-20 gap-2 ">
+    <div class="flex flex-col justify-center items-center  gap-2 ">
       @let roation = rotationMap.get(currentRotation()); @let player = roatedPlayer().get(roation!.get(index())!);
       <div class="bg-neutral rounded-box text-neutral-content flex flex-col p-2">
         <span class="countdown font-league text-5xl text-center">

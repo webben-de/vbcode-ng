@@ -22,7 +22,7 @@
       </mat-list-item>
       }@else{
       <mat-list-item>
-        <a [routerLink]="[ROUTES.root + 'login']" routerLinkActive="router-link-active">Login</a>
+        <a [routerLink]="[ROUTES.root + ROUTES.login]" routerLinkActive="router-link-active">Login</a>
       </mat-list-item>
       }
     </mat-list>
@@ -37,7 +37,7 @@
         </button>
       </div>
       <div class="flex-1">
-        <a class="btn btn-ghost text-xl">(S)VB Code</a>
+        <a class="btn btn-ghost text-xl" [routerLink]="[ROUTES.root]">(S)VB Code</a>
       </div>
       <div class="flex-none">
         <button class="btn btn-square btn-ghost">

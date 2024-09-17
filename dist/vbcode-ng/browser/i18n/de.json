@@ -8,5 +8,17 @@
   "game-overview": "Spielübersicht",
   "data-input": "Spielerfassung",
   "submit": "Abschicken",
-  "grade": "Bewertung"
+  "grade": "Bewertung",
+  "create-a-new-game": "Neues Event erstellen",
+  "title": "Eventname",
+  "date": "Datum",
+  "home-team": "Heim Team",
+  "away-team": "Gast Team",
+  "attendees": "Teilnehmer",
+  "edit-this-team": "Bearbeite dieses Team",
+  "see-all-your-games-here": "Alle Events findest du hier!",
+  "set": "Satz",
+  "after-actions": "Nach Aktionsart",
+  "all-action-after-grade": "Alle Kontakt nach Bewertung",
+  "show": "Anzeige:"
 }
