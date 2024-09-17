@@ -15,6 +15,7 @@ import { LandingPageComponent } from '../pages/landing-page.component';
 import { UserLandingPageComponent } from '../pages/user-landing-page.component';
 import { provideStates, select } from '@ngxs/store';
 import { SessionState } from './session.state';
+import { GameDetailViewComponent } from '../pages/game-detail-view-page.component';
 
 export const appRoutes: Route[] = [
   {
@@ -23,8 +24,8 @@ export const appRoutes: Route[] = [
     canActivate: [authenticationGuard()],
   },
   {
-    path: ROUTES.reportDetail,
-    component: GameViewComponent,
+    path: ROUTES.reportDetailId,
+    component: GameDetailViewComponent,
     resolve: {
       actions: actionResolver(),
       game: eventResolver(),

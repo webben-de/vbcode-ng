@@ -124,7 +124,7 @@ import { hintMap } from '../types/hints';
                 />
               </svg>
             </div>
-            <div class="timeline-end timeline-box">{{ item.player_id.name }}</div>
+            <div class="timeline-end timeline-box">{{ item?.player_id?.name }}</div>
             <hr />
           </li>
           }
@@ -325,7 +325,7 @@ export class GameDetailViewComponent implements OnInit {
    */
   async reloadSet($event?: number | string) {
     this.currentSet = $event;
-
+    if (!this.game?.id) return;
     if (!$event || $event === 'Alle') this.actions = await this.actionsService.getActionsOfEvent(this.game.id);
     else this.actions = await this.actionsService.getActionsOfEventOfSet(this.game.id, $event as number);
     this.stats = defaults;
