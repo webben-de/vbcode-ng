@@ -9,4 +9,5 @@ export enum ROUTES {
   dataentry = 'dataentry',
   login = 'login',
   root = '/',
+  user = 'user',
 }

@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import { type AuthChangeEvent, type AuthSession, type Session, type SupabaseClient, type User, createClient } from '@supabase/supabase-js';
 import { environment } from '../environments/environment';
 import type { PlayerDTO } from '../types/PlayerDTO';
+import { dispatch } from '@ngxs/store';
+import { setAuthSession } from '../app/session.state';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 export interface Profile {
   id?: string;
@@ -14,11 +17,21 @@ export interface Profile {
   providedIn: 'root',
 })
 export class SupabaseService {
+  setAuthSession = dispatch(setAuthSession);
   public supabase: SupabaseClient;
   _session: AuthSession | null = null;
-
+  public currentUser = new BehaviorSubject<null | User>(null);
   constructor() {
     this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
+    this.supabase.auth.onAuthStateChange((event, session) => {
+      this.setAuthSession(session);
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        if (session?.user) this.currentUser.next(session.user);
+        console.log('SET USER', session?.user);
+      } else {
+        this.currentUser.next(null);
+      }
+    });
   }
 
   get session() {
@@ -68,10 +81,21 @@ export class SupabaseService {
     return await this.supabase.rpc('getGameStats', { game_id });
   }
   downLoadImage(path: string) {
-    return this.supabase.storage.from('avatars').download(path);
+    return this.supabase.storage.from('profile_pictures').download(path);
   }
 
   uploadAvatar(filePath: string, file: File) {
-    return this.supabase.storage.from('avatars').upload(filePath, file);
+    return this.supabase.storage.from('profile_pictures').upload(filePath, file);
+  }
+  getCurrentUser(): Observable<User | null> {
+    return this.currentUser.asObservable();
+  }
+
+  getCurrentUserId(): string {
+    if (this.currentUser.value) {
+      return (this.currentUser.value as User).id;
+    } else {
+      return 'null';
+    }
   }
 }

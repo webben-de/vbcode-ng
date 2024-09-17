@@ -1,4 +1,4 @@
-<mat-drawer-container class="example-container">
+<mat-drawer-container>
   <mat-drawer #drawer mode="side" closed>
     <mat-list>
       <mat-list-item>
@@ -28,25 +28,30 @@
     </mat-list>
   </mat-drawer>
   <mat-drawer-content>
-    <div class="navbar bg-base-100">
-      <div class="flex-none">
-        <button class="btn btn-square btn-ghost" (click)="drawer.toggle()">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block h-5 w-5 stroke-current">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-          </svg>
+    <mat-toolbar class="flex justify-between items-center">
+      <div class="flex">
+        <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" (click)="drawer.toggle()">
+          <mat-icon>menu</mat-icon>
         </button>
-      </div>
-      <div class="flex-1">
         <a class="btn btn-ghost text-xl" [routerLink]="[ROUTES.root]">(S)VB Code</a>
       </div>
-      <div class="flex-none">
-        <button class="btn btn-square btn-ghost">
-          <img src="volleyball.svg" alt="" />
+      <div class="flex gap-8">
+        @if (!session()) {
+        <a class="text-sm" [routerLink]="[ROUTES.root, ROUTES.login]">Login</a>
+        }@else{
+        <a class="text-sm" [routerLink]="[ROUTES.root, ROUTES.user]">{{ session()?.user?.email }}</a>
+
+        }
+        <button disabled mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+          <mat-icon>favorite</mat-icon>
+        </button>
+        <button disabled class="example-icon" aria-label="Example icon-button with share icon">
+          <mat-icon>share</mat-icon>
         </button>
       </div>
-    </div>
+    </mat-toolbar>
 
     <router-outlet></router-outlet>
-    <app-buttom-nav></app-buttom-nav>
+    <!-- <app-buttom-nav></app-buttom-nav> -->
   </mat-drawer-content>
 </mat-drawer-container>
