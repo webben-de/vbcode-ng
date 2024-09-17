@@ -41,6 +41,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
                 </label>
                 <input type="file" formControlName="avatar_url" accept="image/*" (change)="uploadAvatar($event)" />
               </div>
+              <button type="submit" class="btn">Submit</button>
             </form>
           </div>
         </section>
@@ -61,7 +62,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 export class UserLandingPageComponent implements OnInit {
   session = select(SessionState.session);
   updateProfileForm = new FormGroup({
-    avatar_url: new FormControl<string | null>(null),
+    avatar_url: new FormControl<string>(''),
   });
 
   get avatarUrl() {
@@ -72,7 +73,7 @@ export class UserLandingPageComponent implements OnInit {
     this.updateProfileForm.patchValue({
       avatar_url: event,
     });
-    // await this.updateProfile();
+    await this.updateProfile();
   }
   _avatarUrl: SafeResourceUrl | undefined;
   uploading = false;
@@ -84,14 +85,15 @@ export class UserLandingPageComponent implements OnInit {
     }
   }
 
-  @Output() upload = new EventEmitter<string>();
-
   constructor(private readonly supabase: SupabaseService, private readonly dom: DomSanitizer) {}
-  ngOnInit(): void {
-    console.log('juhu');
+  async ngOnInit() {
+    this.avatarUrl = (await this.supabase.getProfile(this.session()?.user.id))?.data.avatar_url;
   }
-  updateProfile() {
-    // this.supabase.updateProfile(this.updateProfileForm.value);
+  async updateProfile() {
+    await this.supabase.updateProfile({
+      id: this.session()?.user.id,
+      avatar_url: this.updateProfileForm.controls.avatar_url.value,
+    });
   }
   async downloadImage(path: string) {
     try {
@@ -107,7 +109,6 @@ export class UserLandingPageComponent implements OnInit {
   }
 
   async uploadAvatar(event: any) {
-    console.log('muh');
     try {
       this.uploading = true;
       if (!event.target.files || event.target.files.length === 0) {
@@ -116,10 +117,13 @@ export class UserLandingPageComponent implements OnInit {
 
       const file = event.target.files[0];
       const fileExt = file.name.split('.').pop();
-      const filePath = `${Math.random()}.${fileExt}`;
+      const filePath = `public/${Math.random()}.${fileExt}`;
 
-      await this.supabase.uploadAvatar(filePath, file);
-      this.upload.emit(filePath);
+      const upfile = await this.supabase.uploadAvatar(filePath, file);
+      // this.updateProfileForm.patchValue({
+      //   avatar_url: upfile,
+      // });
+      await this.downloadImage(filePath);
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);

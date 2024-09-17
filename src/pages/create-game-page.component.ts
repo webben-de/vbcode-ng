@@ -17,6 +17,10 @@ import { SupabaseService } from '../services/supabase.service';
 import { TeamsService } from '../services/teams.service';
 import type { EventDTO, createEventDTO } from '../types/EventDTO';
 import type { PlayerDTO } from '../types/PlayerDTO';
+import { SingleRoationFormControlComponent } from './atoms/single-roation-form-control.component';
+import { AttendeesSelectFormControlComponent } from './atoms/attendees-select-form-control.component';
+
+type NewType = unknown;
 
 @Component({
   selector: 'app-create-game-page',
@@ -31,16 +35,19 @@ import type { PlayerDTO } from '../types/PlayerDTO';
     CommonModule,
     RouterModule,
     TranslocoModule,
+    SingleRoationFormControlComponent,
+    AttendeesSelectFormControlComponent,
   ],
   template: `
     <div class="flex flex-col items-start gap-8 h-full p-8">
-      <h2>{{ 'create-a-new-game' | transloco }}</h2>
+      <span class="text-2xl font-bold">{{ 'create-a-new-game' | transloco }}</span>
       <form [formGroup]="createGameForm" #form (submit)="createGame()" class="flex flex-col w-full">
         <mat-form-field class="w-full">
           <mat-label>{{ 'title' | transloco }}</mat-label>
           <input matInput formControlName="title" />
         </mat-form-field>
         <mat-form-field class="w-full">
+          <mat-label>{{ 'visibility' | transloco }}</mat-label>
           <mat-select formControlName="visibility">
             <mat-option *ngFor="let item of ['Private', 'Public']" [value]="item">
               {{ item }}
@@ -51,7 +58,8 @@ import type { PlayerDTO } from '../types/PlayerDTO';
           <mat-label>{{ 'date' | transloco }}</mat-label>
           <input matInput type="date" formControlName="date" />
         </mat-form-field>
-
+        <hr />
+        <span class="text-lg">{{ 'home' | transloco }}</span>
         <mat-form-field class="w-full">
           <mat-label>{{ 'home-team' | transloco }}</mat-label>
           <mat-select formControlName="home_team" (valueChange)="OnHomeTeamChange($event)" #homeTeam>
@@ -65,75 +73,46 @@ import type { PlayerDTO } from '../types/PlayerDTO';
             <a [routerLink]="[ROUTES.root + ROUTES.teams, homeTeam.value]"> {{ 'edit-this-team' | transloco }} </a>
           </mat-hint>
         </mat-form-field>
-        <h5>{{ 'start-rotation' | transloco }}</h5>
+        @if (homeTeam.value) {
+
+        <span class="text-md">{{ 'start-rotation' | transloco }}</span>
         <div class="grid grid-cols-3">
-          <mat-form-field>
-            <mat-label>{{ 4 }}</mat-label>
-            <mat-select [formControl]="createGameForm.controls.home_team_start_rotation.controls[4]">
-              @for (item of attendeesOptions; track $index) {
-              <mat-option [value]="item?.id"> {{ item?.trikot }} - {{ item?.name }} </mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>{{ 3 }}</mat-label>
-            <mat-select [formControl]="createGameForm.controls.home_team_start_rotation.controls[3]">
-              @for (item of attendeesOptions; track $index) {
-              <mat-option [value]="item?.id"> {{ item?.trikot }} - {{ item?.name }} </mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>{{ 2 }}</mat-label>
-            <mat-select [formControl]="createGameForm.controls.home_team_start_rotation.controls[2]">
-              @for (item of attendeesOptions; track $index) {
-              <mat-option [value]="item?.id"> {{ item?.trikot }} - {{ item?.name }} </mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>{{ 5 }}</mat-label>
-            <mat-select [formControl]="createGameForm.controls.home_team_start_rotation.controls[5]">
-              @for (item of attendeesOptions; track $index) {
-              <mat-option [value]="item?.id"> {{ item?.trikot }} - {{ item?.name }} </mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>{{ 6 }}</mat-label>
-            <mat-select [formControl]="createGameForm.controls.home_team_start_rotation.controls[6]">
-              @for (item of attendeesOptions; track $index) {
-              <mat-option [value]="item?.id"> {{ item?.trikot }} - {{ item?.name }} </mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>{{ 1 }}</mat-label>
-            <mat-select [formControl]="createGameForm.controls.home_team_start_rotation.controls[1]">
-              @for (item of attendeesOptions; track $index) {
-              <mat-option [value]="item?.id"> {{ item?.trikot }} - {{ item?.name }} </mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
+          @for (index of [4,3,2,5,6,1]; track $index) {
+          <app-single-roation-form-control
+            [attendeesOptions]="attendeesOptions"
+            [index]="index"
+            [createGameForm]="this.createGameForm.controls.home_team_start_rotation"
+          />
+          }
         </div>
-        <mat-form-field class="w-full">
-          <mat-label>{{ 'away-team' | transloco }}</mat-label>
-          <mat-select formControlName="away_team">
-            @for (item of teams|async; track $index) {
-            <mat-option [value]="item.id">
-              {{ item.name }}
-            </mat-option>
+        }
+        <hr />
+        <div class="">
+          <mat-form-field class="w-full">
+            <mat-label>{{ 'away-team' | transloco }}</mat-label>
+            <mat-select formControlName="away_team" #awayTeam>
+              @for (item of teams|async; track $index) {
+              <mat-option [value]="item.id">
+                {{ item.name }}
+              </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          @if (awayTeam.value) {
+
+          <span class="text-md">{{ 'start-rotation' | transloco }}</span>
+          <div class="grid grid-cols-3">
+            @for (index of [4,3,2,5,6,1]; track $index) {
+            <app-single-roation-form-control
+              [attendeesOptions]="attendeesOptions"
+              [index]="index"
+              [createGameForm]="this.createGameForm.controls.away_team_start_rotation"
+            />
             }
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field class="w-full">
-          <mat-label>{{ 'attendees' | transloco }}</mat-label>
-          <mat-select placeholder="Players" formControlName="attendees" [multiple]="true" #attendes>
-            @for (item of attendeesOptions; track $index) {
-            <mat-option [value]="item?.id"> {{ item?.name }} ({{ item?.trikot }}) </mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+          </div>
+          }
+        </div>
+        <app-attendees-select-form-control [attendeesOptions]="attendeesOptions" [attendees]="this.createGameForm.controls.attendees" />
         <button mat-button [type]="'submit'">{{ 'submit' | transloco }}</button>
       </form>
       <hr />

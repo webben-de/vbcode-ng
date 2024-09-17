@@ -10,13 +10,16 @@ export interface Profile {
   id?: string;
   username: string;
   website: string;
-  avatar_url: string;
+  avatar_url: string | null;
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class SupabaseService {
+  async getProfile(id: string | undefined) {
+    return this.supabase.from('profiles').select('*').eq('id', id).single();
+  }
   setAuthSession = dispatch(setAuthSession);
   public supabase: SupabaseClient;
   _session: AuthSession | null = null;
@@ -27,7 +30,6 @@ export class SupabaseService {
       this.setAuthSession(session);
       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
         if (session?.user) this.currentUser.next(session.user);
-        console.log('SET USER', session?.user);
       } else {
         this.currentUser.next(null);
       }
@@ -62,7 +64,7 @@ export class SupabaseService {
     return this.supabase.auth.signOut();
   }
 
-  updateProfile(profile: Profile) {
+  updateProfile(profile: Partial<Profile>) {
     const update = {
       ...profile,
       updated_at: new Date(),
@@ -84,8 +86,8 @@ export class SupabaseService {
     return this.supabase.storage.from('profile_pictures').download(path);
   }
 
-  uploadAvatar(filePath: string, file: File) {
-    return this.supabase.storage.from('profile_pictures').upload(filePath, file);
+  async uploadAvatar(filePath: string, file: File) {
+    return (await this.supabase.storage.from('profile_pictures').upload(filePath, file)).data?.path;
   }
   getCurrentUser(): Observable<User | null> {
     return this.currentUser.asObservable();

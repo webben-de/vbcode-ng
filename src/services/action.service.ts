@@ -73,7 +73,6 @@ export class ActionsService {
   actionChangesChannel = this.supabase
     .channel('actions-all-channel')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'actions' }, (payload) => {
-      console.log('Change received!', payload);
       this.actions$.next(payload);
     })
     .subscribe();

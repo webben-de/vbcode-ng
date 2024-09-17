@@ -5,38 +5,54 @@ import { MatListModule } from '@angular/material/list';
 import { RouterLink } from '@angular/router';
 import { ROUTES } from 'src/app/ROUTES';
 import { EventsService } from '../services/events.service';
+import { select } from '@ngxs/store';
+import { SessionState } from '../app/session.state';
+import { TranslocoModule } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-game-list-page',
   standalone: true,
-  imports: [MatListModule, CommonModule, RouterLink, MatIconModule],
+  host: { class: 'flex flex-col p-5' },
+  imports: [MatListModule, CommonModule, RouterLink, MatIconModule, TranslocoModule],
   template: `
-    <h2>Your Events</h2>
-    <div class="flex flex-col">
-      <mat-list>
-        @for (item of events|async; track $index) {
-        <mat-list-item>
-          <h6 matListItemTitle [routerLink]="['/report', 'details', item.id]" class="text-sm">{{ item.title }}</h6>
-          <p matListItemLine class="flex justify-evenly w-full">
-            @if(item.attendees){
-            <span>{{ item.attendees.length }} <mat-icon>people</mat-icon></span>
-            } @if(item.visibility==="Public"){
-            <mat-icon>public</mat-icon>
-            }@else if(item.visibility === "Private"){
-            <mat-icon>lock</mat-icon>
+    <span class="text-2xl font-bold">Your Events</span>
+    <div class="flex flex-col items-center gap-4">
+      @for (item of events|async; track $index) {
+
+      <div class="card bg-base-100 w-96 shadow-xl">
+        <!-- <figure>
+          <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp" alt="Shoes" />
+        </figure> -->
+        <div class="card-body">
+          <span class="card-title text-sm truncate" [routerLink]="[ROUTES.root, ROUTES.report, 'details', item.id]">
+            {{ item.title }}
+            @if(item.date>currentDate){
+            <div class="badge badge-secondary">upcomming</div>
             }
-          </p>
-          <a mat-icon-button [routerLink]="['/edit-game', item.id]"><mat-icon>edit</mat-icon></a>
-        </mat-list-item>
-        }
-        <mat-list-item>
-          <button mat-flat-button [routerLink]="['/games', 'create']">Create a new Game</button>
-        </mat-list-item>
-      </mat-list>
+            <div class="badge badge-secondary">{{ item.date }}</div>
+          </span>
+          <p>{{ item.home_team.name }} vs {{ item.away_team?.name || 'TBD' }}</p>
+          <div class="card-actions justify-end">
+            <div class="badge badge-outline">{{ item.visibility }}</div>
+            @if (item.owner === session()?.user?.id) {
+
+            <a [routerLink]="[ROUTES.root, ROUTES.editGame, item.id]" class="btn btn-primary btn-xs">
+              <mat-icon>edit</mat-icon>
+            </a>
+            }
+          </div>
+        </div>
+      </div>
+      }
+      <a [routerLink]="[ROUTES.root, ROUTES.createGame]" class="btn btn-secondary">
+        {{ 'create-a-new-game' | transloco }}
+      </a>
     </div>
   `,
 })
 export class GamesListPageComponent {
+  session = select(SessionState.session);
+  currentDate = new Date();
   eventsService = inject(EventsService);
   events = this.eventsService.getEvents();
   ROUTES = ROUTES;
