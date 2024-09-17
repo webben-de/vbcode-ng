@@ -14,6 +14,7 @@ import { select } from '@ngxs/store';
 import { ROUTES } from '../app/ROUTES';
 import { SessionState } from '../app/session.state';
 import { EventsService } from '../services/events.service';
+import { MetadataService } from '../services/metadata.service';
 import { PlayerService } from '../services/player.service';
 import type { EventDTO } from '../types/EventDTO';
 import type { PlayerDTO } from '../types/PlayerDTO';
@@ -85,6 +86,7 @@ import { RotationGridItemComponent } from './atoms/vbGridItem.component';
 export class RotationPlanerPageComponent implements OnInit {
   ROUTES = ROUTES;
   router = inject(Router);
+  meta = inject(MetadataService);
   route = inject(ActivatedRoute);
   eventService = inject(EventsService);
   playerService = inject(PlayerService);
@@ -127,6 +129,7 @@ export class RotationPlanerPageComponent implements OnInit {
       this.event = data['game'];
       this.selectedEvent = this.event?.id;
       await this.updateProps();
+      this.meta.updateMetadata({ title: `${this.event?.title}-> Rotation Planer`, description: 'Plan your rotation for your next game' }, true);
     });
   }
   private async updateProps() {
