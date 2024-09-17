@@ -11,24 +11,36 @@ import { SupabaseService } from '../services/supabase.service';
 import { TeamsService } from '../services/teams.service';
 import { AppComponent } from './app.component';
 import { AuthComponent } from './auth.component';
+import { RotationPlanerPageComponent } from '../pages/rotation-planer-page.component';
+
+export enum ROUTES {
+  report = 'report',
+  reportDetail = 'report/details/:id',
+  roationPlaner = 'rotation-planer',
+  createGame = 'games/create',
+  editGame = 'edit-game/:id',
+  teams = 'teams',
+}
 
 export const appRoutes: Route[] = [
   {
-    path: 'report',
+    path: ROUTES.report,
     component: GameViewComponent,
     canActivate: [authenticationGuard()],
   },
   {
-    path: 'report/details/:id',
+    path: ROUTES.reportDetail,
     component: GameViewComponent,
     resolve: {
       actions: actionResolver(),
       game: eventResolver(),
     },
   },
-  { path: 'games/create', component: CreateGamePageComponent, canActivate: [authenticationGuard()] },
-  { path: 'edit-game/:id', component: CreateGamePageComponent, resolve: { game: eventResolver() } },
-  { path: 'teams', component: CreateTeamPageComponent },
+  { path: ROUTES.roationPlaner, component: RotationPlanerPageComponent },
+  { path: ROUTES.roationPlaner + '/:id', component: RotationPlanerPageComponent, canActivate: [], resolve: { game: eventResolver() } },
+  { path: ROUTES.createGame, component: CreateGamePageComponent, canActivate: [authenticationGuard()] },
+  { path: ROUTES.editGame, component: CreateGamePageComponent, resolve: { game: eventResolver() } },
+  { path: ROUTES.teams, component: CreateTeamPageComponent },
   { path: 'teams/:id', component: CreateTeamPageComponent, resolve: { team: teamResolver() } },
   { path: 'games', component: GamesListPageComponent },
   { path: 'dataentry/:id', component: DataEntryComponent, canActivate: [authenticationGuard()] },
