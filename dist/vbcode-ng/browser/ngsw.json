@@ -1,0 +1,137 @@
+{
+  "configVersion": 1,
+  "timestamp": 1726567515490,
+  "index": "https://svb.web-ben.de/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "https://svb.web-ben.de/chunk-EL2NI3EA.js",
+        "https://svb.web-ben.de/chunk-FVJUHK3C.js",
+        "https://svb.web-ben.de/chunk-H3F5GOPA.js",
+        "https://svb.web-ben.de/chunk-LUWGYK6C.js",
+        "https://svb.web-ben.de/chunk-OXINPKYA.js",
+        "https://svb.web-ben.de/chunk-SECEFDB3.js",
+        "https://svb.web-ben.de/chunk-UFDG5QW2.js",
+        "https://svb.web-ben.de/chunk-XZ5BW6PV.js",
+        "https://svb.web-ben.de/favicon.ico",
+        "https://svb.web-ben.de/index.html",
+        "https://svb.web-ben.de/main-L4HCGEHY.js",
+        "https://svb.web-ben.de/manifest.webmanifest",
+        "https://svb.web-ben.de/polyfills-DXJ4KTXW.js",
+        "https://svb.web-ben.de/styles-ZGJJ5J6N.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "https://svb.web-ben.de/icons/icon-128x128.png",
+        "https://svb.web-ben.de/icons/icon-144x144.png",
+        "https://svb.web-ben.de/icons/icon-152x152.png",
+        "https://svb.web-ben.de/icons/icon-192x192.png",
+        "https://svb.web-ben.de/icons/icon-384x384.png",
+        "https://svb.web-ben.de/icons/icon-512x512.png",
+        "https://svb.web-ben.de/icons/icon-72x72.png",
+        "https://svb.web-ben.de/icons/icon-96x96.png",
+        "https://svb.web-ben.de/media/league-spartan-latin-ext-wght-normal-4T5O5SJY.woff2",
+        "https://svb.web-ben.de/media/league-spartan-latin-wght-normal-TRIG2WAE.woff2",
+        "https://svb.web-ben.de/media/league-spartan-vietnamese-wght-normal-OAWD4EUR.woff2",
+        "https://svb.web-ben.de/media/noto-sans-cyrillic-400-normal-637UK53F.woff",
+        "https://svb.web-ben.de/media/noto-sans-cyrillic-400-normal-MAC7FEOF.woff2",
+        "https://svb.web-ben.de/media/noto-sans-cyrillic-ext-400-normal-FY3GW6VN.woff",
+        "https://svb.web-ben.de/media/noto-sans-cyrillic-ext-400-normal-NRMJYMMI.woff2",
+        "https://svb.web-ben.de/media/noto-sans-devanagari-400-normal-5SGYUCWP.woff",
+        "https://svb.web-ben.de/media/noto-sans-devanagari-400-normal-NDJLB7KA.woff2",
+        "https://svb.web-ben.de/media/noto-sans-greek-400-normal-DCXTO4TA.woff",
+        "https://svb.web-ben.de/media/noto-sans-greek-400-normal-GWERXTYK.woff2",
+        "https://svb.web-ben.de/media/noto-sans-greek-ext-400-normal-JB3YW6RV.woff",
+        "https://svb.web-ben.de/media/noto-sans-greek-ext-400-normal-JQFUBDI4.woff2",
+        "https://svb.web-ben.de/media/noto-sans-latin-400-normal-Q3ONJYM7.woff",
+        "https://svb.web-ben.de/media/noto-sans-latin-400-normal-QL3V2I66.woff2",
+        "https://svb.web-ben.de/media/noto-sans-latin-ext-400-normal-23UEV2HU.woff2",
+        "https://svb.web-ben.de/media/noto-sans-latin-ext-400-normal-5LLBZ3PP.woff",
+        "https://svb.web-ben.de/media/noto-sans-vietnamese-400-normal-VDAOFCNQ.woff",
+        "https://svb.web-ben.de/media/noto-sans-vietnamese-400-normal-ZYURYFYW.woff2",
+        "https://svb.web-ben.de/trikot.svg",
+        "https://svb.web-ben.de/volleyball.svg"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "https://svb.web-ben.de/chunk-EL2NI3EA.js": "77ba6d8185534a8d20f5c4840f060a775b586b08",
+    "https://svb.web-ben.de/chunk-FVJUHK3C.js": "155f1a0ff6a5735316bde530803f62d92d1df25c",
+    "https://svb.web-ben.de/chunk-H3F5GOPA.js": "1f20e243266c2af51010c3dad4bbb448d3a93cff",
+    "https://svb.web-ben.de/chunk-LUWGYK6C.js": "6bc252520b6feb86f075ef2557083b0044403e26",
+    "https://svb.web-ben.de/chunk-OXINPKYA.js": "6e6e0b52842ad038443132c31f2bc530a9dfe4f1",
+    "https://svb.web-ben.de/chunk-SECEFDB3.js": "9e38a2e18cda508cfd301aff2feb502c40eb41a9",
+    "https://svb.web-ben.de/chunk-UFDG5QW2.js": "e16025f0259848b99ec173229181d8210badd718",
+    "https://svb.web-ben.de/chunk-XZ5BW6PV.js": "f1d1729e00347f3b8c1274d34e443f8c9a7c562a",
+    "https://svb.web-ben.de/favicon.ico": "4e23d0f9b6ddaf3c9ddef90dbaed2342941297b5",
+    "https://svb.web-ben.de/icons/icon-128x128.png": "f912963bdc6d5a38d8f1dd0afbaab2ce8d657acb",
+    "https://svb.web-ben.de/icons/icon-144x144.png": "b155fd5f2fd5d2ea7760721063003c4cd95fd783",
+    "https://svb.web-ben.de/icons/icon-152x152.png": "eae6e0f0c8afb8aaae339e2a569b43e9238e5e6c",
+    "https://svb.web-ben.de/icons/icon-192x192.png": "15c4180454633880d98674aa7394656196c91584",
+    "https://svb.web-ben.de/icons/icon-384x384.png": "94a915751ef6c9282df9aea405ad679230631814",
+    "https://svb.web-ben.de/icons/icon-512x512.png": "1de182f76f7329dfa8f9fcdd1fdcdd695bea6a99",
+    "https://svb.web-ben.de/icons/icon-72x72.png": "aa88a6096bd973be7f6d7a5489bfa6bc2463f8c4",
+    "https://svb.web-ben.de/icons/icon-96x96.png": "7fb8f59c30ce2ff12c700321a0b39e14b3dc8f95",
+    "https://svb.web-ben.de/index.html": "950b37e10dfc0f3e65c65554cec29013a896f38a",
+    "https://svb.web-ben.de/main-L4HCGEHY.js": "001a32af20e14e891eef1626f44915aeadbfd64a",
+    "https://svb.web-ben.de/manifest.webmanifest": "f677562220225ca1b29b475f1deea63109789a6f",
+    "https://svb.web-ben.de/media/league-spartan-latin-ext-wght-normal-4T5O5SJY.woff2": "e6d1c54410b320dd6c34a85259444e7b204cd9ba",
+    "https://svb.web-ben.de/media/league-spartan-latin-wght-normal-TRIG2WAE.woff2": "5ac8ea32ad1434f65d9deba384986ba07e6592a2",
+    "https://svb.web-ben.de/media/league-spartan-vietnamese-wght-normal-OAWD4EUR.woff2": "b700f02936444485f0ad2efb0f706693de30e2e7",
+    "https://svb.web-ben.de/media/noto-sans-cyrillic-400-normal-637UK53F.woff": "750234c6af2930264cd1902a973c86f50d4239a1",
+    "https://svb.web-ben.de/media/noto-sans-cyrillic-400-normal-MAC7FEOF.woff2": "4ca3098679f926e30f2b97861eec3dd56340e72f",
+    "https://svb.web-ben.de/media/noto-sans-cyrillic-ext-400-normal-FY3GW6VN.woff": "2fa316d641e6a0f78734aff659db3cea7850efd3",
+    "https://svb.web-ben.de/media/noto-sans-cyrillic-ext-400-normal-NRMJYMMI.woff2": "74b5c9f9522f3944847b043e657d38958863c32f",
+    "https://svb.web-ben.de/media/noto-sans-devanagari-400-normal-5SGYUCWP.woff": "c9ceaeea54c872c1c5b372f715059c754d96ff3d",
+    "https://svb.web-ben.de/media/noto-sans-devanagari-400-normal-NDJLB7KA.woff2": "76ea1f3e9b3debc4262533283e3b0955d20c717d",
+    "https://svb.web-ben.de/media/noto-sans-greek-400-normal-DCXTO4TA.woff": "2be650daa2e50c91e87301830016e3a206ed8fca",
+    "https://svb.web-ben.de/media/noto-sans-greek-400-normal-GWERXTYK.woff2": "20ec817f286c4715bab0f41962c2fbbe96df952c",
+    "https://svb.web-ben.de/media/noto-sans-greek-ext-400-normal-JB3YW6RV.woff": "02209a421e7ef873ef7b96d7b2ae31695fecf047",
+    "https://svb.web-ben.de/media/noto-sans-greek-ext-400-normal-JQFUBDI4.woff2": "70537ae35a14af840d41ede05ff19634ad6b88a8",
+    "https://svb.web-ben.de/media/noto-sans-latin-400-normal-Q3ONJYM7.woff": "5ab20655fc4e5500b57477e2dbd7add2f802f4b5",
+    "https://svb.web-ben.de/media/noto-sans-latin-400-normal-QL3V2I66.woff2": "6e73dee82a9e2a3a50ecd76f44e0df99ace1871d",
+    "https://svb.web-ben.de/media/noto-sans-latin-ext-400-normal-23UEV2HU.woff2": "6cf9894ba04548e5bde59417ee4f86a1161fbc75",
+    "https://svb.web-ben.de/media/noto-sans-latin-ext-400-normal-5LLBZ3PP.woff": "6e6d74ecae4432ed6f9e72e903669d9b7ad55d2c",
+    "https://svb.web-ben.de/media/noto-sans-vietnamese-400-normal-VDAOFCNQ.woff": "81bd22fdfc0640b851696a5dc193e44cab3fc0b6",
+    "https://svb.web-ben.de/media/noto-sans-vietnamese-400-normal-ZYURYFYW.woff2": "aea48a102edb0a38c912010f64dd5a851cdea43c",
+    "https://svb.web-ben.de/polyfills-DXJ4KTXW.js": "d45c76c5960bab3ace7fd6d211b9579456241f8a",
+    "https://svb.web-ben.de/styles-ZGJJ5J6N.css": "7523042d087ccdfe67f9428fdc3e978692aed410",
+    "https://svb.web-ben.de/trikot.svg": "3025d4990e25064fb03fca0ece4365fa43bcae48",
+    "https://svb.web-ben.de/volleyball.svg": "db0809818da2d7985defea975dd0e91a0f7b3f63"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ],
+  "navigationRequestStrategy": "performance"
+}
