@@ -129,7 +129,10 @@ export class RotationPlanerPageComponent implements OnInit {
       this.event = data['game'];
       this.selectedEvent = this.event?.id;
       await this.updateProps();
-      this.meta.updateMetadata({ title: `${this.event?.title}-> Rotation Planer`, description: 'Plan your rotation for your next game' }, true);
+      this.meta.updateMetadata(
+        { title: `${this.event?.title}-> Rotation Planer`, description: 'Plan your rotation for your next game', type: 'website' },
+        true
+      );
     });
   }
   private async updateProps() {
