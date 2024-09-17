@@ -124,7 +124,13 @@ import { hintMap } from '../types/hints';
                 />
               </svg>
             </div>
-            <div class="timeline-end timeline-box">{{ item?.player_id?.name }}</div>
+            <details class="dropdown">
+              <summary class="timeline-end timeline-box">{{ item?.player_id?.name }}</summary>
+              <ul class="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+                <li><a (click)="deleteAction(item.id)">Delete</a></li>
+                <!-- <li><a>Edit</a></li> -->
+              </ul>
+            </details>
             <hr />
           </li>
           }
