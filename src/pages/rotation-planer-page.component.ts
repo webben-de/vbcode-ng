@@ -10,7 +10,9 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
+import { select } from '@ngxs/store';
 import { ROUTES } from '../app/ROUTES';
+import { SessionState } from '../app/session.state';
 import { EventsService } from '../services/events.service';
 import { PlayerService } from '../services/player.service';
 import type { EventDTO } from '../types/EventDTO';
@@ -47,7 +49,9 @@ import { RotationGridItemComponent } from './atoms/vbGridItem.component';
             }
           </mat-select>
         </mat-form-field>
+        @if(session()?.user?.id === event?.owner) {
         <a [routerLink]="[ROUTES.root + ROUTES.editGame, selectedEvent]">{{ 'edit-this-event' | transloco }}</a>
+        }
       </div>
       <hr />
       @if (event) {
@@ -84,6 +88,7 @@ export class RotationPlanerPageComponent implements OnInit {
   route = inject(ActivatedRoute);
   eventService = inject(EventsService);
   playerService = inject(PlayerService);
+  session = select(SessionState.session);
   /**
    *
    */
