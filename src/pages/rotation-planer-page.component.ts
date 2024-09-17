@@ -38,7 +38,7 @@ import { RotationGridItemComponent } from './atoms/vbGridItem.component';
     TranslocoModule,
   ],
   template: `
-    <div class="flex flex-col w-full h-full p-5 justify-center gap-12">
+    <div class="flex flex-col w-full h-full p-5 justify-center gap-8">
       <div class="flex flex-col">
         <mat-form-field>
           <mat-label>{{ 'event' | transloco }}</mat-label>
@@ -57,7 +57,7 @@ import { RotationGridItemComponent } from './atoms/vbGridItem.component';
       <hr />
       @if (event) {
 
-      <div class="flex flex-col justify-evenly gap-8">
+      <div class="flex flex-col justify-evenly gap-4">
         <h6 class="text-md">{{ 'rotation' | transloco }}: {{ rotationSlider }}</h6>
 
         <mat-slide-toggle #toggleTrikot
