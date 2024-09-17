@@ -7,11 +7,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { TranslocoModule, translate } from '@jsverse/transloco';
 import type { EChartsOption, TitleComponentOption } from 'echarts';
 import jsPDF from 'jspdf';
 import { countBy, groupBy, sortBy } from 'lodash';
 import { NgxEchartsDirective } from 'ngx-echarts';
 import type { ActionDTO } from 'src/types/ActionDTO';
+import { ROUTES } from '../app/ROUTES';
 import { defaults } from '../components/defaults';
 import { gradDescriptionMap, grad_options_list, gradePrios } from '../components/grade-options';
 import { kindMap, kinds } from '../components/kind-options';
@@ -26,20 +28,20 @@ import { hintMap } from '../types/hints';
   selector: 'app-game-game-detail-view',
   host: { class: 'flex flex-col p-5 gap-4' },
   standalone: true,
-  imports: [CommonModule, RouterModule, NgxEchartsDirective, MatFormFieldModule, MatSelectModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, RouterModule, NgxEchartsDirective, MatFormFieldModule, MatSelectModule, MatButtonModule, MatIconModule, TranslocoModule],
   template: `
     <div class="flex justify-between items-center">
       <h1 class="!text-sm font-medium truncate">{{ game.title }}</h1>
       <div class="flex gap-4">
-        <button mat-fab [routerLink]="['/dataentry', game.id]"><mat-icon>add</mat-icon></button>
-        @if(game.owner){
+        <button mat-fab [routerLink]="[ROUTES.root, ROUTES.dataentry, game.id]"><mat-icon>add</mat-icon></button>
+        @if(game.owner && game.id){
         <button mat-fab (click)="deleteEvent(game.id)"><mat-icon>delete</mat-icon></button>
         }
       </div>
     </div>
     <div class="flex flex-col gap-8 " id="export">
       <mat-form-field>
-        <mat-label>Satz:</mat-label>
+        <mat-label>{{ 'set' | transloco }}:</mat-label>
 
         <mat-select placeholder="Satz" formControlName="game_set" [value]="'Alle'" (valueChange)="reloadSet($event)">
           <mat-option value="Alle">Alle</mat-option>
@@ -48,8 +50,8 @@ import { hintMap } from '../types/hints';
           }
         </mat-select>
       </mat-form-field>
-      <section class=" ">
-        <h6>Nach Aktionsart</h6>
+      <section>
+        <h6>{{ 'after-actions' | transloco }}</h6>
         <div class="stats shadow flex flex-wrap">
           @for (stat of groupedByKind; track $index) {
           <a class="stat w-1/2" [routerLink]="[]" fragment="co-{{ stat[0] }}">
@@ -69,7 +71,7 @@ import { hintMap } from '../types/hints';
         </div>
       </section>
       <section>
-        <h6>Alle Kontakt nach Bewertung</h6>
+        <h6>{{ 'all-action-after-grade' | transloco }}</h6>
         <div class="stats shadow flex flex-wrap">
           @for (grade of groupedByGrade; track $index) {
           <div class="stat w-1/2">
@@ -132,6 +134,7 @@ import { hintMap } from '../types/hints';
   `,
 })
 export class GameDetailViewComponent implements OnInit {
+  ROUTES = ROUTES;
   /**
    * create a pdf of the current view
    */
@@ -275,10 +278,18 @@ export class GameDetailViewComponent implements OnInit {
       ],
     } as any;
   }
-
+  /**
+   *
+   * @param map
+   * @returns
+   */
   convertPlayerCountMapToArray(map: Map<any, number>) {
     return Array.from(map.entries()).sort((a, b) => b[1] - a[1]);
   }
+  /**
+   *
+   * @param kind
+   */
   private updateCharts(kind: ActionKind) {
     if (!this.stats[kind].charts)
       this.stats[kind].charts = {
@@ -328,12 +339,16 @@ export class GameDetailViewComponent implements OnInit {
   async deleteAction(id: number) {
     return await this.actionsService.deleteAction(id);
   }
-  async deleteEvent(arg0: string) {
+  /**
+   *
+   * @param id
+   */
+  async deleteEvent(id: string) {
     try {
-      await this.eventService.deleteEvent(arg0);
-      this.router.navigate(['/games']);
+      await this.eventService.deleteEvent(id);
+      this.router.navigate([ROUTES.root, ROUTES.games]);
     } catch (error) {
-      this.snack.open('Error deleteing eVent');
+      this.snack.open(translate('error-deleteing-event'));
     }
   }
 }

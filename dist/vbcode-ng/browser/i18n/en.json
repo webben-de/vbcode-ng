@@ -9,5 +9,21 @@
   "game-overview": "Game Overview",
   "data-input": "Data Input",
   "submit": "Submit",
-  "grade": "Grade"
+  "grade": "Grade",
+  "create-a-new-game": "Create a new Game",
+  "title": "Title",
+  "date": "Date",
+  "home-team": "Home Team",
+  "start-rotation": "Start Rotation",
+  "away-team": "Away Team",
+  "attendees": "Attendees",
+  "edit-this-team": "Edit this team",
+  "see-all-your-games-here": "See all your games here",
+  "set": "Set",
+  "after-actions": "After Actions",
+  "all-action-after-grade": "All Action after Grade",
+  "error-deleteing-event": "Error deleteing event",
+  "show": "Show",
+  "Trikotnumber": "trikotnumber",
+  "BasePosition": "base position"
 }

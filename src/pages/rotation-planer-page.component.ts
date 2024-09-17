@@ -60,8 +60,10 @@ import { RotationGridItemComponent } from './atoms/vbGridItem.component';
       <div class="flex flex-col justify-evenly gap-8">
         <h6 class="text-md">{{ 'rotation' | transloco }}: {{ rotationSlider }}</h6>
 
-        <mat-slide-toggle #toggleTrikot>Show {{ !toggleTrikot.checked ? 'Trikotnumber' : 'BasePosition' }}</mat-slide-toggle>
-        <div class="grid grid-cols-3 gap-8 grid-rows-2 justify-center ">
+        <mat-slide-toggle #toggleTrikot
+          >{{ 'show' | transloco }} {{ !toggleTrikot.checked ? ('Trikotnumber' | transloco) : ('BasePosition' | transloco) }}</mat-slide-toggle
+        >
+        <div class="grid grid-cols-3 gap-8 grid-rows-2 justify-center  border-2 p-8 ">
           <app-grid-item [currentRotation]="slider" [index]="1" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
           <app-grid-item [currentRotation]="slider" [index]="2" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
           <app-grid-item [currentRotation]="slider" [index]="3" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
