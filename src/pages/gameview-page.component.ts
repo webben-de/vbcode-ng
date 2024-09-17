@@ -13,6 +13,7 @@ import { ActionsService } from '../services/action.service';
 import { EventsService } from '../services/events.service';
 import { SupabaseService } from '../services/supabase.service';
 import { ActionKind } from '../types/ActionKind';
+import { ROUTES } from '../app/ROUTES';
 
 @Component({
   selector: 'app-gameview',
@@ -91,13 +92,14 @@ import { ActionKind } from '../types/ActionKind';
           </div>
         </div>
       </div>
-      <button class="btn" [routerLink]="['/report', 'details', gameF.controls.game_id.value]">Details</button>
+      <a class="btn" [routerLink]="[ROUTES.root, ROUTES.report, 'details', gameF.controls.game_id.value]">Details</a>
       <div echarts [options]="pieChartDist" class="h-40 w-full"></div>
       <hr />
     </div>
   `,
 })
 export class GameViewComponent implements OnInit {
+  ROUTES = ROUTES;
   supabase = inject(SupabaseService);
   actionsService = inject(ActionsService);
   eventsService = inject(EventsService);
