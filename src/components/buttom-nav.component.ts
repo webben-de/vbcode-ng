@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { ROUTES } from '../app/ROUTES';
 
 @Component({
   selector: 'app-buttom-nav',
@@ -8,13 +9,13 @@ import { RouterModule } from '@angular/router';
   imports: [RouterModule, MatIconModule],
   template: `
     <div class="btm-nav z-20">
-      <button class="text-primary" [routerLink]="['/report']" [routerLinkActive]="'active'">
+      <button class="text-primary" [routerLink]="[ROUTES.root + ROUTES.report]" [routerLinkActive]="'active'">
         <mat-icon>leaderboard</mat-icon>
       </button>
-      <button class="text-primary" [routerLink]="['/dataentry']" [routerLinkActive]="'active'">
+      <button class="text-primary" [routerLink]="[ROUTES.root + ROUTES.dataentry]" [routerLinkActive]="'active'">
         <mat-icon>note_add</mat-icon>
       </button>
-      <button class="text-primary" [routerLink]="['/create-game']" [routerLinkActive]="'active'">
+      <button class="text-primary" [routerLink]="[ROUTES.root + ROUTES.createGame]" [routerLinkActive]="'active'">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             stroke-linecap="round"
@@ -26,10 +27,7 @@ import { RouterModule } from '@angular/router';
       </button>
     </div>
   `,
-  styles: [``],
 })
-export class ButtomNavComponent implements OnInit {
-  constructor() {}
-
-  ngOnInit(): void {}
+export class ButtomNavComponent {
+  ROUTES = ROUTES;
 }

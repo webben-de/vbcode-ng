@@ -7,12 +7,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ROUTES } from 'src/app/ROUTES';
 import { EventsService } from '../services/events.service';
 import { PlayerService } from '../services/player.service';
+import { SupabaseService } from '../services/supabase.service';
 import { TeamsService } from '../services/teams.service';
 import type { EventDTO, createEventDTO } from '../types/EventDTO';
 import type { PlayerDTO } from '../types/PlayerDTO';
-import { SupabaseService } from '../services/supabase.service';
 
 @Component({
   selector: 'app-create-game-page',
@@ -27,6 +28,13 @@ import { SupabaseService } from '../services/supabase.service';
           <input matInput placeholder="Friendship" formControlName="title" />
         </mat-form-field>
         <mat-form-field class="w-full">
+          <mat-select formControlName="visibility">
+            <mat-option *ngFor="let item of ['Private', 'Public']" [value]="item">
+              {{ item }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field class="w-full">
           <mat-label>Date</mat-label>
           <input matInput type="date" formControlName="date" placeholder="Friendship" />
         </mat-form-field>
@@ -39,7 +47,7 @@ import { SupabaseService } from '../services/supabase.service';
             </mat-option>
           </mat-select>
           <mat-hint>
-            <a [routerLink]="['/teams', homeTeam.value]"> Edit this team </a>
+            <a [routerLink]="['/' + ROUTES.teams, homeTeam.value]"> Edit this team </a>
           </mat-hint>
         </mat-form-field>
         <h5>Start Rotation</h5>
@@ -111,11 +119,15 @@ import { SupabaseService } from '../services/supabase.service';
         <pre><code>{{this.createGameForm}}</code></pre>
       </form>
       <hr />
-      <p><a [routerLink]="['/games']">See all your games here</a></p>
+      <p><a [routerLink]="[ROUTES.games]">See all your games here</a></p>
     </div>
   `,
 })
 export class CreateGamePageComponent implements OnInit {
+  ROUTES = ROUTES;
+  /**
+   *
+   */
   route = inject(ActivatedRoute);
   router = inject(Router);
   snack = inject(MatSnackBar);
@@ -123,6 +135,9 @@ export class CreateGamePageComponent implements OnInit {
   supabase = inject(SupabaseService);
   playerService = inject(PlayerService);
   teamService = inject(TeamsService);
+  /**
+   *
+   */
   teams = this.teamService.getTeams();
   players = this.playerService.getPlayers();
   attendeesOptions: (PlayerDTO | null)[] = [];

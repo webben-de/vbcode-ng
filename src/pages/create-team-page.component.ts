@@ -7,9 +7,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ROUTES } from '../app/ROUTES';
 import { PlayerService } from '../services/player.service';
 import { type TeamDTO, TeamsService, type createTeamDTO } from '../services/teams.service';
-import type { PlayerDTO } from '../types/PlayerDTO';
 
 @Component({
   selector: 'app-create-team-page',
@@ -41,18 +41,25 @@ import type { PlayerDTO } from '../types/PlayerDTO';
         </mat-form-field>
         <button mat-button [type]="'submit'">Submit</button>
       </form>
-      <pre><code>{{teamFormGroup.value|json}}</code></pre>
+      <!-- <pre><code>{{teamFormGroup.value|json}}</code></pre> -->
       <hr />
 
-      <p><a [routerLink]="['/teams']">See all your teams here</a></p>
+      <p><a [routerLink]="[ROUTES.root + ROUTES.teams]">See all your teams here</a></p>
     </div>
   `,
 })
 export class CreateTeamPageComponent implements OnInit {
+  ROUTES = ROUTES;
+  /**
+   *
+   */
   route = inject(ActivatedRoute);
   snack = inject(MatSnackBar);
   teamsService = inject(TeamsService);
   playerService = inject(PlayerService);
+  /**
+   *
+   */
   players = this.playerService.getPlayers();
   team: TeamDTO = {} as TeamDTO;
   teamFormGroup = new FormGroup({
@@ -60,9 +67,12 @@ export class CreateTeamPageComponent implements OnInit {
     name: new FormControl(''),
     players: new FormControl<string[]>([]),
   });
-
+  /**
+   *
+   */
   ngOnInit(): void {
     this.route.data.subscribe((data) => {
+      // biome-ignore lint/complexity/useLiteralKeys: <explanation>
       this.team = data['team'] as TeamDTO;
       if (this.team)
         this.teamFormGroup.patchValue({

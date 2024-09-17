@@ -9,11 +9,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
-import { MatSelectModule } from '@angular/material/select';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { type MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { TranslocoModule } from '@jsverse/transloco';
 import { grad_options_list } from '../components/grade-options';
 import { kindMap } from '../components/kind-options';
 import { ActionsService } from '../services/action.service';
@@ -51,6 +52,7 @@ type abbMap = {
     MatChipsModule,
     MatIconModule,
     RouterModule,
+    TranslocoModule,
   ],
   template: `
     <div class="flex flex-col p-5">
@@ -138,12 +140,8 @@ type abbMap = {
             </mat-form-field>
           </mat-step>
           <mat-step>
-            <ng-template matStepLabel>Bewertung: {{ codeInFG.controls.grade.value?.name }}</ng-template>
-            <!-- <mat-button-toggle-group formControlName="grade" (change)="stepper.next()">
-              @for (item of grad_options; track $index) {
-              <mat-button-toggle [value]="item">{{ item.name }}</mat-button-toggle>
-              }
-            </mat-button-toggle-group> -->
+            <ng-template matStepLabel>{{ 'grade' | transloco }}: {{ codeInFG.controls.grade.value?.name }}</ng-template>
+
             <mat-form-field class="w-full ">
               <mat-chip-grid #chipGrid4>
                 @for (item of grad_options; track $index) {
@@ -177,7 +175,7 @@ type abbMap = {
             </div>
             }
 
-            <button mat-raised-button type="submit">Submit</button>
+            <button mat-raised-button type="submit">{{ 'submit' | transloco }}</button>
           </mat-step>
         </mat-vertical-stepper>
       </form>
@@ -270,6 +268,10 @@ export class DataEntryComponent implements OnInit {
       });
     }
   }
+  /**
+   *
+   * @returns
+   */
   async ngOnInit() {
     const e = await this.events;
     if (!e) return;
@@ -282,7 +284,11 @@ export class DataEntryComponent implements OnInit {
       }
     }
   }
-  async changeEvent($event: any) {
+  /**
+   *
+   * @param $event
+   */
+  async changeEvent($event: string) {
     const event = await this.eventService.getEvent($event);
     const players = await this.playerService.getPlayerList(event?.attendees);
     if (players) {

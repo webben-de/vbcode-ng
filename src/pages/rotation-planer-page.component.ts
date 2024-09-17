@@ -1,100 +1,150 @@
-import { Component, inject, OnInit } from '@angular/core';
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { CommonModule } from '@angular/common';
+import { Component, type OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { TranslocoModule } from '@jsverse/transloco';
+import { ROUTES } from '../app/ROUTES';
 import { EventsService } from '../services/events.service';
-import { CommonModule } from '@angular/common';
-import { EventDTO } from '../types/EventDTO';
 import { PlayerService } from '../services/player.service';
-import { PlayerDTO } from '../types/PlayerDTO';
-import { ActivatedRoute, ActivatedRouteSnapshot, RouterModule } from '@angular/router';
+import type { EventDTO } from '../types/EventDTO';
+import type { PlayerDTO } from '../types/PlayerDTO';
+import { RotationGridItemComponent } from './atoms/vbGridItem.component';
 
 @Component({
   selector: 'app-rotation-planer',
   host: { class: 'w-full flex h-full' },
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, ReactiveFormsModule, MatFormFieldModule, MatSelectModule, MatSliderModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatSliderModule,
+    MatSlideToggleModule,
+    MatIconModule,
+    RotationGridItemComponent,
+    TranslocoModule,
+  ],
   template: `
-    <div class="flex flex-col h-full w-1/2 justify-center">
-      <mat-form-field>
-        <mat-select placeholder="Select Game" [(ngModel)]="selectedEvent" (valueChange)="handleGameChange($event)">
-          @for (item of events|async; track $index) {
-          <mat-option [value]="item.id">
-            {{ item.title }}
-          </mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-      <!-- {{ selectedEvent | json }} -->
-      <a [routerLink]="['/edit-game', selectedEvent]">Edit this event</a>
-      <hr />
-      <h4>{{ event?.title }}</h4>
+    <div class="flex flex-col w-full h-full p-5 justify-center gap-12">
       <div class="flex flex-col">
-        <mat-slider min="1" max="6" step="1" value="1">
-          <input matSliderThumb (change)="handleRoationChange($event)" [(ngModel)]="rotationSlider" />
-        </mat-slider>
-        <h3>Roation: {{ rotationSlider }}</h3>
-        <pre><code>
-          {{ rotationMap.get(slider)!.get("1")! |json }}
-          {{ rotationMap.get(slider)!.get(2)! |json }}
-
-        </code></pre>
-        <div class="grid grid-cols-3">
-          <div class="flex w-20 h-20 ">4: {{ roatedPlayer.get(rotationMap.get(slider)!.get(4)!)?.name }}</div>
-          <div class="flex w-20 h-20 ">3: {{ roatedPlayer.get(rotationMap.get(slider)!.get(3)!)?.name }}</div>
-          <div class="flex w-20 h-20 ">2: {{ roatedPlayer.get(rotationMap.get(slider)!.get(2)!)?.name }}</div>
-          <div class="flex w-20 h-20 ">5: {{ roatedPlayer.get(rotationMap.get(slider)!.get(5)!)?.name }}</div>
-          <div class="flex w-20 h-20 ">6: {{ roatedPlayer.get(rotationMap.get(slider)!.get(6)!)?.name }}</div>
-          <div class="flex w-20 h-20 ">1: {{ roatedPlayer.get(rotationMap.get(slider)!.get(1)!)?.name }}</div>
-        </div>
+        <mat-form-field>
+          <mat-label>{{ 'event' | transloco }}</mat-label>
+          <mat-select placeholder="Select Game" [(ngModel)]="selectedEvent" (valueChange)="handleGameChange($event)">
+            @for (item of events|async; track $index) {
+            <mat-option [value]="item.id">
+              {{ item.title }}
+            </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <a [routerLink]="[ROUTES.root + ROUTES.editGame, selectedEvent]">{{ 'edit-this-event' | transloco }}</a>
       </div>
+      <hr />
+      @if (event) {
+
+      <div class="flex flex-col justify-evenly gap-8">
+        <h6 class="text-md">{{ 'rotation' | transloco }}: {{ rotationSlider }}</h6>
+
+        <mat-slide-toggle #toggleTrikot>Show {{ !toggleTrikot.checked ? 'Trikotnumber' : 'BasePosition' }}</mat-slide-toggle>
+        <div class="grid grid-cols-3 gap-8 grid-rows-2 justify-center ">
+          <app-grid-item [currentRotation]="slider" [index]="1" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
+          <app-grid-item [currentRotation]="slider" [index]="2" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
+          <app-grid-item [currentRotation]="slider" [index]="3" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
+          <app-grid-item [currentRotation]="slider" [index]="4" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
+          <app-grid-item [currentRotation]="slider" [index]="5" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
+          <app-grid-item [currentRotation]="slider" [index]="6" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
+        </div>
+        <mat-slider min="1" max="6" step="1" value="1" discrete="true" showTickMarks="true" class="animate-pulse">
+          <input matSliderThumb [(ngModel)]="rotationSlider" />
+        </mat-slider>
+        <p>{{ 'move-the-slider-preview-each-rotation-on-the-curt' | transloco }}</p>
+      </div>
+      }@else {
+      <div class="flex flex-col items-center">
+        <mat-icon class="!h-20 ">swipe_up</mat-icon>
+        <p>{{ 'please-select-an-event-to-see-information-here' | transloco }}</p>
+      </div>
+      }
     </div>
   `,
 })
 export class RotationPlanerPageComponent implements OnInit {
-  event?: EventDTO;
-  roationPlayerBasePositions?: PlayerDTO[];
-  roatedPlayer: Map<string | number, PlayerDTO> = new Map();
-  rotationMap: Map<string | number, Map<string | number, number | string>> = new Map();
-  rotationSlider = 1;
-  get slider() {
-    return String(this.rotationSlider);
-  }
-  async handleGameChange($event: any) {
-    this.event = await this.eventService.getEvent($event.id);
-    // this.roatedPlayer = this.roationPlayerBasePositions = await this.playerService.getPlayerList(Object.values(this.event.home_team_start_rotation));
-  }
-  handleRoationChange($event: any) {
-    const count = $event.target.value;
-    if (!this.roationPlayerBasePositions) return;
-    // this.roatedPlayer = [...this.roationPlayerBasePositions];
-    for (let index = 0; index < count; index++) {
-      this.roatedPlayer;
-    }
-  }
+  ROUTES = ROUTES;
+  router = inject(Router);
   route = inject(ActivatedRoute);
   eventService = inject(EventsService);
   playerService = inject(PlayerService);
+  /**
+   *
+   */
   events = this.eventService.getEvents();
+  event?: EventDTO;
+  roationPlayerBasePositions?: PlayerDTO[];
+  roatedPlayer: Map<string | number, PlayerDTO> = new Map();
+  /**
+   * In the database the rotation is stored as a map of player ids
+   * f.e {1: "uuid1", 2: "uuid2"}
+   * Because we render the array in the frontend we need to map the player ids to the player objects
+   * the map for base position should be
+   *  [ index4, index3, index2, index5, index6, index1]
+   * So when a rotation is changed for the second rotation
+   * 2: [ index5, index4, index3, index6, index1, index2]
+   * 3: [ index6, index5, index4, index1, index2, index3]
+   * 4: [ index1, index6, index5, index2, index3, index4]
+   * 5: [ index2, index1, index6, index3, index4, index5]
+   * 6: [ index3, index2, index1, index4, index5, index6]
+   *
+   */
+  rotationSlider = 1;
   selectedEvent?: string;
+  /**
+   *
+   */
+  get slider() {
+    return String(this.rotationSlider);
+  }
+  /**
+   *
+   */
   async ngOnInit(): Promise<void> {
-    // [(4, 3, 2, 5, 6, 1)];
-    this.rotationMap.set('1', new Map().set(1, 4).set(2, 3).set(3, 2).set(4, 5).set(5, 6).set(6, 1));
-    this.rotationMap.set('2', new Map().set(1, 5).set(2, 4));
-    // this.rotationMap.set('2', [5, 4, 3, 6, 1, 2]);
-
     this.route.data.subscribe(async (data) => {
+      // biome-ignore lint/complexity/useLiteralKeys: <explanation>
       this.event = data['game'];
       this.selectedEvent = this.event?.id;
-      const ids = Object.entries(this.event?.home_team_start_rotation!);
-      console.log(ids);
-      const map = new Map<string | number, PlayerDTO>();
-      const players = await this.playerService.getPlayerList(ids.map((i) => i[1]));
-      ids.forEach((value, key, map1) => {
-        map.set(Number(value[0]), players.find((p) => p.id === value[1])!);
-      });
-      this.roatedPlayer = map;
+      await this.updateProps();
     });
+  }
+  private async updateProps() {
+    if (!this.event) return;
+    this.router.navigate([ROUTES.root + ROUTES.roationPlaner, this.event.id]);
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    const ids = Object.entries(this.event?.home_team_start_rotation!);
+    const map = new Map<string | number, PlayerDTO>();
+    const players = await this.playerService.getPlayerList(ids.map((i) => i[1]));
+    // biome-ignore lint/complexity/noForEach: <explanation>
+    ids.forEach(([key, value]) => {
+      // biome-ignore lint/style/noNonNullAssertion: <explanation>
+      map.set(Number(key), players.find((p) => p.id === value)!);
+    });
+    this.roatedPlayer = map;
+  }
+
+  /**
+   *
+   * @param $event
+   */
+  async handleGameChange($event: string) {
+    this.event = await this.eventService.getEvent($event);
+    this.updateProps();
   }
 }
