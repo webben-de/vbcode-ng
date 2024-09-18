@@ -44,7 +44,7 @@ import { EventsService } from '../services/events.service';
         </div>
       </div>
       } @if (session()?.user) {
-      <a [routerLink]="[ROUTES.root, ROUTES.create, ROUTES.games]" class="btn btn-secondary">
+      <a [routerLink]="[ROUTES.root, ROUTES.games, ROUTES.create]" class="btn btn-secondary">
         {{ 'create-a-new-game' | transloco }}
       </a>
       }
