@@ -54,6 +54,5 @@
   "name": "SVB-Code",
   "scope": "./",
   "short_name": "SVBC",
-  "start_url": "http://svg.web-ben.de",
   "theme_color": "#1976d2"
 }
