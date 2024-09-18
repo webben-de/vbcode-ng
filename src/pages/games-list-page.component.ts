@@ -15,8 +15,8 @@ import { EventsService } from '../services/events.service';
   host: { class: 'flex flex-col p-5' },
   imports: [MatListModule, CommonModule, RouterLink, MatIconModule, TranslocoModule],
   template: `
-    <span class="text-2xl font-bold">Your Events</span>
-    <div class="flex flex-col items-center gap-4">
+    <span class="text-2xl font-bold">{{ 'your-events' | transloco }}</span>
+    <div class="flex flex-col md:flex-row items-center gap-4">
       @for (item of events|async; track $index) {
 
       <div class="card bg-base-100 w-96 shadow-xl">
@@ -36,6 +36,9 @@ import { EventsService } from '../services/events.service';
           <p class="bg-green">{{ item.result_home }} - {{ item.result_away }}</p>
           }
           <div class="card-actions justify-end">
+            @if (item.result_home && item.result_away) {
+            <div class="badge badge-outline">{{ 'finished' | transloco }}</div>
+            }
             <div class="badge badge-outline">{{ item.visibility }}</div>
             @if (item.owner === session()?.user?.id) {
 
