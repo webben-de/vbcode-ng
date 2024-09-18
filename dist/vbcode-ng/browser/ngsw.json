@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1726655036487,
+  "timestamp": 1726655179065,
   "index": "https://svb.web-ben.de/index.html",
   "assetGroups": [
     {
@@ -25,7 +25,7 @@
         "https://svb.web-ben.de/chunk-WMWYEAXO.js",
         "https://svb.web-ben.de/favicon.ico",
         "https://svb.web-ben.de/index.html",
-        "https://svb.web-ben.de/main-MEV76SLL.js",
+        "https://svb.web-ben.de/main-BLKL4Y2G.js",
         "https://svb.web-ben.de/manifest.webmanifest",
         "https://svb.web-ben.de/polyfills-DXJ4KTXW.js",
         "https://svb.web-ben.de/styles-53CSNOZH.css"
@@ -96,8 +96,8 @@
     "https://svb.web-ben.de/icons/icon-512x512.png": "1de182f76f7329dfa8f9fcdd1fdcdd695bea6a99",
     "https://svb.web-ben.de/icons/icon-72x72.png": "aa88a6096bd973be7f6d7a5489bfa6bc2463f8c4",
     "https://svb.web-ben.de/icons/icon-96x96.png": "7fb8f59c30ce2ff12c700321a0b39e14b3dc8f95",
-    "https://svb.web-ben.de/index.html": "87386f18bf0595a37aac47dc38adafca9d3f68b3",
-    "https://svb.web-ben.de/main-MEV76SLL.js": "f4b076b036222ad5f198072f5fc866df4c1b0503",
+    "https://svb.web-ben.de/index.html": "a8bd1051c2c33183a6e22e738163cf104585aa0b",
+    "https://svb.web-ben.de/main-BLKL4Y2G.js": "6cadc6ee8679c6d2c333eadaeefd128201fc3d3e",
     "https://svb.web-ben.de/manifest.webmanifest": "fcf5f6183db2d83cfdcc64393b26b1951796e023",
     "https://svb.web-ben.de/media/league-spartan-latin-ext-wght-normal-4T5O5SJY.woff2": "e6d1c54410b320dd6c34a85259444e7b204cd9ba",
     "https://svb.web-ben.de/media/league-spartan-latin-wght-normal-TRIG2WAE.woff2": "5ac8ea32ad1434f65d9deba384986ba07e6592a2",

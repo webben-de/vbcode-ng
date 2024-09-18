@@ -17,8 +17,8 @@ import { SupabaseService } from '../services/supabase.service';
 import { TeamsService } from '../services/teams.service';
 import type { EventDTO, createEventDTO } from '../types/EventDTO';
 import type { PlayerDTO } from '../types/PlayerDTO';
-import { SingleRoationFormControlComponent } from './atoms/single-roation-form-control.component';
 import { AttendeesSelectFormControlComponent } from './atoms/attendees-select-form-control.component';
+import { SingleRoationFormControlComponent } from './atoms/single-roation-form-control.component';
 
 type NewType = unknown;
 
@@ -117,7 +117,7 @@ type NewType = unknown;
       </form>
       <hr />
       <p>
-        <a [routerLink]="[ROUTES.games]">{{ 'see-all-your-games-here' | transloco }}</a>
+        <a [routerLink]="[ROUTES.root, ROUTES.games]">{{ 'see-all-your-games-here' | transloco }}</a>
       </p>
     </div>
   `,
