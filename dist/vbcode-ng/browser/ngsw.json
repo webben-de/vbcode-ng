@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1726653499778,
+  "timestamp": 1726653693387,
   "index": "https://svb.web-ben.de/index.html",
   "assetGroups": [
     {
@@ -98,7 +98,7 @@
     "https://svb.web-ben.de/icons/icon-96x96.png": "7fb8f59c30ce2ff12c700321a0b39e14b3dc8f95",
     "https://svb.web-ben.de/index.html": "d25a747d01abcdbb07459f6f3d41cb6bc7d6d3a2",
     "https://svb.web-ben.de/main-4G5XM6QV.js": "9c2cf9fa0e98aa2802ae04618f1a9d1ce82e6b75",
-    "https://svb.web-ben.de/manifest.webmanifest": "3cb2bd0709f2ee74170ab57f41ac3b47b11d20b7",
+    "https://svb.web-ben.de/manifest.webmanifest": "fcf5f6183db2d83cfdcc64393b26b1951796e023",
     "https://svb.web-ben.de/media/league-spartan-latin-ext-wght-normal-4T5O5SJY.woff2": "e6d1c54410b320dd6c34a85259444e7b204cd9ba",
     "https://svb.web-ben.de/media/league-spartan-latin-wght-normal-TRIG2WAE.woff2": "5ac8ea32ad1434f65d9deba384986ba07e6592a2",
     "https://svb.web-ben.de/media/league-spartan-vietnamese-wght-normal-OAWD4EUR.woff2": "b700f02936444485f0ad2efb0f706693de30e2e7",
