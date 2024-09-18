@@ -3,7 +3,7 @@ export enum ROUTES {
   reportDetail = 'report/details',
   reportDetailId = 'report/details/:id',
   roationPlaner = 'rotation-planer',
-  createGame = 'games/create',
+  create = 'create',
   editGame = 'edit-game',
   teams = 'teams',
   games = 'games',

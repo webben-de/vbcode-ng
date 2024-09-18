@@ -3,11 +3,11 @@ import { Component, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { RouterLink } from '@angular/router';
-import { ROUTES } from 'src/app/ROUTES';
-import { EventsService } from '../services/events.service';
-import { select } from '@ngxs/store';
-import { SessionState } from '../app/session.state';
 import { TranslocoModule } from '@jsverse/transloco';
+import { select } from '@ngxs/store';
+import { ROUTES } from 'src/app/ROUTES';
+import { SessionState } from '../app/session.state';
+import { EventsService } from '../services/events.service';
 
 @Component({
   selector: 'app-game-list-page',
@@ -43,10 +43,11 @@ import { TranslocoModule } from '@jsverse/transloco';
           </div>
         </div>
       </div>
-      }
-      <a [routerLink]="[ROUTES.root, ROUTES.createGame]" class="btn btn-secondary">
+      } @if (session()?.user) {
+      <a [routerLink]="[ROUTES.root, ROUTES.create, ROUTES.games]" class="btn btn-secondary">
         {{ 'create-a-new-game' | transloco }}
       </a>
+      }
     </div>
   `,
 })
