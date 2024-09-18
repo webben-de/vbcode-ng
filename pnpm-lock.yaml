@@ -47,6 +47,9 @@ importers:
       '@fontsource-variable/league-spartan':
         specifier: ^5.1.0
         version: 5.1.0
+      '@fontsource/material-icons':
+        specifier: ^5.1.0
+        version: 5.1.0
       '@fontsource/noto-sans':
         specifier: ^5.0.22
         version: 5.0.22
@@ -1595,6 +1598,9 @@ packages:
 
   '@fontsource-variable/league-spartan@5.1.0':
     resolution: {integrity: sha512-B1t7jv4OokHjOSon7fKDCUv3Z07exYSau4wgq52C9XVcCRMGtDLgpuS2IWcNC23Z10V462Pf0EGH5DRKnCwbHA==}
+
+  '@fontsource/material-icons@5.1.0':
+    resolution: {integrity: sha512-xqTEO5vcVl8saTAi3QBRpGot4pX9WkqR7lOp07NfHwizigIPUTWnCc9UNlotWs3Jt4TWI8GKomDn2HdK2GwOtw==}
 
   '@fontsource/noto-sans@5.0.22':
     resolution: {integrity: sha512-PwjvKPGFbgpwfKjWZj1zeUvd7ExUW2AqHE9PF9ysAJ2gOuzIHWE6mEVIlchYif7WC2pQhn+g0w6xooCObVi+4A==}
@@ -8673,6 +8679,8 @@ snapshots:
   '@eslint/js@8.57.0': {}
 
   '@fontsource-variable/league-spartan@5.1.0': {}
+
+  '@fontsource/material-icons@5.1.0': {}
 
   '@fontsource/noto-sans@5.0.22': {}
 

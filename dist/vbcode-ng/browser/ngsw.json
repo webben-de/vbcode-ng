@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1726666720636,
+  "timestamp": 1726666819694,
   "index": "https://svb.web-ben.de/index.html",
   "assetGroups": [
     {
@@ -28,7 +28,7 @@
         "https://svb.web-ben.de/main-FF36CRYC.js",
         "https://svb.web-ben.de/manifest.webmanifest",
         "https://svb.web-ben.de/polyfills-DXJ4KTXW.js",
-        "https://svb.web-ben.de/styles-TPT77IML.css"
+        "https://svb.web-ben.de/styles-7UECTYDL.css"
       ],
       "patterns": []
     },
@@ -51,6 +51,8 @@
         "https://svb.web-ben.de/media/league-spartan-latin-ext-wght-normal-4T5O5SJY.woff2",
         "https://svb.web-ben.de/media/league-spartan-latin-wght-normal-TRIG2WAE.woff2",
         "https://svb.web-ben.de/media/league-spartan-vietnamese-wght-normal-OAWD4EUR.woff2",
+        "https://svb.web-ben.de/media/material-icons-latin-400-normal-LEZCGFVT.woff2",
+        "https://svb.web-ben.de/media/material-icons-latin-400-normal-OKHIZNFO.woff",
         "https://svb.web-ben.de/media/noto-sans-cyrillic-400-normal-637UK53F.woff",
         "https://svb.web-ben.de/media/noto-sans-cyrillic-400-normal-MAC7FEOF.woff2",
         "https://svb.web-ben.de/media/noto-sans-cyrillic-ext-400-normal-FY3GW6VN.woff",
@@ -96,12 +98,14 @@
     "https://svb.web-ben.de/icons/icon-512x512.png": "1de182f76f7329dfa8f9fcdd1fdcdd695bea6a99",
     "https://svb.web-ben.de/icons/icon-72x72.png": "aa88a6096bd973be7f6d7a5489bfa6bc2463f8c4",
     "https://svb.web-ben.de/icons/icon-96x96.png": "7fb8f59c30ce2ff12c700321a0b39e14b3dc8f95",
-    "https://svb.web-ben.de/index.html": "2a2d9b05323856afb9ca942ff1fc5eda316d00bc",
+    "https://svb.web-ben.de/index.html": "dffefc8af3d7c8d9ed42c502abcac16d338abfe9",
     "https://svb.web-ben.de/main-FF36CRYC.js": "1ab16a6766e09e71f0afc034fd0c8fedbb2a21c7",
     "https://svb.web-ben.de/manifest.webmanifest": "fcf5f6183db2d83cfdcc64393b26b1951796e023",
     "https://svb.web-ben.de/media/league-spartan-latin-ext-wght-normal-4T5O5SJY.woff2": "e6d1c54410b320dd6c34a85259444e7b204cd9ba",
     "https://svb.web-ben.de/media/league-spartan-latin-wght-normal-TRIG2WAE.woff2": "5ac8ea32ad1434f65d9deba384986ba07e6592a2",
     "https://svb.web-ben.de/media/league-spartan-vietnamese-wght-normal-OAWD4EUR.woff2": "b700f02936444485f0ad2efb0f706693de30e2e7",
+    "https://svb.web-ben.de/media/material-icons-latin-400-normal-LEZCGFVT.woff2": "0bc0c675480d94ec7e8609dda6227f88c5d08d2c",
+    "https://svb.web-ben.de/media/material-icons-latin-400-normal-OKHIZNFO.woff": "a00c7900fc85bb011b36e4d70d7825127c02c63c",
     "https://svb.web-ben.de/media/noto-sans-cyrillic-400-normal-637UK53F.woff": "750234c6af2930264cd1902a973c86f50d4239a1",
     "https://svb.web-ben.de/media/noto-sans-cyrillic-400-normal-MAC7FEOF.woff2": "4ca3098679f926e30f2b97861eec3dd56340e72f",
     "https://svb.web-ben.de/media/noto-sans-cyrillic-ext-400-normal-FY3GW6VN.woff": "2fa316d641e6a0f78734aff659db3cea7850efd3",
@@ -119,7 +123,7 @@
     "https://svb.web-ben.de/media/noto-sans-vietnamese-400-normal-VDAOFCNQ.woff": "81bd22fdfc0640b851696a5dc193e44cab3fc0b6",
     "https://svb.web-ben.de/media/noto-sans-vietnamese-400-normal-ZYURYFYW.woff2": "aea48a102edb0a38c912010f64dd5a851cdea43c",
     "https://svb.web-ben.de/polyfills-DXJ4KTXW.js": "d45c76c5960bab3ace7fd6d211b9579456241f8a",
-    "https://svb.web-ben.de/styles-TPT77IML.css": "f88ababfbde88ae959ba3130410e1f1735f00ad1",
+    "https://svb.web-ben.de/styles-7UECTYDL.css": "6fc5aaa5f4f9641a8b221091d3d4d19d4b66dca1",
     "https://svb.web-ben.de/trikot.svg": "3025d4990e25064fb03fca0ece4365fa43bcae48",
     "https://svb.web-ben.de/volleyball.svg": "db0809818da2d7985defea975dd0e91a0f7b3f63"
   },

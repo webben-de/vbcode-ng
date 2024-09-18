@@ -23,6 +23,7 @@
     "@angular/router": "~18.2.0",
     "@angular/service-worker": "~18.2.0",
     "@fontsource-variable/league-spartan": "^5.1.0",
+    "@fontsource/material-icons": "^5.1.0",
     "@fontsource/noto-sans": "^5.0.22",
     "@jsverse/transloco": "^7.4.4",
     "@ngxs/store": "^18.1.1",
