@@ -11,5 +11,21 @@ module.exports = {
       },
     },
   },
+  daisyui: {
+    themes: [
+      'light',
+      'dark',
+      'winter',
+      {
+        svb: {
+          primary: '#0A5F71',
+          secondary: '#387382',
+          accent: '#387382',
+          neutral: '#3d4451',
+          'base-100': '#fefeff',
+        },
+      },
+    ],
+  },
   plugins: [require('@tailwindcss/typography'), require('daisyui')],
 };

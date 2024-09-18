@@ -4,7 +4,9 @@ import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Va
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
@@ -20,8 +22,6 @@ import type { PlayerDTO } from '../types/PlayerDTO';
 import { AttendeesSelectFormControlComponent } from './atoms/attendees-select-form-control.component';
 import { SingleRoationFormControlComponent } from './atoms/single-roation-form-control.component';
 
-type NewType = unknown;
-
 @Component({
   selector: 'app-create-game-page',
   standalone: true,
@@ -31,6 +31,7 @@ type NewType = unknown;
     MatInputModule,
     FormsModule,
     ReactiveFormsModule,
+    MatSlideToggleModule,
     MatSelectModule,
     CommonModule,
     RouterModule,
@@ -58,6 +59,8 @@ type NewType = unknown;
           <mat-label>{{ 'date' | transloco }}</mat-label>
           <input matInput type="date" formControlName="date" />
         </mat-form-field>
+        <app-attendees-select-form-control [attendeesOptions]="attendeesOptions" [attendees]="this.createGameForm.controls.attendees" />
+
         <hr />
         <span class="text-lg">{{ 'home' | transloco }}</span>
         <mat-form-field class="w-full">
@@ -73,6 +76,7 @@ type NewType = unknown;
             <a [routerLink]="[ROUTES.root + ROUTES.teams, homeTeam.value]"> {{ 'edit-this-team' | transloco }} </a>
           </mat-hint>
         </mat-form-field>
+
         @if (homeTeam.value) {
 
         <span class="text-md">{{ 'start-rotation' | transloco }}</span>
@@ -112,7 +116,24 @@ type NewType = unknown;
           </div>
           }
         </div>
-        <app-attendees-select-form-control [attendeesOptions]="attendeesOptions" [attendees]="this.createGameForm.controls.attendees" />
+        <mat-slide-toggle #eventFinished>Event finished</mat-slide-toggle>
+        @if (eventFinished.checked || createGameForm.controls.result_home.value || createGameForm.controls.result_away.value) {
+
+        <div class="flex gap-2 w-full">
+          <div class="w-1/2">
+            <mat-form-field class="w-full">
+              <mat-label>Result Home </mat-label>
+              <input matInput type="number" formControlName="result_home" />
+            </mat-form-field>
+          </div>
+          <div class="w-1/2">
+            <mat-form-field class="w-full">
+              <mat-label>Result Away </mat-label>
+              <input matInput type="number" formControlName="result_away" />
+            </mat-form-field>
+          </div>
+        </div>
+        }
         <button mat-button [type]="'submit'">{{ 'submit' | transloco }}</button>
       </form>
       <hr />
@@ -149,6 +170,8 @@ export class CreateGamePageComponent implements OnInit {
     title: new FormControl<string>('', Validators.required),
     date: new FormControl<Date>(new Date(), Validators.required),
     attendees: new FormControl<string[]>([]),
+    result_home: new FormControl<number | undefined>(undefined),
+    result_away: new FormControl<number | undefined>(undefined),
     home_team: new FormControl<string | undefined>(undefined),
     home_team_start_rotation: new FormGroup({
       1: new FormControl<string | null>(null),

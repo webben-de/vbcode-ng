@@ -32,6 +32,9 @@ import { EventsService } from '../services/events.service';
             <div class="badge badge-secondary">{{ item.date }}</div>
           </span>
           <p>{{ item.home_team.name }} vs {{ item.away_team?.name || 'TBD' }}</p>
+          @if (item.result_home && item.result_away) {
+          <p class="bg-green">{{ item.result_home }} - {{ item.result_away }}</p>
+          }
           <div class="card-actions justify-end">
             <div class="badge badge-outline">{{ item.visibility }}</div>
             @if (item.owner === session()?.user?.id) {

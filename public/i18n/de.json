@@ -21,5 +21,9 @@
   "set": "Satz",
   "show": "Anzeige:",
   "submit": "Abschicken",
-  "title": "Eventname"
+  "title": "Eventname",
+  "BasePosition": "Grundpositionen",
+  "Trikotnumber": "Trikotnummer",
+  "start-rotation": "Start Rotation",
+  "error-deleteing-event": "Fehler beim Löschen"
 }
