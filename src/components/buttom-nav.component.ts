@@ -15,7 +15,7 @@ import { ROUTES } from '../app/ROUTES';
       <button class="text-primary" [routerLink]="[ROUTES.root + ROUTES.dataentry]" [routerLinkActive]="'active'">
         <mat-icon>note_add</mat-icon>
       </button>
-      <button class="text-primary" [routerLink]="[ROUTES.root + ROUTES.createGame]" [routerLinkActive]="'active'">
+      <button class="text-primary" [routerLink]="[ROUTES.root, ROUTES.games, ROUTES.create]" [routerLinkActive]="'active'">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             stroke-linecap="round"

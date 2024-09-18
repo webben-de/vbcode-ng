@@ -1,21 +1,21 @@
 import type { Route } from '@angular/router';
+import { provideStates, select } from '@ngxs/store';
 import { CreateGamePageComponent } from '../pages/create-game-page.component';
 import { CreateTeamPageComponent } from '../pages/create-team-page.component';
 import { DataEntryComponent } from '../pages/data-entry-page.component';
+import { GameDetailViewComponent } from '../pages/game-detail-view-page.component';
 import { GamesListPageComponent } from '../pages/games-list-page.component';
 import { GameViewComponent } from '../pages/gameview-page.component';
+import { LandingPageComponent } from '../pages/landing-page.component';
 import { RotationPlanerPageComponent } from '../pages/rotation-planer-page.component';
+import { UserLandingPageComponent } from '../pages/user-landing-page.component';
 import { ROUTES } from './ROUTES';
 import { AuthComponent } from './auth.component';
 import authenticationGuard from './guards/authenticationGuardFn';
 import actionResolver from './resolver/actionResolver';
 import eventResolver from './resolver/eventResolver';
 import teamResolver from './resolver/teamResolver';
-import { LandingPageComponent } from '../pages/landing-page.component';
-import { UserLandingPageComponent } from '../pages/user-landing-page.component';
-import { provideStates, select } from '@ngxs/store';
 import { SessionState } from './session.state';
-import { GameDetailViewComponent } from '../pages/game-detail-view-page.component';
 
 export const appRoutes: Route[] = [
   {
@@ -39,7 +39,7 @@ export const appRoutes: Route[] = [
     resolve: { game: eventResolver() },
   },
   {
-    path: ROUTES.createGame,
+    path: `${ROUTES.games}/${ROUTES.create}`,
     component: CreateGamePageComponent,
     canActivate: [authenticationGuard()],
   },
