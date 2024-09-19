@@ -26,5 +26,8 @@
   "Trikotnumber": "Trikotnummer",
   "start-rotation": "Start Rotation",
   "error-deleteing-event": "Fehler beim Löschen",
-  "your-events": "Deine Events"
+  "your-events": "Deine Events",
+  "enter-data": "Dateneingabe",
+  "kind": "Art",
+  "last-action": "Letzte Aktion"
 }

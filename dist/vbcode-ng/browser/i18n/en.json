@@ -8,7 +8,7 @@
   "create-a-new-game": "Create a new Game",
   "data-input": "Data Input",
   "date": "Date",
-  "edit-this-event": "Edit this event",
+  "edit-this-event": "Edit Event",
   "edit-this-team": "Edit this team",
   "error-deleteing-event": "Error deleteing event",
   "event": "Event",
@@ -27,5 +27,11 @@
   "submit": "Submit",
   "title": "Title",
   "your-events": "Your Events",
-  "finished": "finished"
+  "finished": "finished",
+  "enter-data": "Enter Data",
+  "player": "Player",
+  "kind": "Kind",
+  "character": "character",
+  "last-action": "Last Action",
+  "undo": "undo"
 }

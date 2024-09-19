@@ -1,10 +1,4 @@
 import type { Route } from '@angular/router';
-import { CreateGamePageComponent } from '../pages/create-game-page.component';
-import { CreateTeamPageComponent } from '../pages/create-team-page.component';
-import { DataEntryComponent } from '../pages/data-entry-page.component';
-import { GamesListPageComponent } from '../pages/games-list-page.component';
-import { GameViewComponent } from '../pages/gameview-page.component';
-import { RotationPlanerPageComponent } from '../pages/rotation-planer-page.component';
 import { ROUTES } from './ROUTES';
 import authenticationGuard from './guards/authenticationGuardFn';
 import actionResolver from './resolver/actionResolver';
@@ -14,61 +8,71 @@ import { LandingPageComponent } from '../pages/landing-page.component';
 import { UserLandingPageComponent } from '../pages/user-landing-page.component';
 import { provideStates, select } from '@ngxs/store';
 import { SessionState } from './session.state';
-import { GameDetailViewComponent } from '../pages/game-detail-view-page.component';
-import { TeamListPageComponent } from '../pages/team-list.component';
 import { AuthComponent } from './auth.component';
 
 export const appRoutes: Route[] = [
   {
     path: ROUTES.report,
-    component: GameViewComponent,
+    loadComponent: () => import('../pages/gameview-page.component').then((mod) => mod.GameViewComponent),
     canActivate: [authenticationGuard()],
   },
   {
     path: ROUTES.reportDetailId,
-    component: GameDetailViewComponent,
+    loadComponent: () => import('../pages/game-detail-view-page.component').then((mod) => mod.GameDetailViewComponent),
     resolve: {
       actions: actionResolver(),
       game: eventResolver(),
     },
   },
-  { path: ROUTES.roationPlaner, component: RotationPlanerPageComponent },
   {
     path: `${ROUTES.roationPlaner}/:id`,
-    component: RotationPlanerPageComponent,
+    loadComponent: () => import('../pages/rotation-planer-page.component').then((mod) => mod.RotationPlanerPageComponent),
+    canActivate: [],
+    resolve: { game: eventResolver() },
+  },
+  {
+    path: ROUTES.roationPlaner,
+    loadComponent: () => import('../pages/rotation-planer-page.component').then((mod) => mod.RotationPlanerPageComponent),
     canActivate: [],
     resolve: { game: eventResolver() },
   },
   {
     path: ROUTES.games + '/' + ROUTES.create,
-    component: CreateGamePageComponent,
+    loadComponent: () => import('../pages/create-game-page.component').then((mod) => mod.CreateGamePageComponent),
     canActivate: [authenticationGuard()],
   },
   {
     path: `${ROUTES.editGame}/:id`,
-    component: CreateGamePageComponent,
+    loadComponent: () => import('../pages/create-game-page.component').then((mod) => mod.CreateGamePageComponent),
     resolve: { game: eventResolver() },
   },
-  { path: ROUTES.teams, component: TeamListPageComponent },
+  {
+    path: ROUTES.teams,
+    loadComponent: () => import('../pages/team-list.component').then((mod) => mod.TeamListPageComponent),
+  },
   {
     path: `${ROUTES.teams}/create`,
-    component: CreateTeamPageComponent,
+    loadComponent: () => import('../pages/create-team-page.component').then((mod) => mod.CreateTeamPageComponent),
     resolve: { team: teamResolver() },
   },
   {
     path: `${ROUTES.teams}/:id`,
-    component: CreateTeamPageComponent,
+    loadComponent: () => import('../pages/create-team-page.component').then((mod) => mod.CreateTeamPageComponent),
     resolve: { team: teamResolver() },
   },
-  { path: ROUTES.games, component: GamesListPageComponent },
+  {
+    path: ROUTES.games,
+    loadComponent: () => import('../pages/games-list-page.component').then((mod) => mod.GamesListPageComponent),
+  },
   {
     path: `${ROUTES.dataentry}/:id`,
-    component: DataEntryComponent,
+    loadComponent: () => import('../pages/data-entry-page.component').then((mod) => mod.DataEntryComponent),
     canActivate: [authenticationGuard()],
+    resolve: { event: eventResolver() },
   },
   {
     path: ROUTES.dataentry,
-    component: DataEntryComponent,
+    loadComponent: () => import('../pages/data-entry-page.component').then((mod) => mod.DataEntryComponent),
     canActivate: [authenticationGuard()],
   },
   { path: ROUTES.login, component: AuthComponent },

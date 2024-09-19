@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { MatSelect, MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { type MatStepper, MatStepperModule } from '@angular/material/stepper';
@@ -21,9 +21,14 @@ import { ActionsService } from '../services/action.service';
 import { EventsService } from '../services/events.service';
 import { PlayerService } from '../services/player.service';
 import { SupabaseService } from '../services/supabase.service';
-import type { ActionKind } from '../types/ActionKind';
+import { ActionKind } from '../types/ActionKind';
 import type { PlayerDTO } from '../types/PlayerDTO';
 import { hintMap } from '../types/hints';
+import { EventDTO, EventResponse } from '../types/EventDTO';
+import { ActionDTO } from '../types/ActionDTO';
+import { AttendeesSelectFormControlComponent } from './atoms/attendees-select-form-control.component';
+import { SortByPlayerRolePipe } from '../pipes/sortbyplayerrole.pipe';
+import { ActionGrade } from '../types/ActionGrade';
 
 type abbMap = {
   abbr: string;
@@ -53,35 +58,69 @@ type abbMap = {
     MatIconModule,
     RouterModule,
     TranslocoModule,
+    AttendeesSelectFormControlComponent,
+    SortByPlayerRolePipe,
   ],
   template: `
     <div class="flex flex-col p-5">
+      <span class="text-xl">{{ 'enter-data' | transloco }}</span>
+      @let a = this.actions; @if (a) {
+
+      <p class="flex gap-4">
+        {{ 'last-action' | transloco }}:
+        <span class="flex gap-4">
+          <span>
+            {{ a[a.length - 1].player_id.name }}
+          </span>
+          <span>
+            {{ this.kindMap.get(a[a.length - 1].kind) }}
+          </span>
+          <span>
+            {{ this.hint_texts.get(a[a.length - 1].kind)?.get(a[a.length - 1].grade) }}
+          </span>
+          <span>
+            {{ a[a.length - 1].character }}
+          </span>
+          <span>
+            {{ a[a.length - 1].created_at | date : 'short' }}
+          </span>
+        </span>
+        <button class="btn btn-xs" (click)="deleteAction(a[a.length - 1])">{{ 'undo' | transloco }}</button>
+      </p>
+      }
+
+      <p></p>
       <form action="" [formGroup]="codeInFG" class="flex-col w-full" (submit)="submit()">
         <div class="flex gap-2 justify-between">
-          <div class="flex items-center">
-            <mat-form-field>
-              <mat-select formControlName="game_id" #game (valueChange)="changeEvent($event)">
-                @for (item of events|async; track $index) {
-                <mat-option [value]="item.id" selected>
-                  {{ item?.title }}
-                </mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-            <a mat-icon-button [routerLink]="['/edit-game', game.value]" routerLinkActive="router-link-active">
-              <mat-icon>edit</mat-icon>
-            </a>
-          </div>
+          <div class="flex items-center"></div>
           <mat-form-field>
-            <mat-label>Satz</mat-label>
+            <mat-label>{{ 'set' | transloco }}</mat-label>
             <input matInput type="number" formControlName="game_set" placeholder="Satz" value="1" />
           </mat-form-field>
         </div>
         <mat-vertical-stepper [linear]="false" #stepper>
+          {{ this.codeInFG.controls.game_id.value | json }}
+          <mat-step [hasError]="this.codeInFG.controls.game_id.invalid">
+            <ng-template matStepLabel>{{ 'event' | transloco }}: {{ gameSelect.value.title }}</ng-template>
+            <mat-form-field class="w-full">
+              <mat-select formControlName="game_id" #gameSelect (valueChange)="changeEvent($event); stepper.next()">
+                @for (item of events|async; track item.id) {
+                <mat-option [value]="item">
+                  {{ item?.title }}
+                </mat-option>
+                }
+              </mat-select>
+              <mat-hint>
+                <a [routerLink]="['/edit-game', gameSelect.value]" routerLinkActive="router-link-active">
+                  {{ 'edit-this-event' | transloco }}
+                </a>
+              </mat-hint>
+            </mat-form-field>
+          </mat-step>
           <mat-step [hasError]="!codeInFG.controls.player_id.value">
             <ng-template matStepLabel>
               <div class="flex">
-                <span>Spieler:</span>
+                <span>{{ 'player' | transloco }}:</span>
                 <span>{{ codeInFG.controls.player_id.value?.name }}</span>
                 <span>({{ codeInFG.controls.player_id.value?.trikot }})</span>
                 <span>({{ codeInFG.controls.player_id.value?.roles }})</span>
@@ -96,7 +135,7 @@ type abbMap = {
                     {{ toggleName.checked ? item.name : item.trikot }}
                   </mat-chip-row>
                   }@empty {
-                  <mat-chip-row>x </mat-chip-row>
+                  <mat-chip-row>x</mat-chip-row>
                   }
                   <input type="hidden" [matChipInputFor]="chipGrid" />
                 </mat-chip-grid>
@@ -106,16 +145,16 @@ type abbMap = {
           </mat-step>
           <mat-step [hasError]="!codeInFG.controls.kind.value">
             <ng-template matStepLabel
-              >Art: @if (codeInFG.controls.kind.value) {
+              >{{ 'kind' | transloco }}: @if (codeInFG.controls.kind.value) {
               <span>{{ kind_options.get(codeInFG.controls.kind.value) }}</span>
               }
             </ng-template>
 
             <mat-form-field class="w-full">
               <mat-chip-grid #chipGrid2>
-                @for (item of kind_options; track $index) {
-                <mat-chip-row class="min-w-12" (click)="codeInFG.controls.kind.setValue(item[0]); stepper.next()">
-                  {{ item[1] }}
+                @for (item of kind_options | sortByPlayerRole:codeInFG.controls.player_id.value; track $index) {
+                <mat-chip-row class="min-w-12" (click)="codeInFG.controls.kind.setValue(item); stepper.next()">
+                  {{ kindMap.get(item) }}
                 </mat-chip-row>
                 }@empty {
                 <mat-chip-row>x </mat-chip-row>
@@ -125,7 +164,7 @@ type abbMap = {
             </mat-form-field>
           </mat-step>
           <mat-step>
-            <ng-template matStepLabel>schema: {{ codeInFG.controls.char.value?.name }}</ng-template>
+            <ng-template matStepLabel>{{ 'character' | transloco }}: {{ codeInFG.controls.char.value?.name }}</ng-template>
             <mat-form-field class="w-full">
               <mat-chip-grid #chipGrid3>
                 @for (item of char_options; track $index) {
@@ -156,7 +195,7 @@ type abbMap = {
             </mat-form-field>
             @if (codeInFG.controls.kind.value && codeInFG.controls.grade.value) {
             <p>
-              {{ this.hint_texts.get(codeInFG.controls.kind.value) }}
+              {{ this.hint_texts.get(codeInFG.controls.kind.value)?.get(codeInFG.controls.grade.value.abbr) }}
             </p>
             }
             <hr />
@@ -183,8 +222,25 @@ type abbMap = {
   `,
 })
 export class DataEntryComponent implements OnInit {
+  event?: EventResponse;
+  async deleteAction(arg0: ActionDTO) {
+    try {
+      await this.actionService.deleteAction(arg0.id);
+      this.updateActions();
+    } catch (error) {
+      this.snacks.open('Error while undoing');
+    }
+  }
+  async updateActions() {
+    console.log('lol', this.event);
+    if (!this.event) return;
+    console.log('update', this.event.attendees);
+    this.actions = await this.actionService.getActionsOfEvent(this.event.id);
+    this.player = await this.playerService.getPlayerList(this.event?.attendees);
+  }
   supabase = inject(SupabaseService);
   actionService = inject(ActionsService);
+  playerService = inject(PlayerService);
   eventService = inject(EventsService);
   snacks = inject(MatSnackBar);
   router = inject(Router);
@@ -193,23 +249,18 @@ export class DataEntryComponent implements OnInit {
    *
    */
   @ViewChild('stepper') stepper!: MatStepper;
+  @ViewChild('gameSelect') gameSelect!: MatSelect;
   /**
    *
    */
   player: PlayerDTO[] = [];
   events = this.eventService.getEvents();
-  actions = this.actionService.getActions();
-  /**
-   *
-   */
-  hits = computed(async () => {
-    return (await this.actions).filter((a) => a.kind === '');
-  });
+  actions?: ActionDTO[];
   /**
    *
    */
   codeInFG = new FormGroup({
-    game_id: new FormControl<string>('', Validators.required),
+    game_id: new FormControl<EventResponse | null>(null, Validators.required),
     game_set: new FormControl<number>(1, Validators.required),
     player_id: new FormControl<PlayerDTO | null>(null, Validators.required),
     kind: new FormControl<ActionKind | string | null>(null, Validators.required),
@@ -237,7 +288,7 @@ export class DataEntryComponent implements OnInit {
    *
    */
   grad_options: abbMap[] = grad_options_list;
-  playerService = inject(PlayerService);
+  kindMap = kindMap;
   /**
    *
    */
@@ -248,7 +299,7 @@ export class DataEntryComponent implements OnInit {
       kind: this.codeInFG.controls.kind.value,
       character: this.codeInFG.controls.char.value?.abbr,
       grade: this.codeInFG.controls.grade.value?.abbr,
-      game_id: this.codeInFG.controls.game_id.value,
+      game_id: this.codeInFG.controls.game_id.value?.id,
       game_set: this.codeInFG.controls.game_set.value,
     };
     try {
@@ -258,9 +309,18 @@ export class DataEntryComponent implements OnInit {
         duration: 500,
         panelClass: 'success',
       });
-      this.actions = this.actionService.getActions();
-      this.codeInFG.reset({ game_id, game_set });
+      let nextKind;
+      switch (payload.grade) {
+        case ActionGrade['#']:
+          nextKind = ActionKind.Serve;
+          break;
+        case ActionGrade['=']:
+          nextKind = ActionKind.Recieve;
+          break;
+      }
+      this.codeInFG.reset({ game_id, game_set, kind: nextKind });
       this.stepper.reset();
+      this.stepper.next();
     } catch (error) {
       this.snacks.open('Error', 'Close', {
         duration: 1000,
@@ -273,15 +333,19 @@ export class DataEntryComponent implements OnInit {
    * @returns
    */
   async ngOnInit() {
-    const e = await this.events;
-    if (!e) return;
-    if (e[0].id) {
-      this.codeInFG.controls.game_id.setValue(e[0].id);
-      const event = await this.eventService.getEvent(e[0].id);
-      const players = await this.playerService.getPlayerList(event?.attendees);
-      if (players) {
-        this.player = players;
-      }
+    this.event = this.route.snapshot.data['event'] as EventResponse;
+    if (this.event) this.codeInFG.controls.game_id.setValue(this.event);
+    else {
+      const events = await this.events;
+      if (!events) return;
+      this.event = await this.eventService.getEvent(events[0].id);
+    }
+    if (this.event.id) {
+      const d = (await this.events).find((e) => e.id === this.event?.id);
+      if (!d) return;
+      this.codeInFG.controls.game_id.setValue(d);
+      this.stepper.next();
+      this.updateActions();
     }
   }
   /**
@@ -289,10 +353,7 @@ export class DataEntryComponent implements OnInit {
    * @param $event
    */
   async changeEvent($event: string) {
-    const event = await this.eventService.getEvent($event);
-    const players = await this.playerService.getPlayerList(event?.attendees);
-    if (players) {
-      this.player = players;
-    }
+    this.event = await this.eventService.getEvent($event);
+    this.updateActions();
   }
 }

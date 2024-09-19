@@ -36,12 +36,8 @@ import { RouterModule } from '@angular/router';
     </div>
   `,
 })
-export class TeamListPageComponent implements OnInit {
+export class TeamListPageComponent {
   ROUTES = ROUTES;
   teamService = inject(TeamsService);
   teams = this.teamService.getTeams();
-
-  constructor() {}
-
-  ngOnInit(): void {}
 }

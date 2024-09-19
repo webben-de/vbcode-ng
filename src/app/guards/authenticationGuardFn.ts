@@ -11,16 +11,17 @@ export default function authenticationGuard(): CanActivateFn {
     const store = inject(Store);
     const router = inject(Router);
     const user = store.selectOnce(SessionState.session);
-    return user.pipe(
-      filter((user) => !!user),
-      map((d) => {
-        if (!d) {
-          router.navigate([ROUTES.root, ROUTES.login]);
-          return false;
-        } else {
-          return true;
-        }
-      })
-    );
+    return true;
+    // return user.pipe(
+    //   filter((user) => !!user),
+    //   map((d) => {
+    //     if (!d) {
+    //       router.navigate([ROUTES.root, ROUTES.login]);
+    //       return false;
+    //     } else {
+    //       return true;
+    //     }
+    //   })
+    // );
   };
 }

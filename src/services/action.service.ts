@@ -17,7 +17,7 @@ export class ActionsService {
    * @returns
    */
   async getActionsOfEvent(game_id: string) {
-    return (await this.supabase.from(TABLENAME_ACTIONS).select('*, player_id (*),game_id (*) ').eq('game_id', game_id)).data as ActionDTO[];
+    return (await this.supabase.from(TABLENAME_ACTIONS).select('*, player_id (*),game_id (*) ').order('created_at').eq('game_id', game_id)).data as ActionDTO[];
   }
   /**
    *

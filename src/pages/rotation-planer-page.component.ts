@@ -16,9 +16,10 @@ import { SessionState } from '../app/session.state';
 import { EventsService } from '../services/events.service';
 import { MetadataService } from '../services/metadata.service';
 import { PlayerService } from '../services/player.service';
-import type { EventDTO } from '../types/EventDTO';
+import type { EventDTO, EventResponse } from '../types/EventDTO';
 import type { PlayerDTO } from '../types/PlayerDTO';
 import { RotationGridItemComponent } from './atoms/vbGridItem.component';
+import { ActionDTO } from '../types/ActionDTO';
 
 @Component({
   selector: 'app-rotation-planer',
@@ -97,7 +98,7 @@ export class RotationPlanerPageComponent implements OnInit {
    *
    */
   events = this.eventService.getEvents();
-  event?: EventDTO;
+  event?: EventResponse;
   roationPlayerBasePositions?: PlayerDTO[];
   roatedPlayer: Map<string | number, PlayerDTO> = new Map();
   /**
@@ -116,6 +117,7 @@ export class RotationPlanerPageComponent implements OnInit {
    */
   rotationSlider = 1;
   selectedEvent?: string;
+  lastAction?: ActionDTO;
   /**
    *
    */
@@ -137,6 +139,10 @@ export class RotationPlanerPageComponent implements OnInit {
       );
     });
   }
+  /**
+   *
+   * @returns
+   */
   private async updateProps() {
     if (!this.event) return;
     this.router.navigate([ROUTES.root + ROUTES.roationPlaner, this.event.id]);
