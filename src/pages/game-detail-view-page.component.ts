@@ -9,7 +9,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TranslocoModule, translate } from '@jsverse/transloco';
 import type { EChartsOption, TitleComponentOption } from 'echarts';
-import jsPDF from 'jspdf';
 import { countBy, groupBy, sortBy } from 'lodash';
 import { NgxEchartsDirective } from 'ngx-echarts';
 import type { ActionDTO } from 'src/types/ActionDTO';
@@ -145,12 +144,12 @@ export class GameDetailViewComponent implements OnInit {
    * create a pdf of the current view
    */
   async export() {
-    const pdf = new jsPDF();
-    const element = document.getElementById('export');
-    if (element) {
-      const pdfexport = await pdf.html(element?.innerHTML).save('test.pdf');
-      console.log(pdfexport);
-    }
+    // const pdf = new jsPDF();
+    // const element = document.getElementById('export');
+    // if (element) {
+    //   const pdfexport = await pdf.html(element?.innerHTML).save('test.pdf');
+    //   console.log(pdfexport);
+    // }
   }
   activatedRoute = inject(ActivatedRoute);
   supabase = inject(SupabaseService);
