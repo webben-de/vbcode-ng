@@ -310,6 +310,7 @@ export class DataEntryComponent implements OnInit {
         panelClass: 'success',
       });
       let nextKind;
+      let nextPlayer;
       switch (payload.grade) {
         case ActionGrade['#']:
           nextKind = ActionKind.Serve;
@@ -318,7 +319,9 @@ export class DataEntryComponent implements OnInit {
           nextKind = ActionKind.Recieve;
           break;
       }
-      this.codeInFG.reset({ game_id, game_set, kind: nextKind });
+      if (payload.grade === ActionGrade['#'] && payload.kind === ActionKind.Serve) nextPlayer = this.codeInFG.controls.player_id.value;
+
+      this.codeInFG.reset({ game_id, game_set, kind: nextKind, player_id: nextPlayer });
       this.stepper.reset();
       this.stepper.next();
     } catch (error) {
