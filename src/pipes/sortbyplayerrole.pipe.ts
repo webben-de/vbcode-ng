@@ -22,9 +22,49 @@ enum PlayerRoles {
   Setter = 'Setter',
 }
 const roleKindMap = new Map<PlayerRoles, ActionKind[]>();
-roleKindMap.set(PlayerRoles.Default, [ActionKind.Attack, ActionKind.Block, ActionKind.Serve, ActionKind.Def, ActionKind.Free, ActionKind.Set]);
-roleKindMap.set(PlayerRoles.Opposide, [ActionKind.Attack, ActionKind.Block, ActionKind.Serve, ActionKind.Def, ActionKind.Free, ActionKind.Set]);
-roleKindMap.set(PlayerRoles.Setter, [ActionKind.Set, ActionKind.Serve, ActionKind.Def, ActionKind.Free, ActionKind.Block, ActionKind.Attack]);
-roleKindMap.set(PlayerRoles.Outside, [ActionKind.Attack, ActionKind.Block, ActionKind.Serve, ActionKind.Def, ActionKind.Free, ActionKind.Set]);
-roleKindMap.set(PlayerRoles.Libero, [ActionKind.Def, ActionKind.Free, ActionKind.Set]);
-roleKindMap.set(PlayerRoles.Middle, [ActionKind.Attack, ActionKind.Block, ActionKind.Serve, ActionKind.Def, ActionKind.Free, ActionKind.Set]);
+roleKindMap.set(PlayerRoles.Default, [
+  ActionKind.Attack,
+  ActionKind.Block,
+  ActionKind.Serve,
+  ActionKind.Recieve,
+  ActionKind.Def,
+  ActionKind.Free,
+  ActionKind.Set,
+]);
+roleKindMap.set(PlayerRoles.Opposide, [
+  ActionKind.Attack,
+  ActionKind.Block,
+  ActionKind.Serve,
+  ActionKind.Recieve,
+  ActionKind.Def,
+  ActionKind.Free,
+  ActionKind.Set,
+]);
+roleKindMap.set(PlayerRoles.Setter, [
+  ActionKind.Set,
+  ActionKind.Serve,
+  ActionKind.Def,
+  ActionKind.Free,
+  ActionKind.Block,
+  ActionKind.Recieve,
+  ActionKind.Attack,
+]);
+roleKindMap.set(PlayerRoles.Outside, [
+  ActionKind.Attack,
+  ActionKind.Block,
+  ActionKind.Serve,
+  ActionKind.Recieve,
+  ActionKind.Def,
+  ActionKind.Free,
+  ActionKind.Set,
+]);
+roleKindMap.set(PlayerRoles.Libero, [ActionKind.Def, ActionKind.Recieve, ActionKind.Free, ActionKind.Set]);
+roleKindMap.set(PlayerRoles.Middle, [
+  ActionKind.Attack,
+  ActionKind.Block,
+  ActionKind.Serve,
+  ActionKind.Recieve,
+  ActionKind.Def,
+  ActionKind.Free,
+  ActionKind.Set,
+]);
