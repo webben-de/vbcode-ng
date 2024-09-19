@@ -1,21 +1,22 @@
 import type { Route } from '@angular/router';
-import { provideStates, select } from '@ngxs/store';
 import { CreateGamePageComponent } from '../pages/create-game-page.component';
 import { CreateTeamPageComponent } from '../pages/create-team-page.component';
 import { DataEntryComponent } from '../pages/data-entry-page.component';
-import { GameDetailViewComponent } from '../pages/game-detail-view-page.component';
 import { GamesListPageComponent } from '../pages/games-list-page.component';
 import { GameViewComponent } from '../pages/gameview-page.component';
-import { LandingPageComponent } from '../pages/landing-page.component';
 import { RotationPlanerPageComponent } from '../pages/rotation-planer-page.component';
-import { UserLandingPageComponent } from '../pages/user-landing-page.component';
 import { ROUTES } from './ROUTES';
-import { AuthComponent } from './auth.component';
 import authenticationGuard from './guards/authenticationGuardFn';
 import actionResolver from './resolver/actionResolver';
 import eventResolver from './resolver/eventResolver';
 import teamResolver from './resolver/teamResolver';
+import { LandingPageComponent } from '../pages/landing-page.component';
+import { UserLandingPageComponent } from '../pages/user-landing-page.component';
+import { provideStates, select } from '@ngxs/store';
 import { SessionState } from './session.state';
+import { GameDetailViewComponent } from '../pages/game-detail-view-page.component';
+import { TeamListPageComponent } from '../pages/team-list.component';
+import { AuthComponent } from './auth.component';
 
 export const appRoutes: Route[] = [
   {
@@ -39,7 +40,7 @@ export const appRoutes: Route[] = [
     resolve: { game: eventResolver() },
   },
   {
-    path: `${ROUTES.games}/${ROUTES.create}`,
+    path: ROUTES.games + '/' + ROUTES.create,
     component: CreateGamePageComponent,
     canActivate: [authenticationGuard()],
   },
@@ -48,7 +49,12 @@ export const appRoutes: Route[] = [
     component: CreateGamePageComponent,
     resolve: { game: eventResolver() },
   },
-  { path: ROUTES.teams, component: CreateTeamPageComponent },
+  { path: ROUTES.teams, component: TeamListPageComponent },
+  {
+    path: `${ROUTES.teams}/create`,
+    component: CreateTeamPageComponent,
+    resolve: { team: teamResolver() },
+  },
   {
     path: `${ROUTES.teams}/:id`,
     component: CreateTeamPageComponent,

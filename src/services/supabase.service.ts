@@ -17,13 +17,13 @@ export interface Profile {
   providedIn: 'root',
 })
 export class SupabaseService {
-  async getProfile(id: string | undefined) {
-    return this.supabase.from('profiles').select('*').eq('id', id).single();
-  }
   setAuthSession = dispatch(setAuthSession);
   public supabase: SupabaseClient;
   _session: AuthSession | null = null;
   public currentUser = new BehaviorSubject<null | User>(null);
+  /**
+   *
+   */
   constructor() {
     this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
     this.supabase.auth.onAuthStateChange((event, session) => {
@@ -85,19 +85,39 @@ export class SupabaseService {
   downLoadImage(path: string) {
     return this.supabase.storage.from('profile_pictures').download(path);
   }
-
+  /**
+   *
+   * @param filePath
+   * @param file
+   * @returns
+   */
   async uploadAvatar(filePath: string, file: File) {
     return (await this.supabase.storage.from('profile_pictures').upload(filePath, file)).data?.path;
   }
+  /**
+   *
+   * @returns
+   */
   getCurrentUser(): Observable<User | null> {
     return this.currentUser.asObservable();
   }
-
+  /**
+   *
+   * @returns
+   */
   getCurrentUserId(): string {
     if (this.currentUser.value) {
       return (this.currentUser.value as User).id;
     } else {
       return 'null';
     }
+  }
+  /**
+   *
+   * @param id
+   * @returns
+   */
+  async getProfile(id: string | undefined) {
+    return this.supabase.from('profiles').select('*').eq('id', id).single();
   }
 }

@@ -6,46 +6,83 @@
       </mat-list-item>
       @if (session()) {
       <mat-list-item>
-        <a [routerLink]="[ROUTES.root + ROUTES.roationPlaner]">{{ 'rotation-planer' | transloco }}</a>
+        <a [routerLink]="[ROUTES.root + ROUTES.roationPlaner]">{{
+          'rotation-planer' | transloco
+        }}</a>
       </mat-list-item>
       <mat-list-item>
-        <a [routerLink]="[ROUTES.root + ROUTES.games]">{{ 'game-overview' | transloco }}</a>
+        <a [routerLink]="[ROUTES.root + ROUTES.games]">{{
+          'game-overview' | transloco
+        }}</a>
       </mat-list-item>
       <mat-list-item>
-        <a [routerLink]="[ROUTES.root + ROUTES.dataentry]">{{ 'data-input' | transloco }}</a>
+        <a [routerLink]="[ROUTES.root + ROUTES.dataentry]">{{
+          'data-input' | transloco
+        }}</a>
       </mat-list-item>
       <mat-list-item>
-        <a [routerLink]="[ROUTES.root + ROUTES.report]">{{ 'game-reports' | transloco }}</a>
+        <a [routerLink]="[ROUTES.root + ROUTES.report]">{{
+          'game-reports' | transloco
+        }}</a>
+      </mat-list-item>
+      <mat-list-item>
+        <a [routerLink]="[ROUTES.root + ROUTES.teams]">{{
+          'teams' | transloco
+        }}</a>
       </mat-list-item>
       <mat-list-item>
         <a (click)="logout()">Logout</a>
       </mat-list-item>
       }@else{
       <mat-list-item>
-        <a [routerLink]="[ROUTES.root + ROUTES.login]" routerLinkActive="router-link-active">Login</a>
+        <a
+          [routerLink]="[ROUTES.root + ROUTES.login]"
+          routerLinkActive="router-link-active"
+          >Login</a
+        >
       </mat-list-item>
       }
     </mat-list>
   </mat-drawer>
   <mat-drawer-content>
-    <mat-toolbar class="flex justify-between items-center max-w-screen overflow-hidden">
+    <mat-toolbar
+      class="flex justify-between items-center max-w-screen overflow-hidden"
+    >
       <div class="flex">
-        <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" (click)="drawer.toggle()">
+        <button
+          mat-icon-button
+          class="example-icon"
+          aria-label="Example icon-button with menu icon"
+          (click)="drawer.toggle()"
+        >
           <mat-icon>menu</mat-icon>
         </button>
-        <a class="btn btn-ghost text-xl" [routerLink]="[ROUTES.root]">(S)VB Code</a>
+        <a class="btn btn-ghost text-xl" [routerLink]="[ROUTES.root]"
+          >(S)VB Code</a
+        >
       </div>
       <div class="flex gap-8">
         @if (!session()) {
         <a class="text-sm" [routerLink]="[ROUTES.root, ROUTES.login]">Login</a>
         }@else{
-        <a class="text-sm" [routerLink]="[ROUTES.root, ROUTES.user]">{{ session()?.user?.email }}</a>
+        <a class="text-sm" [routerLink]="[ROUTES.root, ROUTES.user]">{{
+          session()?.user?.email
+        }}</a>
 
         }
-        <button disabled mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
+        <button
+          disabled
+          mat-icon-button
+          class="example-icon favorite-icon"
+          aria-label="Example icon-button with heart icon"
+        >
           <mat-icon>favorite</mat-icon>
         </button>
-        <button disabled class="example-icon" aria-label="Example icon-button with share icon">
+        <button
+          disabled
+          class="example-icon"
+          aria-label="Example icon-button with share icon"
+        >
           <mat-icon>share</mat-icon>
         </button>
       </div>
