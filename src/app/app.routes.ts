@@ -1,14 +1,14 @@
 import type { Route } from '@angular/router';
-import { ROUTES } from './ROUTES';
-import authenticationGuard from './guards/authenticationGuardFn';
-import actionResolver from './resolver/actionResolver';
-import eventResolver from './resolver/eventResolver';
-import teamResolver from './resolver/teamResolver';
+import { provideStates, select } from '@ngxs/store';
 import { LandingPageComponent } from '../pages/landing-page.component';
 import { UserLandingPageComponent } from '../pages/user-landing-page.component';
-import { provideStates, select } from '@ngxs/store';
-import { SessionState } from './session.state';
+import { ROUTES } from './ROUTES';
 import { AuthComponent } from './auth.component';
+import authenticationGuard from './guards/authenticationGuardFn';
+import { actionByKindResolver, actionResolver } from './resolver/actionResolver';
+import eventResolver from './resolver/eventResolver';
+import teamResolver from './resolver/teamResolver';
+import { SessionState } from './session.state';
 
 export const appRoutes: Route[] = [
   {
@@ -17,8 +17,18 @@ export const appRoutes: Route[] = [
     canActivate: [authenticationGuard()],
   },
   {
+    path: `${ROUTES.reportDetailId}/kind/:kind`,
+    pathMatch: 'full',
+    loadComponent: () => import('../pages/report-details/sub-pages/report-kind-detail-page.component').then((mod) => mod.ReportKindDetailPageComponent),
+    resolve: {
+      actions: actionByKindResolver(),
+      // game: eventResolver(),
+    },
+  },
+  {
     path: ROUTES.reportDetailId,
-    loadComponent: () => import('../pages/game-detail-view-page.component').then((mod) => mod.GameDetailViewComponent),
+    pathMatch: 'full',
+    loadComponent: () => import('../pages/report-details/report-detail-view-page.component').then((mod) => mod.ReportDetailViewComponent),
     resolve: {
       actions: actionResolver(),
       game: eventResolver(),
@@ -37,7 +47,7 @@ export const appRoutes: Route[] = [
     resolve: { game: eventResolver() },
   },
   {
-    path: ROUTES.games + '/' + ROUTES.create,
+    path: `${ROUTES.games}/${ROUTES.create}`,
     loadComponent: () => import('../pages/create-game-page.component').then((mod) => mod.CreateGamePageComponent),
     canActivate: [authenticationGuard()],
   },

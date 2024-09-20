@@ -7,6 +7,15 @@
       "linter": "eslint",
       "style": "scss",
       "unitTestRunner": "jest"
+    },
+    "@nx/angular:component": {
+      "style": "css",
+      "displayBlock": true,
+      "inlineStyle": true,
+      "inlineTemplate": true,
+      "nameAndDirectoryFormat": "as-provided",
+      "skipTests": true,
+      "standalone": true
     }
   },
   "namedInputs": {

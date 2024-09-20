@@ -17,6 +17,19 @@ export const defaults: {
     };
   };
 } = {
+  [ActionKind.UNKNOWN]: {
+    title: 'Recieve',
+    total: 0,
+    by_player: new Map(),
+    stats: {
+      [ActionGrade['#']]: 0,
+      [ActionGrade['+']]: 0,
+      [ActionGrade['!']]: 0,
+      [ActionGrade['/']]: 0,
+      [ActionGrade['-']]: 0,
+      [ActionGrade['=']]: 0,
+    },
+  },
   [ActionKind.Serve]: {
     title: 'Serve',
     total: 0,

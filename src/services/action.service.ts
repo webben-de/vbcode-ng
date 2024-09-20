@@ -10,6 +10,9 @@ export const TABLENAME_ACTIONS = 'actions';
   providedIn: 'root',
 })
 export class ActionsService {
+  async getActionsOfEventByKind(id: string, kind: string) {
+    return (await this.supabase.from(TABLENAME_ACTIONS).select('*, player_id (*),game_id (*) ').eq('game_id', id).eq('kind', kind)).data as ActionDTO[];
+  }
   supabase = inject(SupabaseService).supabase;
   /**
    *

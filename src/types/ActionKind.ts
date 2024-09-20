@@ -6,4 +6,5 @@ export enum ActionKind {
   'Def' = 'D',
   'Set' = 'E',
   'Free' = 'F',
+  UNKNOWN = 'UNKNOWN',
 }
