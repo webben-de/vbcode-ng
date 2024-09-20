@@ -27,8 +27,8 @@ import { ActionsByPlayerComponent } from '../actions-by-player.component';
     </div>
     <span class="text-lg">{{ kindMap.get(kind) }}</span>
     <app-action-by-kind [actions]="actions" [groupedByKind]="groupedByKind" />
-    <app-actions-by-player [actions]="actions" [groupedByPlayer]="groupedByPlayer" />
-    <app-actions-by-grade [actions]="actions" [groupedByGrade]="groupedByGrade" />
+    <app-actions-by-player [actions]="actions" />
+    <app-actions-by-grade [actions]="actions" />
   `,
   styles: `
     :host {
@@ -58,16 +58,11 @@ export class ReportKindDetailPageComponent implements OnInit {
    */
   update() {
     this.groupedByKind = Object.entries(groupBy(this.actions, 'kind'));
-    this.groupedByPlayer = sortBy(Object.entries(groupBy(this.actions, 'player_id.name')), (a) => a[1]).reverse();
-    this.groupedByGrade = sortBy(Object.entries(groupBy(this.actions, 'grade')), (a) => {
-      return gradePrios.get(a[0]) || 0;
-    });
   }
   ngOnInit(): void {
     // biome-ignore lint/complexity/useLiteralKeys: <explanation>
     this.actions = this.route.snapshot.data['actions'];
     this.kind = this.route.snapshot.paramMap.get('kind') as ActionKind;
-    console.log(this.route.snapshot.data);
     this.update();
   }
 }

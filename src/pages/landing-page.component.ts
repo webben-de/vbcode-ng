@@ -65,7 +65,7 @@ export class LandingPageComponent implements OnInit {
   ngOnInit(): void {
     this.session.subscribe((user) => {
       if (user) {
-        this.router.navigate([ROUTES.root, ROUTES.user]);
+        // this.router.navigate([ROUTES.root, ROUTES.user]);
       }
     });
   }

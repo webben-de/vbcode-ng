@@ -10,8 +10,24 @@ export const TABLENAME_ACTIONS = 'actions';
   providedIn: 'root',
 })
 export class ActionsService {
+  async getActionsOfEventByKindAndGrade(id: string, kind: ActionKind, grade: ActionGrade) {
+    return (await this.supabase.from(TABLENAME_ACTIONS).select(this.allColsInclBreakdown).eq('game_id', id).eq('kind', kind).eq('grade', grade)).data;
+  }
+  private readonly allColsInclBreakdown = '*, player_id (id, name, trikot) ';
+  /**
+   *
+   * @param id
+   * @param kind
+   * @param player
+   * @returns
+   */
+  async getActionsOfEventByKindAndPlayer(id: string | null, kind: string | null, player: string | null) {
+    return (await this.supabase.from(TABLENAME_ACTIONS).select(this.allColsInclBreakdown).eq('game_id', id).eq('kind', kind).eq('player_id', player))
+      .data as ActionDTO[];
+  }
+
   async getActionsOfEventByKind(id: string, kind: string) {
-    return (await this.supabase.from(TABLENAME_ACTIONS).select('*, player_id (*),game_id (*) ').eq('game_id', id).eq('kind', kind)).data as ActionDTO[];
+    return (await this.supabase.from(TABLENAME_ACTIONS).select(this.allColsInclBreakdown).eq('game_id', id).eq('kind', kind)).data as ActionDTO[];
   }
   supabase = inject(SupabaseService).supabase;
   /**
@@ -20,7 +36,7 @@ export class ActionsService {
    * @returns
    */
   async getActionsOfEvent(game_id: string) {
-    return (await this.supabase.from(TABLENAME_ACTIONS).select('*, player_id (*),game_id (*) ').order('created_at').eq('game_id', game_id)).data as ActionDTO[];
+    return (await this.supabase.from(TABLENAME_ACTIONS).select(this.allColsInclBreakdown).order('created_at').eq('game_id', game_id)).data as ActionDTO[];
   }
   /**
    *
@@ -29,22 +45,14 @@ export class ActionsService {
    * @returns
    */
   async getActionsOfEventOfSet(game_id: string, set: number) {
-    return (await this.supabase.from(TABLENAME_ACTIONS).select('*, player_id (*),game_id (*) ').eq('game_id', game_id).eq('game_set', set)).data as ActionDTO[];
+    return (await this.supabase.from(TABLENAME_ACTIONS).select(this.allColsInclBreakdown).eq('game_id', game_id).eq('game_set', set)).data as ActionDTO[];
   }
   /**
    *
    * @returns
    */
   async getActions() {
-    return (
-      await this.supabase.from(TABLENAME_ACTIONS).select(
-        `
-			*, 
-			player_id (*),
-			game_id (*)
-			`
-      )
-    ).data as ActionDTO[];
+    return (await this.supabase.from(TABLENAME_ACTIONS).select(this.allColsInclBreakdown)).data as ActionDTO[];
   }
   /**
    *

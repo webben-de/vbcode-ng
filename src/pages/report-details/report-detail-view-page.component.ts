@@ -67,8 +67,8 @@ import { ActionsByPlayerComponent } from './actions-by-player.component';
         </mat-select>
       </mat-form-field>
       <app-action-by-kind [actions]="actions" [groupedByKind]="groupedByKind" />
-      <app-actions-by-grade [actions]="actions" [groupedByGrade]="groupedByGrade" />
-      <app-actions-by-player [actions]="actions" [groupedByPlayer]="groupedByPlayer" />
+      <app-actions-by-grade [actions]="actions" />
+      <app-actions-by-player [actions]="actions" />
       <app-action-horizontal-timeline [actions]="actions" />
     </div>
   `,
@@ -146,9 +146,7 @@ export class ReportDetailViewComponent implements OnInit {
     this.actions = a;
     this.groupedByPlayer = sortBy(Object.entries(groupBy(a, 'player_id.name')), (a) => a[1]).reverse();
     this.groupedByKind = Object.entries(groupBy(a, 'kind'));
-    this.groupedByGrade = sortBy(Object.entries(groupBy(a, 'grade')), (a) => {
-      return gradePrios.get(a[0]) || 0;
-    });
+
     this.groupedByKindByPlayer = this.groupedByKind.map((e) => [e[0], countBy(e[1], 'player_id.name')]);
     this.groupedByKindByGrade = this.groupedByKind.map((e) => [e[0], countBy(e[1], 'grade')]);
     this.groupedByGradeByKind = this.groupedByGrade.map((e) => [e[0], countBy(e[1], 'kind')]);

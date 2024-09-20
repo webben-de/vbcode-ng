@@ -5,7 +5,7 @@ import { UserLandingPageComponent } from '../pages/user-landing-page.component';
 import { ROUTES } from './ROUTES';
 import { AuthComponent } from './auth.component';
 import authenticationGuard from './guards/authenticationGuardFn';
-import { actionByKindResolver, actionResolver } from './resolver/actionResolver';
+import { actionByKindAndGradeResolver, actionByKindAndPlayerResolver, actionByKindResolver, actionResolver } from './resolver/actionResolver';
 import eventResolver from './resolver/eventResolver';
 import teamResolver from './resolver/teamResolver';
 import { SessionState } from './session.state';
@@ -15,6 +15,24 @@ export const appRoutes: Route[] = [
     path: ROUTES.report,
     loadComponent: () => import('../pages/gameview-page.component').then((mod) => mod.GameViewComponent),
     canActivate: [authenticationGuard()],
+  },
+  {
+    path: `${ROUTES.reportDetailId}/kind/:kind/player/:player`,
+    pathMatch: 'full',
+    loadComponent: () => import('../pages/report-details/sub-pages/report-player-detail-page.component').then((mod) => mod.ReportPlayerDetailPageComponent),
+    resolve: {
+      actions: actionByKindAndPlayerResolver(),
+      // game: eventResolver(),
+    },
+  },
+  {
+    path: `${ROUTES.reportDetailId}/kind/:kind/grade/:grade`,
+    pathMatch: 'full',
+    loadComponent: () => import('../pages/report-details/sub-pages/report-grade-detail-page.component').then((mod) => mod.ReportGradeDetailPageComponent),
+    resolve: {
+      actions: actionByKindAndGradeResolver(),
+      // game: eventResolver(),
+    },
   },
   {
     path: `${ROUTES.reportDetailId}/kind/:kind`,
