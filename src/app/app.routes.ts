@@ -35,6 +35,15 @@ export const appRoutes: Route[] = [
     },
   },
   {
+    path: `${ROUTES.reportDetailId}/grade/:grade`,
+    pathMatch: 'full',
+    loadComponent: () => import('../pages/report-details/sub-pages/report-grade-detail-page.component').then((mod) => mod.ReportGradeDetailPageComponent),
+    resolve: {
+      actions: actionByKindAndGradeResolver(),
+      // game: eventResolver(),
+    },
+  },
+  {
     path: `${ROUTES.reportDetailId}/kind/:kind`,
     pathMatch: 'full',
     loadComponent: () => import('../pages/report-details/sub-pages/report-kind-detail-page.component').then((mod) => mod.ReportKindDetailPageComponent),

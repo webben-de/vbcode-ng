@@ -11,8 +11,8 @@ import { MatIconModule } from '@angular/material/icon';
   imports: [CommonModule, ActionsByPlayerComponent, RouterModule, MatIconModule],
   template: `
     <div class="flex">
-      <button mat-fab class="fixed bottom-2 left-1">
-        <a [routerLink]="['..', '..']">
+      <button mat-fab class="btn fixed bottom-2 left-1">
+        <a [routerLink]="['..', '..', '..']">
           <mat-icon>arrow_back_ios</mat-icon>
         </a>
       </button>
