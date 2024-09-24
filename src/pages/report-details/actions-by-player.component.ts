@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, input, OnInit } from '@angular/core';
-import type { ActionDTO } from '../../types/ActionDTO';
+import { Component, type OnInit, inject, input } from '@angular/core';
 import { ActivatedRoute, RouterLink, RouterModule } from '@angular/router';
 import { groupBy, sortBy } from 'lodash';
+import type { ActionDTO } from '../../types/ActionDTO';
 
 @Component({
   selector: 'app-actions-by-player',
@@ -22,6 +22,8 @@ import { groupBy, sortBy } from 'lodash';
             {{ item[1].length / actions().length | percent }}
           </div>
         </a>
+        }@empty{
+        <a href="" class="stat w-1/2">Keine Aktionen</a>
         }
       </div>
       <!-- @if (stat[1].charts?.gradePie; as pie) {

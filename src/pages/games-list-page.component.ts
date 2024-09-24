@@ -5,7 +5,7 @@ import { MatListModule } from '@angular/material/list';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { select } from '@ngxs/store';
-import { ROUTES } from 'src/app/ROUTES';
+import { SVB_APP_ROUTES } from 'src/app/ROUTES';
 import { SessionState } from '../app/session.state';
 import { EventsService } from '../services/events.service';
 
@@ -62,5 +62,5 @@ export class GamesListPageComponent {
   currentDate = new Date();
   eventsService = inject(EventsService);
   events = this.eventsService.getEvents();
-  ROUTES = ROUTES;
+  ROUTES = SVB_APP_ROUTES;
 }

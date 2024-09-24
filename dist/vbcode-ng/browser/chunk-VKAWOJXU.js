@@ -1,1 +1,0 @@
-var t=function(s){return s["#"]="#",s["+"]="+",s["!"]="!",s["/"]="/",s["-"]="-",s["="]="=",s}(t||{}),e=new Map;e.set(t["#"],"#0fc715");e.set(t["!"],"#469910");e.set(t["+"],"#6c790d");e.set(t["-"],"#c33105");e.set(t["/"],"#d4d50d");e.set(t["="],"#ff0000");export{t as a,e as b};

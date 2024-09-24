@@ -11,15 +11,15 @@ import { MatSliderModule } from '@angular/material/slider';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { select } from '@ngxs/store';
-import { ROUTES } from '../app/ROUTES';
+import { SVB_APP_ROUTES } from '../app/ROUTES';
 import { SessionState } from '../app/session.state';
 import { EventsService } from '../services/events.service';
 import { MetadataService } from '../services/metadata.service';
 import { PlayerService } from '../services/player.service';
+import type { ActionDTO } from '../types/ActionDTO';
 import type { EventDTO, EventResponse } from '../types/EventDTO';
 import type { PlayerDTO } from '../types/PlayerDTO';
 import { RotationGridItemComponent } from './atoms/vbGridItem.component';
-import { ActionDTO } from '../types/ActionDTO';
 
 @Component({
   selector: 'app-rotation-planer',
@@ -87,7 +87,7 @@ import { ActionDTO } from '../types/ActionDTO';
   `,
 })
 export class RotationPlanerPageComponent implements OnInit {
-  ROUTES = ROUTES;
+  ROUTES = SVB_APP_ROUTES;
   router = inject(Router);
   meta = inject(MetadataService);
   route = inject(ActivatedRoute);
@@ -134,7 +134,11 @@ export class RotationPlanerPageComponent implements OnInit {
       this.selectedEvent = this.event?.id;
       await this.updateProps();
       this.meta.updateMetadata(
-        { title: `${this.event?.title}-> Rotation Planer`, description: 'Plan your rotation for your next game', type: 'website' },
+        {
+          title: `${this.event?.title}-> Rotation Planer`,
+          description: 'Plan your rotation for your next game',
+          type: 'website',
+        },
         true
       );
     });
@@ -145,7 +149,7 @@ export class RotationPlanerPageComponent implements OnInit {
    */
   private async updateProps() {
     if (!this.event) return;
-    this.router.navigate([ROUTES.root + ROUTES.roationPlaner, this.event.id]);
+    this.router.navigate([SVB_APP_ROUTES.root + SVB_APP_ROUTES.roationPlaner, this.event.id]);
     // biome-ignore lint/style/noNonNullAssertion: <explanation>
     const ids = Object.entries(this.event?.home_team_start_rotation!);
     const map = new Map<string | number, PlayerDTO>();

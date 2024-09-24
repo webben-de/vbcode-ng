@@ -11,7 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { select } from '@ngxs/store';
-import { ROUTES } from 'src/app/ROUTES';
+import { SVB_APP_ROUTES } from 'src/app/ROUTES';
 import { SessionState } from '../app/session.state';
 import { EventsService } from '../services/events.service';
 import { PlayerService } from '../services/player.service';
@@ -144,7 +144,7 @@ import { SingleRoationFormControlComponent } from './atoms/single-roation-form-c
   `,
 })
 export class CreateGamePageComponent implements OnInit {
-  ROUTES = ROUTES;
+  ROUTES = SVB_APP_ROUTES;
   /**
    *
    */

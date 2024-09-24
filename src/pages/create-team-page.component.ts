@@ -7,7 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { ROUTES } from '../app/ROUTES';
+import { SVB_APP_ROUTES } from '../app/ROUTES';
 import { PlayerService } from '../services/player.service';
 import { type TeamDTO, TeamsService, type createTeamDTO } from '../services/teams.service';
 
@@ -49,7 +49,7 @@ import { type TeamDTO, TeamsService, type createTeamDTO } from '../services/team
   `,
 })
 export class CreateTeamPageComponent implements OnInit {
-  ROUTES = ROUTES;
+  ROUTES = SVB_APP_ROUTES;
   /**
    *
    */

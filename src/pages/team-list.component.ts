@@ -1,8 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { TeamsService } from '../services/teams.service';
 import { CommonModule } from '@angular/common';
-import { ROUTES } from '../app/ROUTES';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { SVB_APP_ROUTES } from '../app/ROUTES';
+import { TeamsService } from '../services/teams.service';
 
 @Component({
   selector: 'app-team-list-page',
@@ -37,7 +37,7 @@ import { RouterModule } from '@angular/router';
   `,
 })
 export class TeamListPageComponent {
-  ROUTES = ROUTES;
+  ROUTES = SVB_APP_ROUTES;
   teamService = inject(TeamsService);
   teams = this.teamService.getTeams();
 }

@@ -10,6 +10,12 @@ export const TABLENAME_ACTIONS = 'actions';
   providedIn: 'root',
 })
 export class ActionsService {
+  async getActionsOfEventByGradeAndPlayer(id: string, grade: ActionGrade, player: string) {
+    return (await this.supabase.from(TABLENAME_ACTIONS).select(this.allColsInclBreakdown).eq('game_id', id).eq('grade', grade).eq('player_id', player)).data;
+  }
+  async getActionsOfEventByGrade(id: string, grade: ActionGrade) {
+    return (await this.supabase.from(TABLENAME_ACTIONS).select(this.allColsInclBreakdown).eq('game_id', id).eq('grade', grade)).data;
+  }
   async getActionsOfEventByKindAndGrade(id: string, kind: ActionKind, grade: ActionGrade) {
     return (await this.supabase.from(TABLENAME_ACTIONS).select(this.allColsInclBreakdown).eq('game_id', id).eq('kind', kind).eq('grade', grade)).data;
   }

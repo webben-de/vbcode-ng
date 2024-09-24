@@ -12,7 +12,7 @@ import type { EChartsOption, TitleComponentOption } from 'echarts';
 import { countBy, groupBy, sortBy } from 'lodash';
 import { NgxEchartsDirective } from 'ngx-echarts';
 import type { ActionDTO } from 'src/types/ActionDTO';
-import { ROUTES } from '../../app/ROUTES';
+import { SVB_APP_ROUTES } from '../../app/ROUTES';
 import { defaults } from '../../components/defaults';
 import { gradDescriptionMap, grad_options_list, gradePrios } from '../../components/grade-options';
 import { kindMap, kinds } from '../../components/kind-options';
@@ -66,7 +66,7 @@ import { ActionsByPlayerComponent } from './actions-by-player.component';
           }
         </mat-select>
       </mat-form-field>
-      <app-action-by-kind [actions]="actions" [groupedByKind]="groupedByKind" />
+      <app-actions-by-kind [actions]="actions" />
       <app-actions-by-grade [actions]="actions" />
       <app-actions-by-player [actions]="actions" />
       <app-action-horizontal-timeline [actions]="actions" />
@@ -74,7 +74,7 @@ import { ActionsByPlayerComponent } from './actions-by-player.component';
   `,
 })
 export class ReportDetailViewComponent implements OnInit {
-  ROUTES = ROUTES;
+  ROUTES = SVB_APP_ROUTES;
   /**
    * create a pdf of the current view
    */
@@ -277,7 +277,7 @@ export class ReportDetailViewComponent implements OnInit {
   async deleteEvent(id: string) {
     try {
       await this.eventService.deleteEvent(id);
-      this.router.navigate([ROUTES.root, ROUTES.games]);
+      this.router.navigate([SVB_APP_ROUTES.root, SVB_APP_ROUTES.games]);
     } catch (error) {
       this.snack.open(translate('error-deleteing-event'));
     }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
-import { ROUTES } from '../app/ROUTES';
+import { SVB_APP_ROUTES } from '../app/ROUTES';
 
 @Component({
   selector: 'app-buttom-nav',
@@ -29,5 +29,5 @@ import { ROUTES } from '../app/ROUTES';
   `,
 })
 export class ButtomNavComponent {
-  ROUTES = ROUTES;
+  ROUTES = SVB_APP_ROUTES;
 }

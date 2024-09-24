@@ -1,4 +1,4 @@
-export enum ROUTES {
+export enum SVB_APP_ROUTES {
   report = 'report',
   reportDetail = 'report/details',
   reportDetailId = 'report/details/:id',

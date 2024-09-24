@@ -1,20 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, type OnInit, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
+import { groupBy, sortBy } from 'lodash';
 import { NgxEchartsDirective } from 'ngx-echarts';
 import { kindMap } from '../../components/kind-options';
 import type { ActionDTO } from '../../types/ActionDTO';
 
 @Component({
-  selector: 'app-action-by-kind',
+  selector: 'app-actions-by-kind',
   standalone: true,
   imports: [CommonModule, TranslocoModule, RouterModule, NgxEchartsDirective],
   template: `
     <section>
       <h6>{{ 'after-actions' | transloco }}</h6>
       <div class="stats shadow flex flex-wrap">
-        @for (stat of groupedByKind(); track $index) {
+        @for (stat of groupedByKind; track $index) {
         <a class="stat w-1/2" [routerLink]="['kind', stat[0]]">
           <div class="stat-figure text-primary"></div>
           <div class="stat-title">{{ kindMap.get(stat[0]) }}</div>
@@ -38,9 +39,12 @@ import type { ActionDTO } from '../../types/ActionDTO';
     }
   `,
 })
-export class ActionByKindComponent {
+export class ActionByKindComponent implements OnInit {
+  groupedByKind: [string, ActionDTO[]][] = [];
+  ngOnInit(): void {
+    this.groupedByKind = Object.entries(groupBy(this.actions(), 'kind'));
+  }
   actions = input.required<ActionDTO[]>();
-  groupedByKind = input.required<[string, ActionDTO[]][]>();
   kindMap = kindMap;
   // charts = charts;
 }

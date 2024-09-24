@@ -1,8 +1,8 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { select, Store } from '@ngxs/store';
-import { SessionState } from '../app/session.state';
+import { Component, type OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { ROUTES } from '../app/ROUTES';
+import { Store, select } from '@ngxs/store';
+import { SVB_APP_ROUTES } from '../app/ROUTES';
+import { SessionState } from '../app/session.state';
 
 @Component({
   selector: 'app-landing-page',
@@ -60,7 +60,7 @@ export class LandingPageComponent implements OnInit {
   router = inject(Router);
   store = inject(Store);
   session = this.store.select(SessionState.session);
-  ROUTES = ROUTES;
+  ROUTES = SVB_APP_ROUTES;
 
   ngOnInit(): void {
     this.session.subscribe((user) => {

@@ -29,5 +29,8 @@
   "your-events": "Deine Events",
   "enter-data": "Dateneingabe",
   "kind": "Art",
-  "last-action": "Letzte Aktion"
+  "last-action": "Letzte Aktion",
+  "filtered-after-grade": "Gefiltert nach Bewertung",
+  "from": "von",
+  "filtered-type": "gefiltert nach"
 }

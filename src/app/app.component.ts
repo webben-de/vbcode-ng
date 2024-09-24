@@ -13,7 +13,7 @@ import { dispatch, select } from '@ngxs/store';
 import { filter } from 'rxjs';
 import { ButtomNavComponent } from '../components/buttom-nav.component';
 import { SupabaseService } from '../services/supabase.service';
-import { ROUTES } from './ROUTES';
+import { SVB_APP_ROUTES } from './ROUTES';
 import { AuthComponent } from './auth.component';
 import { PwaService } from './pwa.service';
 import { SessionState, setAuthSession } from './session.state';
@@ -37,7 +37,7 @@ import { SessionState, setAuthSession } from './session.state';
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit {
-  ROUTES = ROUTES;
+  ROUTES = SVB_APP_ROUTES;
   snack = inject(MatSnackBar);
   router = inject(Router);
   supabase = inject(SupabaseService);
@@ -95,7 +95,7 @@ export class AppComponent implements OnInit {
     try {
       await this.supabase.signOut();
       this.snack.open('Logged out', '', { duration: 1000 });
-      this.router.navigate([ROUTES.root]);
+      this.router.navigate([SVB_APP_ROUTES.root]);
     } catch (error) {
       this.snack.open('Error while logging out', '', { duration: 1000 });
     }

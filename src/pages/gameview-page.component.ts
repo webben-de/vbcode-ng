@@ -8,12 +8,12 @@ import { RouterModule } from '@angular/router';
 import type { EChartsOption } from 'echarts';
 import { NgxEchartsDirective } from 'ngx-echarts';
 import type { ActionDTO } from 'src/types/ActionDTO';
+import { SVB_APP_ROUTES } from '../app/ROUTES';
 import { kindFilterPipe } from '../pipes/filterKind.pipe';
 import { ActionsService } from '../services/action.service';
 import { EventsService } from '../services/events.service';
 import { SupabaseService } from '../services/supabase.service';
 import { ActionKind } from '../types/ActionKind';
-import { ROUTES } from '../app/ROUTES';
 
 @Component({
   selector: 'app-gameview',
@@ -99,7 +99,7 @@ import { ROUTES } from '../app/ROUTES';
   `,
 })
 export class GameViewComponent implements OnInit {
-  ROUTES = ROUTES;
+  ROUTES = SVB_APP_ROUTES;
   supabase = inject(SupabaseService);
   actionsService = inject(ActionsService);
   eventsService = inject(EventsService);

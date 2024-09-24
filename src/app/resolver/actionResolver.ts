@@ -1,8 +1,8 @@
 import { inject } from '@angular/core';
 import type { ActivatedRouteSnapshot } from '@angular/router';
 import { ActionsService } from '../../services/action.service';
-import { ActionGrade } from '../../types/ActionGrade';
-import { ActionKind } from '../../types/ActionKind';
+import type { ActionGrade } from '../../types/ActionGrade';
+import type { ActionKind } from '../../types/ActionKind';
 
 /**
  *
@@ -42,5 +42,23 @@ export function actionByKindAndGradeResolver() {
     const grade = route.paramMap.get('grade') as ActionGrade;
     if (!id || !kind || !grade) return;
     return inject(ActionsService).getActionsOfEventByKindAndGrade(id, kind, grade);
+  };
+}
+
+export function actionByGradeAndPlayerResolver() {
+  return (route: ActivatedRouteSnapshot) => {
+    const id = route.paramMap.get('id');
+    const grade = route.paramMap.get('grade') as ActionGrade;
+    const player = route.paramMap.get('player');
+    if (!id || !grade || !player) return;
+    return inject(ActionsService).getActionsOfEventByGradeAndPlayer(id, grade, player);
+  };
+}
+export function actionByGradeResolver() {
+  return (route: ActivatedRouteSnapshot) => {
+    const id = route.paramMap.get('id');
+    const grade = route.paramMap.get('grade') as ActionGrade;
+    if (!id || !grade) return;
+    return inject(ActionsService).getActionsOfEventByGrade(id, grade);
   };
 }
