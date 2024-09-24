@@ -32,5 +32,7 @@
   "last-action": "Letzte Aktion",
   "filtered-after-grade": "Gefiltert nach Bewertung",
   "from": "von",
-  "filtered-type": "gefiltert nach"
+  "filtered-type": "gefiltert nach",
+  "upcomming-events": "Anstehende Events",
+  "past-events": "Vergangene Events"
 }

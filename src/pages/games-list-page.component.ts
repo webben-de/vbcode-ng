@@ -1,55 +1,45 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, type OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { select } from '@ngxs/store';
+import { groupBy } from 'lodash';
 import { SVB_APP_ROUTES } from 'src/app/ROUTES';
 import { SessionState } from '../app/session.state';
 import { EventsService } from '../services/events.service';
+import type { EventResponse } from '../types/EventDTO';
+import { EventCardComponent } from './report-details/sub-components/event-card.component';
+
+type groupEvent = {
+  upcomming: EventResponse[];
+  past: EventResponse[];
+};
 
 @Component({
   selector: 'app-game-list-page',
   standalone: true,
   host: { class: 'flex flex-col p-5' },
-  imports: [MatListModule, CommonModule, RouterLink, MatIconModule, TranslocoModule],
+  imports: [MatListModule, CommonModule, RouterLink, MatIconModule, TranslocoModule, EventCardComponent],
   template: `
     <span class="text-2xl font-bold">{{ 'your-events' | transloco }}</span>
-    <div class="flex flex-col md:flex-row items-center gap-4">
-      @for (item of events|async; track $index) {
-
-      <div class="card bg-base-100 w-96 shadow-xl">
-        <!-- <figure>
-          <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp" alt="Shoes" />
-        </figure> -->
-        <div class="card-body">
-          <span class="card-title text-sm truncate" [routerLink]="[ROUTES.root, ROUTES.report, 'details', item.id]">
-            {{ item.title }}
-            @if(item.date>currentDate){
-            <div class="badge badge-secondary">upcomming</div>
-            }
-            <div class="badge badge-secondary">{{ item.date }}</div>
-          </span>
-          <p>{{ item.home_team.name }} vs {{ item.away_team?.name || 'TBD' }}</p>
-          @if (item.result_home && item.result_away) {
-          <p class="bg-green">{{ item.result_home }} - {{ item.result_away }}</p>
-          }
-          <div class="card-actions justify-end">
-            @if (item.result_home && item.result_away) {
-            <div class="badge badge-outline">{{ 'finished' | transloco }}</div>
-            }
-            <div class="badge badge-outline">{{ item.visibility }}</div>
-            @if (item.owner === session()?.user?.id) {
-
-            <a [routerLink]="[ROUTES.root, ROUTES.editGame, item.id]" class="btn btn-primary btn-xs">
-              <mat-icon>edit</mat-icon>
-            </a>
-            }
-          </div>
-        </div>
+    <div class="flex flex-col  gap-4">
+      <div class="text-lg">{{ 'upcomming-events' | transloco }}</div>
+      <div class="flex md:flex-row gap-4">
+        @for (item of this.upcomingEvents.upcomming; track $index) {
+        <app-event-card [event]="item" />
+        }
       </div>
-      } @if (session()?.user) {
+      <hr />
+      <div class="text-lg">{{ 'past-events' | transloco }}</div>
+      <div class="flex md:flex-row gap-4">
+        @for (item of this.upcomingEvents.past; track $index) {
+        <app-event-card [event]="item" />
+        }
+      </div>
+      @if (session()?.user) {
+
       <a [routerLink]="[ROUTES.root, ROUTES.games, ROUTES.create]" class="btn btn-secondary">
         {{ 'create-a-new-game' | transloco }}
       </a>
@@ -57,10 +47,20 @@ import { EventsService } from '../services/events.service';
     </div>
   `,
 })
-export class GamesListPageComponent {
+export class GamesListPageComponent implements OnInit {
+  upcomingEvents: groupEvent = {
+    upcomming: [],
+    past: [],
+  };
   session = select(SessionState.session);
   currentDate = new Date();
   eventsService = inject(EventsService);
   events = this.eventsService.getEvents();
+
   ROUTES = SVB_APP_ROUTES;
+  async ngOnInit() {
+    const events = await this.events;
+    this.upcomingEvents = groupBy(events, (event: EventResponse) => (new Date(event.date) > this.currentDate ? 'upcomming' : 'past')) as groupEvent;
+    console.log(this.upcomingEvents);
+  }
 }

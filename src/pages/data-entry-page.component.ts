@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
-import { MatSelect, MatSelectModule } from '@angular/material/select';
+import { type MatSelect, MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { type MatStepper, MatStepperModule } from '@angular/material/stepper';
@@ -17,18 +17,18 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { grad_options_list } from '../components/grade-options';
 import { kindMap } from '../components/kind-options';
+import { SortByPlayerRolePipe } from '../pipes/sortbyplayerrole.pipe';
 import { ActionsService } from '../services/action.service';
 import { EventsService } from '../services/events.service';
 import { PlayerService } from '../services/player.service';
 import { SupabaseService } from '../services/supabase.service';
+import type { ActionDTO } from '../types/ActionDTO';
+import { ActionGrade } from '../types/ActionGrade';
 import { ActionKind } from '../types/ActionKind';
+import type { EventDTO, EventResponse } from '../types/EventDTO';
 import type { PlayerDTO } from '../types/PlayerDTO';
 import { hintMap } from '../types/hints';
-import { EventResponse } from '../types/EventDTO';
-import { ActionDTO } from '../types/ActionDTO';
 import { AttendeesSelectFormControlComponent } from './atoms/attendees-select-form-control.component';
-import { SortByPlayerRolePipe } from '../pipes/sortbyplayerrole.pipe';
-import { ActionGrade } from '../types/ActionGrade';
 
 type abbMap = {
   abbr: string;
@@ -321,7 +321,12 @@ export class DataEntryComponent implements OnInit {
       }
       if (payload.grade === ActionGrade['#'] && payload.kind === ActionKind.Serve) nextPlayer = this.codeInFG.controls.player_id.value;
 
-      this.codeInFG.reset({ game_id, game_set, kind: nextKind, player_id: nextPlayer });
+      this.codeInFG.reset({
+        game_id,
+        game_set,
+        kind: nextKind,
+        player_id: nextPlayer,
+      });
       this.stepper.reset();
       this.stepper.next();
     } catch (error) {
@@ -355,8 +360,9 @@ export class DataEntryComponent implements OnInit {
    *
    * @param $event
    */
-  async changeEvent($event: string) {
-    this.event = await this.eventService.getEvent($event);
-    this.updateActions();
+  async changeEvent($event: EventDTO) {
+    this.router.navigate([`/dataentry/${$event.id}`]);
+    if ($event?.id) this.event = await this.eventService.getEvent($event.id);
+    // this.updateActions();
   }
 }

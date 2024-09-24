@@ -36,5 +36,7 @@
   "undo": "undo",
   "filtered-after-grade": "Filtered After Grade",
   "filtered-type": "Filtered type",
-  "from": "from"
+  "from": "from",
+  "upcomming-events": "Upcomming Events",
+  "past-events": "Past Events"
 }

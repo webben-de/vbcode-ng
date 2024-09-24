@@ -29,6 +29,7 @@ import { DetailPageBackButtonComponent } from '../sub-components/detail-page-bac
       <app-detail-page-back-button />
       <app-detail-breadcrumbs />
     </div>
+    <br />
     <p class="flex gap-2">
       @if (kind) {
       <span>{{ 'filtered-type' | transloco }}: {{ kindMap.get(kind) }}</span>

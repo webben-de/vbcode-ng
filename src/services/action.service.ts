@@ -10,6 +10,9 @@ export const TABLENAME_ACTIONS = 'actions';
   providedIn: 'root',
 })
 export class ActionsService {
+  async getActionsOfEventByPlayer(id: string, player: string) {
+    return (await this.supabase.from(TABLENAME_ACTIONS).select(this.allColsInclBreakdown).eq('game_id', id).eq('player_id', player)).data;
+  }
   async getActionsOfEventByGradeAndPlayer(id: string, grade: ActionGrade, player: string) {
     return (await this.supabase.from(TABLENAME_ACTIONS).select(this.allColsInclBreakdown).eq('game_id', id).eq('grade', grade).eq('player_id', player)).data;
   }

@@ -12,6 +12,7 @@ import {
   actionByKindAndPlayerResolver,
   actionByKindResolver,
   actionResolver,
+  actionsByPlayerResolver,
 } from './resolver/actionResolver';
 import eventResolver from './resolver/eventResolver';
 import { playerResolver, teamResolver } from './resolver/teamResolver';
@@ -29,6 +30,16 @@ export const appRoutes: Route[] = [
     loadComponent: () => import('../pages/report-details/sub-pages/report-player-detail-page.component').then((mod) => mod.ReportPlayerDetailPageComponent),
     resolve: {
       actions: actionByKindAndPlayerResolver(),
+      player: playerResolver(),
+      // game: eventResolver(),
+    },
+  },
+  {
+    path: `${SVB_APP_ROUTES.reportDetailId}/player/:player`,
+    pathMatch: 'full',
+    loadComponent: () => import('../pages/report-details/sub-pages/report-player-detail-page.component').then((mod) => mod.ReportPlayerDetailPageComponent),
+    resolve: {
+      actions: actionsByPlayerResolver(),
       player: playerResolver(),
       // game: eventResolver(),
     },

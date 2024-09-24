@@ -62,3 +62,12 @@ export function actionByGradeResolver() {
     return inject(ActionsService).getActionsOfEventByGrade(id, grade);
   };
 }
+
+export function actionsByPlayerResolver() {
+  return (route: ActivatedRouteSnapshot) => {
+    const id = route.paramMap.get('id');
+    const player = route.paramMap.get('player');
+    if (!id || !player) return;
+    return inject(ActionsService).getActionsOfEventByPlayer(id, player);
+  };
+}
