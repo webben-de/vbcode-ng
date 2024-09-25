@@ -14,7 +14,7 @@ import { NgxEchartsDirective } from 'ngx-echarts';
 import type { ActionDTO } from 'src/types/ActionDTO';
 import { SVB_APP_ROUTES } from '../../app/ROUTES';
 import { defaults } from '../../components/defaults';
-import { gradDescriptionMap, grad_options_list, gradePrios } from '../../components/grade-options';
+import { gradDescriptionMap, grad_options_list } from '../../components/grade-options';
 import { kindMap, kinds } from '../../components/kind-options';
 import { ActionsService } from '../../services/action.service';
 import { EventsService } from '../../services/events.service';

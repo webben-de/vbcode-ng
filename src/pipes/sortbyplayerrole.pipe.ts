@@ -1,13 +1,11 @@
 // sortByPlayerRole
-import { Pipe, PipeTransform } from '@angular/core';
-import { PlayerDTO } from '../types/PlayerDTO';
-import { kindMap, kinds } from '../components/kind-options';
-import { Action } from '@ngxs/store';
+import { Pipe, type PipeTransform } from '@angular/core';
 import { ActionKind } from '../types/ActionKind';
+import type { PlayerDTO } from '../types/PlayerDTO';
 
 @Pipe({ name: 'sortByPlayerRole', standalone: true })
 export class SortByPlayerRolePipe implements PipeTransform {
-  transform(value: Map<string, string>, player: PlayerDTO | null) {
+  transform(_: Map<string, string>, player: PlayerDTO | null) {
     if (!player || player.roles.length <= 0) return roleKindMap.get(PlayerRoles.Default);
     const roleKinds = roleKindMap.get(player.roles[0] as PlayerRoles);
     return roleKinds ? Array.from(roleKinds) : roleKindMap.get(PlayerRoles.Default);

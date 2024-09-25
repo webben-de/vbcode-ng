@@ -1,5 +1,4 @@
 import { Injectable, inject } from '@angular/core';
-import type { PlayerDTO } from '../types/PlayerDTO';
 import { SupabaseService } from './supabase.service';
 
 @Injectable({

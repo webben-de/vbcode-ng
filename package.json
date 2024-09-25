@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "start": "nx serve",
+    "lint": "nx lint",
     "build": "nx build",
     "build:prod": "nx build --configuration prod --base-href https://svb.web-ben.de/",
     "test": "nx test"

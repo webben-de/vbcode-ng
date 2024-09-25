@@ -17,7 +17,7 @@ import { EventsService } from '../services/events.service';
 import { MetadataService } from '../services/metadata.service';
 import { PlayerService } from '../services/player.service';
 import type { ActionDTO } from '../types/ActionDTO';
-import type { EventDTO, EventResponse } from '../types/EventDTO';
+import type { EventResponse } from '../types/EventDTO';
 import type { PlayerDTO } from '../types/PlayerDTO';
 import { RotationGridItemComponent } from './atoms/vbGridItem.component';
 

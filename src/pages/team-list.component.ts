@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SVB_APP_ROUTES } from '../app/ROUTES';
 import { TeamsService } from '../services/teams.service';

@@ -1,12 +1,12 @@
+import { CommonModule } from '@angular/common';
 /* eslint-disable @typescript-eslint/adjacent-overload-signatures */
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, type OnInit } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import type { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { TranslocoModule } from '@jsverse/transloco';
 import { select } from '@ngxs/store';
 import { SessionState } from '../app/session.state';
-import { TranslocoModule } from '@jsverse/transloco';
-import { CommonModule } from '@angular/common';
-import { SafeResourceUrl, DomSanitizer } from '@angular/platform-browser';
-import { SupabaseService } from '../services/supabase.service';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import type { SupabaseService } from '../services/supabase.service';
 @Component({
   selector: 'app-user-landing-page',
   standalone: true,
@@ -108,6 +108,7 @@ export class UserLandingPageComponent implements OnInit {
     }
   }
 
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   async uploadAvatar(event: any) {
     try {
       this.uploading = true;

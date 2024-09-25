@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import type { EventDTO, EventResponse, createEventDTO } from '../types/EventDTO';
+import type { EventDTO, EventResponse } from '../types/EventDTO';
 import { SupabaseService } from './supabase.service';
 
 @Injectable({

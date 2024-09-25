@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, type OnInit, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import type { PlayerDTO } from '../../types/PlayerDTO';
 
 @Component({
