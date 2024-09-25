@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 /* eslint-disable @typescript-eslint/adjacent-overload-signatures */
-import { Component, Input, type OnInit } from '@angular/core';
+import { Component, Input, type OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import type { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer, type SafeResourceUrl } from '@angular/platform-browser';
 import { TranslocoModule } from '@jsverse/transloco';
 import { select } from '@ngxs/store';
 import { SessionState } from '../app/session.state';
-import type { SupabaseService } from '../services/supabase.service';
+import { SupabaseService } from '../services/supabase.service';
 @Component({
   selector: 'app-user-landing-page',
   standalone: true,
@@ -60,7 +60,15 @@ import type { SupabaseService } from '../services/supabase.service';
   `,
 })
 export class UserLandingPageComponent implements OnInit {
+  supabase = inject(SupabaseService);
+  dom = inject(DomSanitizer);
+  /**
+   *
+   */
   session = select(SessionState.session);
+  /**
+   *
+   */
   updateProfileForm = new FormGroup({
     avatar_url: new FormControl<string>(''),
   });
@@ -85,7 +93,6 @@ export class UserLandingPageComponent implements OnInit {
     }
   }
 
-  constructor(private readonly supabase: SupabaseService, private readonly dom: DomSanitizer) {}
   async ngOnInit() {
     this.avatarUrl = (await this.supabase.getProfile(this.session()?.user.id))?.data.avatar_url;
   }

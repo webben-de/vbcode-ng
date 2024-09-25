@@ -36,6 +36,7 @@ export class EventsService {
     try {
       if (!opts.id) {
         return await this.supabase.from('events').insert(opts);
+        // biome-ignore lint/style/noUselessElse: <explanation>
       } else {
         return await this.supabase.from('events').upsert(opts);
       }
