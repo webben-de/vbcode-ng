@@ -4,6 +4,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideTransloco } from '@jsverse/transloco';
+import { withNgxsReduxDevtoolsPlugin } from '@ngxs/devtools-plugin';
 import { provideStore } from '@ngxs/store';
 import { BarChart, PieChart, RadarChart } from 'echarts/charts';
 import { LegendComponent, TitleComponent } from 'echarts/components';
@@ -34,6 +35,7 @@ export const appConfig: ApplicationConfig = {
     }),
     provideEchartsCore({ echarts }),
     provideStore([SessionState]),
+    withNgxsReduxDevtoolsPlugin({ disabled: false }),
     // withNgxsDevelopmentOptions({}),
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),

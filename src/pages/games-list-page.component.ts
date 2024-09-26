@@ -10,12 +10,8 @@ import { SVB_APP_ROUTES } from 'src/app/ROUTES';
 import { SessionState } from '../app/session.state';
 import { EventsService } from '../services/events.service';
 import type { EventResponse } from '../types/EventDTO';
+import type { groupEvent } from './groupEvent';
 import { EventCardComponent } from './report-details/sub-components/event-card.component';
-
-type groupEvent = {
-  upcomming: EventResponse[];
-  past: EventResponse[];
-};
 
 @Component({
   selector: 'app-game-list-page',
@@ -61,6 +57,5 @@ export class GamesListPageComponent implements OnInit {
   async ngOnInit() {
     const events = await this.events;
     this.upcomingEvents = groupBy(events, (event: EventResponse) => (new Date(event.date) > this.currentDate ? 'upcomming' : 'past')) as groupEvent;
-    console.log(this.upcomingEvents);
   }
 }

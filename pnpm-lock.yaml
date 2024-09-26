@@ -56,6 +56,9 @@ importers:
       '@jsverse/transloco':
         specifier: ^7.4.4
         version: 7.4.4(@angular/core@18.2.3(rxjs@7.8.1)(zone.js@0.14.10))(typescript@5.5.4)
+      '@ngxs/devtools-plugin':
+        specifier: ^18.1.1
+        version: 18.1.1(@angular/core@18.2.3(rxjs@7.8.1)(zone.js@0.14.10))(@ngxs/store@18.1.1(@angular/core@18.2.3(rxjs@7.8.1)(zone.js@0.14.10))(rxjs@7.8.1))(rxjs@7.8.1)
       '@ngxs/store':
         specifier: ^18.1.1
         version: 18.1.1(@angular/core@18.2.3(rxjs@7.8.1)(zone.js@0.14.10))(rxjs@7.8.1)
@@ -1944,6 +1947,13 @@ packages:
       '@angular/compiler-cli': ^18.0.0
       typescript: '>=5.4 <5.6'
       webpack: ^5.54.0
+
+  '@ngxs/devtools-plugin@18.1.1':
+    resolution: {integrity: sha512-1P+MP1hYxdndZT3g/7+qMczJonecJJz24vWWpsnMcpzkQ3ze+T5qdSbNMvYqoSzqJPFrotoL9F4RMtUABkrkvg==}
+    peerDependencies:
+      '@angular/core': '>=16.0.0 <19.0.0'
+      '@ngxs/store': ^18.1.1 || ^18.1.1-dev
+      rxjs: '>=6.5.5'
 
   '@ngxs/store@18.1.1':
     resolution: {integrity: sha512-qbmp/lrtP/Q6QeF+t0OblR8HN0rkO1wn/5pbMv/XOOeLX6wmTz3uRbw1ce1pOxxKax8wH11IhHRXEE8k4v3Ynw==}
@@ -9204,6 +9214,13 @@ snapshots:
       '@angular/compiler-cli': 18.2.3(@angular/compiler@18.2.3(@angular/core@18.2.3(rxjs@7.8.1)(zone.js@0.14.10)))(typescript@5.5.4)
       typescript: 5.5.4
       webpack: 5.94.0(@swc/core@1.5.29(@swc/helpers@0.5.13))(esbuild@0.23.0)
+
+  '@ngxs/devtools-plugin@18.1.1(@angular/core@18.2.3(rxjs@7.8.1)(zone.js@0.14.10))(@ngxs/store@18.1.1(@angular/core@18.2.3(rxjs@7.8.1)(zone.js@0.14.10))(rxjs@7.8.1))(rxjs@7.8.1)':
+    dependencies:
+      '@angular/core': 18.2.3(rxjs@7.8.1)(zone.js@0.14.10)
+      '@ngxs/store': 18.1.1(@angular/core@18.2.3(rxjs@7.8.1)(zone.js@0.14.10))(rxjs@7.8.1)
+      rxjs: 7.8.1
+      tslib: 2.7.0
 
   '@ngxs/store@18.1.1(@angular/core@18.2.3(rxjs@7.8.1)(zone.js@0.14.10))(rxjs@7.8.1)':
     dependencies:

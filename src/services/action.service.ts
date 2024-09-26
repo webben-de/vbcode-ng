@@ -1,8 +1,10 @@
 import { Injectable, inject } from '@angular/core';
+import { util_d } from 'echarts/types/dist/shared';
 import { BehaviorSubject } from 'rxjs';
 import type { ActionDTO } from '../types/ActionDTO';
 import { ActionGrade } from '../types/ActionGrade';
 import { ActionKind } from '../types/ActionKind';
+import { PlayerService } from './player.service';
 import { SupabaseService } from './supabase.service';
 export const TABLENAME_ACTIONS = 'actions';
 
@@ -10,6 +12,23 @@ export const TABLENAME_ACTIONS = 'actions';
   providedIn: 'root',
 })
 export class ActionsService {
+  playerService = inject(PlayerService);
+  async getActionsOfLastEventByUser(user_id_arg: any) {
+    let user_id: string;
+    try {
+      const player = await this.playerService.getMyPlayer();
+      user_id = player.id;
+    } catch (error) {
+      user_id = user_id_arg;
+    }
+    try {
+      return (await this.supabase.from(TABLENAME_ACTIONS).select(this.allColsInclBreakdown).eq('player_id', user_id).eq('game_id', user_id))
+        .data as ActionDTO[];
+    } catch (error) {
+      console.error('Error fetching actions of last event by user: ', error);
+      return null;
+    }
+  }
   async getActionsOfEventByPlayer(id: string, player: string) {
     return (await this.supabase.from(TABLENAME_ACTIONS).select(this.allColsInclBreakdown).eq('game_id', id).eq('player_id', player)).data;
   }

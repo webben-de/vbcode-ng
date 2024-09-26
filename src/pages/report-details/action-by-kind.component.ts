@@ -40,11 +40,10 @@ import type { ActionDTO } from '../../types/ActionDTO';
   `,
 })
 export class ActionByKindComponent implements OnInit {
+  actions = input.required<ActionDTO[]>();
   groupedByKind: [string, ActionDTO[]][] = [];
+  kindMap = kindMap;
   ngOnInit(): void {
     this.groupedByKind = Object.entries(groupBy(this.actions(), 'kind'));
   }
-  actions = input.required<ActionDTO[]>();
-  kindMap = kindMap;
-  // charts = charts;
 }

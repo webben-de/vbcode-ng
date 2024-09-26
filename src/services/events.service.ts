@@ -1,15 +1,31 @@
 import { Injectable, inject } from '@angular/core';
 import type { EventDTO, EventResponse } from '../types/EventDTO';
+import { PlayerService } from './player.service';
 import { SupabaseService } from './supabase.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EventsService {
+  supabase = inject(SupabaseService).supabase;
+  playerService = inject(PlayerService);
+  /**
+   *
+   * @param id
+   * @returns
+   */
+  async getEventsOfPlayer() {
+    const userPlayerId = (await this.playerService.getMyPlayer()).id;
+    return (await this.supabase.from('events').select('*').contains('attendees', [userPlayerId])).data as EventResponse[];
+  }
+  /**
+   *
+   * @param arg0
+   * @returns
+   */
   async deleteEvent(arg0: string) {
     return (await this.supabase.from('events').delete().eq('id', arg0)).data;
   }
-  supabase = inject(SupabaseService).supabase;
   /**
    *
    * @param id

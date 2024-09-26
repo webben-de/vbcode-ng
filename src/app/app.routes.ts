@@ -1,5 +1,5 @@
 import type { Route } from '@angular/router';
-import { provideStates, select } from '@ngxs/store';
+import { provideStates } from '@ngxs/store';
 import { LandingPageComponent } from '../pages/landing-page.component';
 import { UserLandingPageComponent } from '../pages/user-landing-page.component';
 import { SVB_APP_ROUTES } from './ROUTES';
@@ -14,7 +14,7 @@ import {
   actionResolver,
   actionsByPlayerResolver,
 } from './resolver/actionResolver';
-import eventResolver from './resolver/eventResolver';
+import { eventResolver, userResolver } from './resolver/eventResolver';
 import { playerResolver, teamResolver } from './resolver/teamResolver';
 import { SessionState } from './session.state';
 
@@ -145,13 +145,10 @@ export const appRoutes: Route[] = [
     path: SVB_APP_ROUTES.user,
     component: UserLandingPageComponent,
     resolve: {
-      user: () => () => {
-        const session = select(SessionState.session);
-        return session()?.user;
-      },
+      user: userResolver,
     },
     providers: [provideStates([SessionState])],
-    canActivate: [authenticationGuard()],
+    // canActivate: [authenticationGuard()],
   },
   { path: '', component: LandingPageComponent },
   { path: '*', component: LandingPageComponent },

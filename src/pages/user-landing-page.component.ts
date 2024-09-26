@@ -7,10 +7,12 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { select } from '@ngxs/store';
 import { SessionState } from '../app/session.state';
 import { SupabaseService } from '../services/supabase.service';
+import { PlayerEventListComponent } from './user-dashboard/player-event-list.component';
+import { PlayerLastGameStatsComponent } from './user-dashboard/player-last-game-stats.component';
 @Component({
   selector: 'app-user-landing-page',
   standalone: true,
-  imports: [TranslocoModule, CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [TranslocoModule, CommonModule, FormsModule, ReactiveFormsModule, PlayerEventListComponent, PlayerLastGameStatsComponent],
   template: `
     <body class="bg-gray-100">
       <header class="bg-blue-500 text-white p-4 text-center">
@@ -18,6 +20,8 @@ import { SupabaseService } from '../services/supabase.service';
       </header>
 
       <main class="container mx-auto p-4">
+        <app-player-event-list />
+        <app-player-last-game-stats />
         <section class="bg-white rounded-lg shadow-md p-6 my-4">
           <h2 class="text-2xl font-bold mb-4">Persönliche Informationen</h2>
 
