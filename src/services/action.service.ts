@@ -1,9 +1,12 @@
 import { Injectable, inject } from '@angular/core';
-import { util_d } from 'echarts/types/dist/shared';
+import { select } from '@ngxs/store';
+import { type Session, User } from '@supabase/supabase-js';
 import { BehaviorSubject } from 'rxjs';
+import { SessionState } from '../app/session.state';
 import type { ActionDTO } from '../types/ActionDTO';
 import { ActionGrade } from '../types/ActionGrade';
 import { ActionKind } from '../types/ActionKind';
+import type { PlayerDTO } from '../types/PlayerDTO';
 import { PlayerService } from './player.service';
 import { SupabaseService } from './supabase.service';
 export const TABLENAME_ACTIONS = 'actions';
@@ -12,36 +15,70 @@ export const TABLENAME_ACTIONS = 'actions';
   providedIn: 'root',
 })
 export class ActionsService {
+  /**
+   *
+   */
+  supabase = inject(SupabaseService).supabase;
   playerService = inject(PlayerService);
-  async getActionsOfLastEventByUser(user_id_arg: any) {
-    let user_id: string;
+  user_player = select(SessionState.user_player);
+  /**
+   *
+   */
+  private readonly allColsInclBreakdown = '*, player_id (id, name, trikot) ';
+  /**
+   *
+   * @param player
+   * @returns
+   */
+  async getActionsOfLastEventByPlayer(player: PlayerDTO) {
     try {
-      const player = await this.playerService.getMyPlayer();
-      user_id = player.id;
-    } catch (error) {
-      user_id = user_id_arg;
-    }
-    try {
-      return (await this.supabase.from(TABLENAME_ACTIONS).select(this.allColsInclBreakdown).eq('player_id', user_id).eq('game_id', user_id))
-        .data as ActionDTO[];
+      return (await this.supabase.from(TABLENAME_ACTIONS).select(this.allColsInclBreakdown).eq('player_id', player.id)).data as ActionDTO[];
     } catch (error) {
       console.error('Error fetching actions of last event by user: ', error);
       return null;
     }
   }
+  /**
+   *
+   * @param id
+   * @param player
+   * @returns
+   */
   async getActionsOfEventByPlayer(id: string, player: string) {
     return (await this.supabase.from(TABLENAME_ACTIONS).select(this.allColsInclBreakdown).eq('game_id', id).eq('player_id', player)).data;
   }
+  /**
+   *
+   * @param id
+   * @param grade
+   * @param player
+   * @returns
+   */
   async getActionsOfEventByGradeAndPlayer(id: string, grade: ActionGrade, player: string) {
     return (await this.supabase.from(TABLENAME_ACTIONS).select(this.allColsInclBreakdown).eq('game_id', id).eq('grade', grade).eq('player_id', player)).data;
   }
+  /**
+   *
+   * @param id
+   * @param grade
+   * @returns
+   */
   async getActionsOfEventByGrade(id: string, grade: ActionGrade) {
     return (await this.supabase.from(TABLENAME_ACTIONS).select(this.allColsInclBreakdown).eq('game_id', id).eq('grade', grade)).data;
   }
+  /**
+   *
+   * @param id
+   * @param kind
+   * @param grade
+   * @returns
+   */
   async getActionsOfEventByKindAndGrade(id: string, kind: ActionKind, grade: ActionGrade) {
     return (await this.supabase.from(TABLENAME_ACTIONS).select(this.allColsInclBreakdown).eq('game_id', id).eq('kind', kind).eq('grade', grade)).data;
   }
-  private readonly allColsInclBreakdown = '*, player_id (id, name, trikot) ';
+  /**
+   *
+   */
   /**
    *
    * @param id
@@ -53,11 +90,15 @@ export class ActionsService {
     return (await this.supabase.from(TABLENAME_ACTIONS).select(this.allColsInclBreakdown).eq('game_id', id).eq('kind', kind).eq('player_id', player))
       .data as ActionDTO[];
   }
-
+  /**
+   *
+   * @param id
+   * @param kind
+   * @returns
+   */
   async getActionsOfEventByKind(id: string, kind: string) {
     return (await this.supabase.from(TABLENAME_ACTIONS).select(this.allColsInclBreakdown).eq('game_id', id).eq('kind', kind)).data as ActionDTO[];
   }
-  supabase = inject(SupabaseService).supabase;
   /**
    *
    * @param game_id

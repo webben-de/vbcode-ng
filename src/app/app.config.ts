@@ -20,6 +20,7 @@ echarts.use([CanvasRenderer, BarChart, PieChart, RadarChart, TitleComponent, Leg
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
+    provideStore([SessionState]),
     provideRouter(appRoutes, withInMemoryScrolling()),
     provideAnimationsAsync(),
     provideHttpClient(),
@@ -34,7 +35,6 @@ export const appConfig: ApplicationConfig = {
       loader: TranslocoHttpLoader,
     }),
     provideEchartsCore({ echarts }),
-    provideStore([SessionState]),
     withNgxsReduxDevtoolsPlugin({ disabled: false }),
     // withNgxsDevelopmentOptions({}),
     provideServiceWorker('ngsw-worker.js', {

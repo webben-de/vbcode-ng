@@ -1,4 +1,6 @@
 import { Injectable, inject } from '@angular/core';
+import { select } from '@ngxs/store';
+import { SessionState } from '../app/session.state';
 import type { EventDTO, EventResponse } from '../types/EventDTO';
 import { PlayerService } from './player.service';
 import { SupabaseService } from './supabase.service';
@@ -9,13 +11,15 @@ import { SupabaseService } from './supabase.service';
 export class EventsService {
   supabase = inject(SupabaseService).supabase;
   playerService = inject(PlayerService);
+  user_player = select(SessionState.user_player);
   /**
    *
    * @param id
    * @returns
    */
   async getEventsOfPlayer() {
-    const userPlayerId = (await this.playerService.getMyPlayer()).id;
+    let userPlayerId = this.user_player()?.id;
+    if (!userPlayerId) userPlayerId = (await this.playerService.getMyPlayer()).id;
     return (await this.supabase.from('events').select('*').contains('attendees', [userPlayerId])).data as EventResponse[];
   }
   /**

@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, type OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { select } from '@ngxs/store';
 import { groupBy, sortBy } from 'lodash';
+import { SessionState } from '../../app/session.state';
 import { gradePrios } from '../../components/grade-options';
 import { ActionsService } from '../../services/action.service';
 import type { ActionDTO } from '../../types/ActionDTO';
@@ -70,16 +72,19 @@ import type { ActionDTO } from '../../types/ActionDTO';
 export class PlayerLastGameStatsComponent implements OnInit {
   route = inject(ActivatedRoute);
   actionsService = inject(ActionsService);
+  user_player = select(SessionState.user_player);
 
   groupedByGrade: [string, any[]][] = [];
   actions?: Promise<ActionDTO[] | null>;
 
   async ngOnInit() {
-    const user = this.route.snapshot.data;
-    this.actions = this.actionsService.getActionsOfLastEventByUser(user);
+    const player = this.user_player();
+    if (player) {
+      this.actions = this.actionsService.getActionsOfLastEventByPlayer(player);
 
-    this.groupedByGrade = sortBy(Object.entries(groupBy(await this.actions, 'grade')), (a) => {
-      return gradePrios.get(a[0]) || 0;
-    });
+      this.groupedByGrade = sortBy(Object.entries(groupBy(await this.actions, 'grade')), (a) => {
+        return gradePrios.get(a[0]) || 0;
+      });
+    }
   }
 }

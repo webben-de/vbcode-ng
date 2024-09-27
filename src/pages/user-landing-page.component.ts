@@ -98,7 +98,7 @@ export class UserLandingPageComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.avatarUrl = (await this.supabase.getProfile(this.session()?.user.id))?.data.avatar_url;
+    // this.avatarUrl = (await this.supabase.getProfile(this.session()?.user.id))?.data.avatar_url;
   }
   async updateProfile() {
     await this.supabase.updateProfile({
