@@ -7,7 +7,7 @@ export default function authenticationGuard(): CanActivateFn {
   return () => {
     const store = inject(Store);
     const router = inject(Router);
-    const user = store.selectOnce(SessionState.session);
+    // const user = store.selectOnce(SessionState.session);
     return true;
     // return user.pipe(
     //   filter((user) => !!user),

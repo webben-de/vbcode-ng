@@ -13,13 +13,13 @@ import type { EventResponse } from '../../../types/EventDTO';
   standalone: true,
   imports: [CommonModule, RouterModule, MatIconModule, TranslocoModule],
   template: `
-    <div class="card bg-base-100 w-96 shadow-xl">
+    <div class="card bg-base-100 shadow-xl w-full">
       <!-- <figure>
           <img src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp" alt="Shoes" />
         </figure> -->
       <div class="card-body">
         @let item = event();
-        <span class="card-title text-sm truncate" [routerLink]="[ROUTES.root, ROUTES.report, 'details', item.id]">
+        <span class="card-title text-primary text-sm truncate" [routerLink]="[ROUTES.root, ROUTES.report, 'details', item.id]">
           {{ item.title }}
           @if(item.date>currentDate){
           <div class="badge badge-secondary">upcomming</div>
@@ -45,11 +45,7 @@ import type { EventResponse } from '../../../types/EventDTO';
       </div>
     </div>
   `,
-  styles: `
-    :host {
-      display: block;
-    }
-  `,
+  host: { class: 'flex w-full' },
 })
 export class EventCardComponent {
   ROUTES = SVB_APP_ROUTES;

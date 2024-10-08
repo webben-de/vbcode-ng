@@ -17,10 +17,13 @@ import { setAuthSession } from './session.state';
   imports: [FormsModule, ReactiveFormsModule, MatInputModule, MatFormFieldModule, MatButtonModule, MatSnackBarModule],
 })
 export class AuthComponent {
-  router = inject(Router);
-  snack = inject(MatSnackBar);
-  supabase = inject(SupabaseService);
-  formBuilder = inject(FormBuilder);
+  private readonly router = inject(Router);
+  private readonly snack = inject(MatSnackBar);
+  private readonly supabase = inject(SupabaseService);
+  private readonly formBuilder = inject(FormBuilder);
+  /**
+   *
+   */
   setAuthSession = dispatch(setAuthSession);
   /**
    *
@@ -39,12 +42,16 @@ export class AuthComponent {
       this.snack.open('Error logging in with Google', 'Dismiss');
     }
   }
-
+  /**
+   *
+   */
   signInForm = this.formBuilder.group({
     email: '',
     password: '',
   });
-
+  /**
+   *
+   */
   async onSubmit(): Promise<void> {
     try {
       this.loading = true;

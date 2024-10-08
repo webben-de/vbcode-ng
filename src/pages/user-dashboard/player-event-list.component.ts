@@ -13,7 +13,7 @@ import { EventCardComponent } from '../report-details/sub-components/event-card.
   standalone: true,
   imports: [CommonModule, EventCardComponent],
   template: `
-    <div class="bg-white rounded-lg shadow-md p-6 my-4">
+    <div class="bg-neutral rounded-lg shadow-md p-6 my-4">
       <h2 class="text-2xl font-bold mb-4">Meine Spiele</h2>
       <p>Hier werden deine Spiele angezeigt, an denen du teilgenommen hast.</p>
       <ul class="list-disc flex gap-4 max-w-full overflow-scroll">

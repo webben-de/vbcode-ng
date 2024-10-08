@@ -14,13 +14,14 @@ import { provideEchartsCore } from 'ngx-echarts';
 import { appRoutes } from './app.routes';
 import { SessionState } from './session.state';
 import { TranslocoHttpLoader } from './transloco-http-loader';
+import { ngxsConfig } from '../ngxs.config';
 
 echarts.use([CanvasRenderer, BarChart, PieChart, RadarChart, TitleComponent, LegendComponent]);
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideStore([SessionState]),
+    provideStore([SessionState], ngxsConfig),
     provideRouter(appRoutes, withInMemoryScrolling()),
     provideAnimationsAsync(),
     provideHttpClient(),

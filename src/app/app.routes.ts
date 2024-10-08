@@ -144,6 +144,7 @@ export const appRoutes: Route[] = [
   {
     path: SVB_APP_ROUTES.user,
     component: UserLandingPageComponent,
+
     resolve: {
       user: userResolver,
     },

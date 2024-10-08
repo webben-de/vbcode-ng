@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, type OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { select } from '@ngxs/store';
+import { select, Store } from '@ngxs/store';
 import { groupBy, sortBy } from 'lodash';
 import { SessionState } from '../../app/session.state';
 import { gradePrios } from '../../components/grade-options';
@@ -13,11 +13,11 @@ import type { ActionDTO } from '../../types/ActionDTO';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="bg-white rounded-lg shadow-md p-6 my-4">
+    <div class="bg-neutral rounded-lg shadow-md p-6 my-4">
       <h2 class="text-2xl font-bold mb-4">Meine Stats</h2>
       <p>Hier werden deine Werte der des letzten Spiels angezeigt.</p>
       <div id="stats-container">
-        <div class="stats shadow ">
+        <div class="stats stats-vertical shadow ">
           <div class="stat">
             <div class="stat-figure text-primary">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current">
@@ -44,24 +44,12 @@ import type { ActionDTO } from '../../types/ActionDTO';
             <div class="stat-value text-secondary">2.6M</div>
             <div class="stat-desc">21% more than last month</div>
           </div>
-
-          <div class="stat">
-            <div class="stat-figure text-secondary">
-              <div class="avatar online">
-                <div class="w-16 rounded-full">
-                  <img src="/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-                </div>
-              </div>
-            </div>
-            <div class="stat-value">86%</div>
-            <div class="stat-title">Tasks done</div>
-            <div class="stat-desc text-secondary">31 tasks remaining</div>
-          </div>
         </div>
       </div>
     </div>
     {{ groupedByGrade | json }}
     {{ actions | async | json }}
+    {{ user_player() | json }}
   `,
   styles: `
     :host {
@@ -70,15 +58,30 @@ import type { ActionDTO } from '../../types/ActionDTO';
   `,
 })
 export class PlayerLastGameStatsComponent implements OnInit {
+  /**
+   *
+   */
   route = inject(ActivatedRoute);
   actionsService = inject(ActionsService);
+  constructor(private store: Store) {
+    this.store.select(SessionState.session).subscribe((session) => {
+      console.log(session);
+    });
+  }
+  /**
+   *
+   */
   user_player = select(SessionState.user_player);
-
+  /**
+   *
+   */
   groupedByGrade: [string, any[]][] = [];
   actions?: Promise<ActionDTO[] | null>;
 
   async ngOnInit() {
     const player = this.user_player();
+
+    console.log(player);
     if (player) {
       this.actions = this.actionsService.getActionsOfLastEventByPlayer(player);
 
