@@ -29,7 +29,7 @@ import { EventCardComponent } from './report-details/sub-components/event-card.c
       </div>
       <hr />
       <div class="text-lg">{{ 'past-events' | transloco }}</div>
-      <div class="flex md:flex-row gap-4">
+      <div class="flex flex-col md:flex-row gap-4">
         @for (item of this.upcomingEvents.past; track $index) {
         <app-event-card [event]="item" />
         }
