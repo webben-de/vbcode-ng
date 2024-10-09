@@ -8,11 +8,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { select } from '@ngxs/store';
 import { find, without } from 'lodash';
-import { fromEvent, interval, of, takeUntil, takeWhile, timeout } from 'rxjs';
+import { interval, takeWhile } from 'rxjs';
 import { SVB_APP_ROUTES } from '../app/ROUTES';
 import { SessionState } from '../app/session.state';
 import { EventsService } from '../services/events.service';
@@ -53,9 +54,14 @@ import { RotationGridItemComponent } from './atoms/vbGridItem.component';
             }
           </mat-select>
         </mat-form-field>
-        @if(session()?.user?.id === event?.owner) {
-        <a [routerLink]="[ROUTES.root + ROUTES.editGame, selectedEvent]">{{ 'edit-this-event' | transloco }}</a>
-        }
+        <div class="flex justify-between">
+          @if(session()?.user?.id === event?.owner) {
+          <a [routerLink]="[ROUTES.root + ROUTES.editGame, selectedEvent]">{{ 'edit-this-event' | transloco }}</a>
+          <button class="btn w-16 h-8" (click)="copyLinkToClipboard()">
+            <mat-icon class="text-primary">link</mat-icon>
+          </button>
+          }
+        </div>
       </div>
       <hr />
       @if (event) {
@@ -120,8 +126,13 @@ import { RotationGridItemComponent } from './atoms/vbGridItem.component';
   `,
 })
 export class RotationPlanerPageComponent implements OnInit {
+  copyLinkToClipboard() {
+    navigator.clipboard.writeText(document.location.href);
+    this.snack.open('Copy to clipboard');
+  }
   ROUTES = SVB_APP_ROUTES;
   router = inject(Router);
+  snack = inject(MatSnackBar);
   meta = inject(MetadataService);
   route = inject(ActivatedRoute);
   eventService = inject(EventsService);
