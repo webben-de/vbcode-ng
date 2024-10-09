@@ -58,6 +58,7 @@ export class AppComponent implements OnInit {
   async ngOnInit() {
     this.#toggleDrawerOnNavEnd();
     this.pwa.init();
+    if (!(await this.sw.activateUpdate)) return;
     const b = await this.sw.checkForUpdate();
     if (b) {
       try {

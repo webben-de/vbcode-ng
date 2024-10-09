@@ -164,7 +164,7 @@ export class CreateGamePageComponent implements OnInit {
    */
   teams = this.teamService.getTeams();
   players = this.playerService.getPlayers();
-  attendeesOptions: (PlayerDTO | null)[] = [];
+  attendeesOptions: PlayerDTO[] = [];
   createGameForm = new FormGroup({
     id: new FormControl<string | undefined>(undefined),
     title: new FormControl<string>('', Validators.required),
