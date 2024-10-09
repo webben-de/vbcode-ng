@@ -1,19 +1,18 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import { PlayerDTO } from '../types/PlayerDTO';
-import { FormControl } from '@angular/forms';
+import { Pipe, type PipeTransform } from '@angular/core';
+import type { FormControl } from '@angular/forms';
+import type { PlayerDTO } from '../types/PlayerDTO';
 
 @Pipe({
   name: 'pristine',
+  pure: false,
   standalone: true,
 })
 export class PrisitinePipe implements PipeTransform {
-  transform(attendees: PlayerDTO[], args: { [x: number]: FormControl }) {
-    if (!args) return attendees;
-    console.log(attendees);
-    const ids = Object.values(args).map((fc) => fc.value);
-    console.log('All Ids in Controls: ', ids);
-    const attendessIds = attendees.filter((a) => !ids.includes(a.id));
-    console.log('All attendees: ', attendessIds);
-    return attendessIds || [];
+  transform(attendees: PlayerDTO[], args: { [x: number]: FormControl }, index: number) {
+    if (!attendees) return [];
+    const alreadySetFormValues = Object.values(args).map((control: FormControl<string>) => control.value);
+    const withoutOthers = attendees.filter((a) => !alreadySetFormValues.includes(a?.id)) || [];
+    const currentPlayer = attendees.find((a) => a?.id === args[index].value); // to keep selcted vlaue visible
+    return [...withoutOthers, currentPlayer];
   }
 }

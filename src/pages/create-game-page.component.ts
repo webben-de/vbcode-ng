@@ -13,10 +13,11 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { select } from '@ngxs/store';
 import { SVB_APP_ROUTES } from 'src/app/ROUTES';
 import { SessionState } from '../app/session.state';
+import { PristineEventPipe } from '../pipes/pristineEvent.pipe';
 import { EventsService } from '../services/events.service';
 import { PlayerService } from '../services/player.service';
 import { SupabaseService } from '../services/supabase.service';
-import { TeamsService } from '../services/teams.service';
+import { type TeamDTO, TeamsService } from '../services/teams.service';
 import type { EventDTO, createEventDTO } from '../types/EventDTO';
 import type { PlayerDTO } from '../types/PlayerDTO';
 import { AttendeesSelectFormControlComponent } from './atoms/attendees-select-form-control.component';
@@ -37,36 +38,46 @@ import { SingleRoationFormControlComponent } from './atoms/single-roation-form-c
     RouterModule,
     TranslocoModule,
     SingleRoationFormControlComponent,
+    PristineEventPipe,
     AttendeesSelectFormControlComponent,
   ],
   template: `
     <div class="flex flex-col items-start gap-8 h-full p-8">
-      <span class="text-2xl font-bold">{{ 'create-a-new-game' | transloco }}</span>
+      <span class="text-2xl font-bold">
+        @if (!createGameForm.controls.id.value) {
+        {{ 'create-a-new-game' | transloco }}
+        }@else {
+        {{ 'edit-a-game' | transloco }}
+
+        }
+      </span>
       <form [formGroup]="createGameForm" #form (submit)="createGame()" class="flex flex-col w-full">
         <mat-form-field class="w-full">
           <mat-label>{{ 'title' | transloco }}</mat-label>
           <input matInput formControlName="title" />
         </mat-form-field>
-        <mat-form-field class="w-full">
-          <mat-label>{{ 'visibility' | transloco }}</mat-label>
-          <mat-select formControlName="visibility">
-            <mat-option *ngFor="let item of ['Private', 'Public']" [value]="item">
-              {{ item }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field class="w-full">
-          <mat-label>{{ 'date' | transloco }}</mat-label>
-          <input matInput type="date" formControlName="date" />
-        </mat-form-field>
-        <app-attendees-select-form-control [attendeesOptions]="attendeesOptions" [attendees]="this.createGameForm.controls.attendees" />
+        <div class="flex justify-between">
+          <mat-form-field class="w-1/3">
+            <mat-label>{{ 'visibility' | transloco }}</mat-label>
+            <mat-select formControlName="visibility">
+              <mat-option *ngFor="let item of ['Private', 'Public']" [value]="item">
+                {{ item }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="w-1/2">
+            <mat-label>{{ 'date' | transloco }}</mat-label>
+            <input matInput type="date" formControlName="date" />
+          </mat-form-field>
+        </div>
+        <!-- ALL ATTENDEES AVAILABLE FROM THE (HOME) TEAM -->
 
         <hr />
         <span class="text-lg">{{ 'home' | transloco }}</span>
         <mat-form-field class="w-full">
           <mat-label>{{ 'home-team' | transloco }}</mat-label>
           <mat-select formControlName="home_team" (valueChange)="OnHomeTeamChange($event)" #homeTeam>
-            @for (item of teams|async; track $index) {
+            @for (item of teams; track $index) {
             <mat-option [value]="item.id">
               {{ item.name }}
             </mat-option>
@@ -76,69 +87,86 @@ import { SingleRoationFormControlComponent } from './atoms/single-roation-form-c
             <a [routerLink]="[ROUTES.root + ROUTES.teams, homeTeam.value]"> {{ 'edit-this-team' | transloco }} </a>
           </mat-hint>
         </mat-form-field>
-
+        @if (createGameForm.controls.home_team.valid) {
+        <app-attendees-select-form-control [playerList]="playerList" [attendees]="createGameForm.controls.attendees" />
+        }
+        <!-- -->
         @if (homeTeam.value) {
 
         <span class="text-md">{{ 'start-rotation' | transloco }}</span>
+        <p>Bezieht sich nur auf Satz 1 solange diese noch nicht Satzweise abgepasst werden kann</p>
         <div class="grid grid-cols-3">
           @for (index of [4,3,2,5,6,1]; track $index) {
           <app-single-roation-form-control
-            [attendeesOptions]="attendeesOptions"
+            [playerList]="playerList"
             [index]="index"
-            [createGameForm]="this.createGameForm.controls.home_team_start_rotation"
+            [attendees]="createGameForm.controls.attendees.value"
+            [home_team_start_rotation]="createGameForm.controls.home_team_start_rotation"
           />
           }
         </div>
         }
-        <hr />
+        <hr class="my-2" />
         <div class="">
           <mat-form-field class="w-full">
             <mat-label>{{ 'away-team' | transloco }}</mat-label>
             <mat-select formControlName="away_team" #awayTeam>
-              @for (item of teams|async; track $index) {
+              @for (item of teams |pristineEvent: homeTeam.value; track $index) {
               <mat-option [value]="item.id">
                 {{ item.name }}
               </mat-option>
               }
             </mat-select>
           </mat-form-field>
+
           @if (awayTeam.value) {
 
           <span class="text-md">{{ 'start-rotation' | transloco }}</span>
           <div class="grid grid-cols-3">
             @for (index of [4,3,2,5,6,1]; track $index) {
             <app-single-roation-form-control
-              [attendeesOptions]="attendeesOptions"
+              [playerList]="playerList"
+              [attendees]="createGameForm.controls.attendees.value"
               [index]="index"
-              [createGameForm]="this.createGameForm.controls.away_team_start_rotation"
+              [home_team_start_rotation]="createGameForm.controls.away_team_start_rotation"
             />
             }
           </div>
           }
         </div>
-        <mat-slide-toggle #eventFinished>Event finished</mat-slide-toggle>
+        <label class="label cursor-pointer">
+          <span class="label-text">{{ 'event-finished' | transloco }}</span>
+          <input type="checkbox" class="toggle" #eventFinished />
+        </label>
+        {{ eventFinished.value }}
         @if (eventFinished.checked || createGameForm.controls.result_home.value || createGameForm.controls.result_away.value) {
 
         <div class="flex gap-2 w-full">
           <div class="w-1/2">
             <mat-form-field class="w-full">
-              <mat-label>Result Home </mat-label>
+              <mat-label>{{ 'result-home' | transloco }} </mat-label>
               <input matInput type="number" formControlName="result_home" />
             </mat-form-field>
           </div>
           <div class="w-1/2">
             <mat-form-field class="w-full">
-              <mat-label>Result Away </mat-label>
+              <mat-label>{{ 'result-away' | transloco }} </mat-label>
               <input matInput type="number" formControlName="result_away" />
             </mat-form-field>
           </div>
         </div>
         }
-        <button mat-button [type]="'submit'">{{ 'submit' | transloco }}</button>
+        <button class="btn" [type]="'submit'">{{ 'submit' | transloco }}</button>
       </form>
       <hr />
-      <p>
-        <a [routerLink]="[ROUTES.root, ROUTES.games]">{{ 'see-all-your-games-here' | transloco }}</a>
+      <p class="flex flex-col  gap-2">
+        <a class="btn btn-outline btn-secondary" [routerLink]="[ROUTES.root, ROUTES.games]">{{ 'see-all-your-games-here' | transloco }}</a>
+        @if (createGameForm.controls.id.value) {
+
+        <a class="btn btn-outline btn-secondary" [routerLink]="[ROUTES.root, ROUTES.roationPlaner, createGameForm.controls.id.value]">{{
+          'See Rotation Preview' | transloco
+        }}</a>
+        }
       </p>
     </div>
   `,
@@ -162,9 +190,9 @@ export class CreateGamePageComponent implements OnInit {
   /**
    *
    */
-  teams = this.teamService.getTeams();
+  teams: TeamDTO[] = [];
   players = this.playerService.getPlayers();
-  attendeesOptions: PlayerDTO[] = [];
+  playerList: PlayerDTO[] = [];
   createGameForm = new FormGroup({
     id: new FormControl<string | undefined>(undefined),
     title: new FormControl<string>('', Validators.required),
@@ -210,7 +238,9 @@ export class CreateGamePageComponent implements OnInit {
         });
     } catch (error) {
       // biome-ignore lint/style/useTemplate: <explanation>
-      this.snack.open('Error creating Event:' + error, 'OK', { duration: 2000 });
+      this.snack.open('Error creating Event:' + error, 'OK', {
+        duration: 2000,
+      });
     }
   }
   /**
@@ -219,17 +249,18 @@ export class CreateGamePageComponent implements OnInit {
   async OnHomeTeamChange($event?: string) {
     if (!$event) return;
     const team = await this.teamService.getTeam($event);
-    this.attendeesOptions = await this.playerService.getPlayerList(team.players);
+    this.playerList = await this.playerService.getPlayerList(team.players);
   }
   /**
    *
    */
-  ngOnInit(): void {
+  async ngOnInit() {
     this.route.data.subscribe((data) => {
       // biome-ignore lint/complexity/useLiteralKeys: <explanation>
       if (data['game']) this.createGameForm.patchValue(data['game'] as EventDTO);
       // biome-ignore lint/suspicious/noExplicitAny: <explanation>
       this.OnHomeTeamChange(this.createGameForm.controls.home_team.value as any);
     });
+    this.teams = await this.teamService.getTeams();
   }
 }
