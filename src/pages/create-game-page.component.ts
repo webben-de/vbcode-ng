@@ -3,8 +3,8 @@ import { Component, type OnInit, inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -34,6 +34,7 @@ import { SingleRoationFormControlComponent } from './atoms/single-roation-form-c
     ReactiveFormsModule,
     MatSlideToggleModule,
     MatSelectModule,
+    MatIconModule,
     CommonModule,
     RouterModule,
     TranslocoModule,
@@ -138,8 +139,7 @@ import { SingleRoationFormControlComponent } from './atoms/single-roation-form-c
           <span class="label-text">{{ 'event-finished' | transloco }}</span>
           <input type="checkbox" class="toggle" #eventFinished />
         </label>
-        {{ eventFinished.value }}
-        @if (eventFinished.checked || createGameForm.controls.result_home.value || createGameForm.controls.result_away.value) {
+        @if (true || createGameForm.controls.result_home.value || createGameForm.controls.result_away.value) {
 
         <div class="flex gap-2 w-full">
           <div class="w-1/2">
@@ -154,6 +154,34 @@ import { SingleRoationFormControlComponent } from './atoms/single-roation-form-c
               <input matInput type="number" formControlName="result_away" />
             </mat-form-field>
           </div>
+        </div>
+        <div class="flex flex-col">
+          <input
+            type="text"
+            placeholder="Enter link here"
+            class="input input-bordered input-primary w-full max-w-xs"
+            (keydown.enter)="addMediaLink($event, inMedia)"
+            #inMedia
+          />
+          <ul class="flex gap-2 h-8">
+            @for (item of this.createGameForm.controls.media_links.value; track $index) {
+            <li class="w-16 h-8">
+              <a [href]="item">
+                @if (item.includes('youtube')) {
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="block">
+                  <title>youtube</title>
+                  <path
+                    class="fill-secondary"
+                    d="M10,15L15.19,12L10,9V15M21.56,7.17C21.69,7.64 21.78,8.27 21.84,9.07C21.91,9.87 21.94,10.56 21.94,11.16L22,12C22,14.19 21.84,15.8 21.56,16.83C21.31,17.73 20.73,18.31 19.83,18.56C19.36,18.69 18.5,18.78 17.18,18.84C15.88,18.91 14.69,18.94 13.59,18.94L12,19C7.81,19 5.2,18.84 4.17,18.56C3.27,18.31 2.69,17.73 2.44,16.83C2.31,16.36 2.22,15.73 2.16,14.93C2.09,14.13 2.06,13.44 2.06,12.84L2,12C2,9.81 2.16,8.2 2.44,7.17C2.69,6.27 3.27,5.69 4.17,5.44C4.64,5.31 5.5,5.22 6.82,5.16C8.12,5.09 9.31,5.06 10.41,5.06L12,5C16.19,5 18.8,5.16 19.83,5.44C20.73,5.69 21.31,6.27 21.56,7.17Z"
+                  />
+                </svg>
+                }@else {
+                <span class="badge badge-outline">{{ item | slice : 0 : 20 }}</span>
+                }
+              </a>
+            </li>
+            }
+          </ul>
         </div>
         }
         <button class="btn" [type]="'submit'">{{ 'submit' | transloco }}</button>
@@ -172,6 +200,17 @@ import { SingleRoationFormControlComponent } from './atoms/single-roation-form-c
   `,
 })
 export class CreateGamePageComponent implements OnInit {
+  addMediaLink($event: any, inp: any) {
+    $event.preventDefault();
+    const v = $event.target?.value;
+    const val = this.createGameForm.controls.media_links.value;
+    if (val && val.length > 0) {
+      this.createGameForm.controls.media_links.setValue([...val, v]);
+    } else {
+      this.createGameForm.controls.media_links.setValue([v]);
+    }
+    inp.value = '';
+  }
   ROUTES = SVB_APP_ROUTES;
   /**
    *
@@ -197,6 +236,7 @@ export class CreateGamePageComponent implements OnInit {
     id: new FormControl<string | undefined>(undefined),
     title: new FormControl<string>('', Validators.required),
     date: new FormControl<Date>(new Date(), Validators.required),
+    media_links: new FormControl<string[]>(['']),
     attendees: new FormControl<string[]>([]),
     result_home: new FormControl<number | undefined>(undefined),
     result_away: new FormControl<number | undefined>(undefined),

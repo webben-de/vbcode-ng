@@ -127,7 +127,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: SVB_APP_ROUTES.games,
-    loadComponent: () => import('../pages/games-list-page.component').then((mod) => mod.GamesListPageComponent),
+    loadComponent: () => import('../pages/event-list-page.component').then((mod) => mod.GamesListPageComponent),
   },
   {
     path: `${SVB_APP_ROUTES.dataentry}/:id`,

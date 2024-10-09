@@ -5,6 +5,7 @@ import { MatListModule } from '@angular/material/list';
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { select } from '@ngxs/store';
+import { endOfDay, startOfDay } from 'date-fns';
 import { groupBy } from 'lodash';
 import { SVB_APP_ROUTES } from 'src/app/ROUTES';
 import { SessionState } from '../app/session.state';
@@ -56,6 +57,8 @@ export class GamesListPageComponent implements OnInit {
   ROUTES = SVB_APP_ROUTES;
   async ngOnInit() {
     const events = await this.events;
-    this.upcomingEvents = groupBy(events, (event: EventResponse) => (new Date(event.date) > this.currentDate ? 'upcomming' : 'past')) as groupEvent;
+    this.upcomingEvents = groupBy(events, (event: EventResponse) =>
+      endOfDay(new Date(event.date)) > startOfDay(this.currentDate) ? 'upcomming' : 'past'
+    ) as groupEvent;
   }
 }
