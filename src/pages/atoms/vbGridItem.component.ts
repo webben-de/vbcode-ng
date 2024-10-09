@@ -11,7 +11,7 @@ import type { PlayerDTO } from '../../types/PlayerDTO';
     <div class="flex flex-col justify-center items-center gap-2 ">
       @let roation = rotationMap.get(currentRotation()); @let player = roatedPlayer().get(roation!.get(index())!);
       <div class="bg-neutral rounded-box text-neutral-content flex flex-col p-2">
-        <span class="countdown font-league text-5xl text-center">
+        <span class="countdown font-league text-5xl text-center text-primary">
           <span style="--value:{{ !toggleTrikot() ? rotationIndexMap.get(index()) : player?.trikot }};"></span>
         </span>
       </div>

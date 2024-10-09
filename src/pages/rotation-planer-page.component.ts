@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { CommonModule } from '@angular/common';
-import { Component, type OnInit, inject } from '@angular/core';
+import { Component, type ElementRef, type OnInit, ViewChild, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,6 +11,8 @@ import { MatSliderModule } from '@angular/material/slider';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { select } from '@ngxs/store';
+import { find, without } from 'lodash';
+import { fromEvent, interval, of, takeUntil, takeWhile, timeout } from 'rxjs';
 import { SVB_APP_ROUTES } from '../app/ROUTES';
 import { SessionState } from '../app/session.state';
 import { EventsService } from '../services/events.service';
@@ -61,8 +63,10 @@ import { RotationGridItemComponent } from './atoms/vbGridItem.component';
       <div class="flex flex-col justify-evenly gap-4">
         <h6 class="text-md">{{ 'rotation' | transloco }}: {{ rotationSlider }}</h6>
 
-        <mat-slide-toggle #toggleTrikot
-          >{{ 'show' | transloco }} {{ !toggleTrikot.checked ? ('Trikotnumber' | transloco) : ('BasePosition' | transloco) }}</mat-slide-toggle
+        <mat-slide-toggle #toggleTrikot [checked]="true">
+          <span class="!text-primary">
+            {{ 'show' | transloco }} {{ toggleTrikot.checked ? ('Trikotnumber' | transloco) : ('BasePosition' | transloco) }}</span
+          ></mat-slide-toggle
         >
         <div class="grid grid-cols-3 gap-8 grid-rows-2 justify-center  border-2 p-8 ">
           <app-grid-item [currentRotation]="slider" [index]="1" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
@@ -72,10 +76,39 @@ import { RotationGridItemComponent } from './atoms/vbGridItem.component';
           <app-grid-item [currentRotation]="slider" [index]="5" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
           <app-grid-item [currentRotation]="slider" [index]="6" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
         </div>
-        <mat-slider min="1" max="6" step="1" value="1" discrete="true" showTickMarks="true" class="animate-pulse">
-          <input matSliderThumb [(ngModel)]="rotationSlider" />
-        </mat-slider>
+        <input
+          type="range"
+          min="1"
+          max="6"
+          value="1"
+          class="range range-accent"
+          [(ngModel)]="rotationSlider"
+          [class.tooltip]="!hasMoved"
+          (ngModelChange)="hasMoved = true"
+          class="tooltip tooltip-open tooltip-secondary"
+          data-tip="move to stop auto-rotation"
+          #rangeSlider
+        />
+        @if (!hasMoved) {
+
         <p>{{ 'move-the-slider-preview-each-rotation-on-the-curt' | transloco }}</p>
+        }
+        <hr />
+        <h3>Bank</h3>
+        <div class="grid grid-cols-6 gap-2 grid-rows-1 justify-center">
+          @for(b of bank; track $index){
+          <div class="flex flex-col justify-center items-center gap-2 border border-1 p-3 ">
+            <div class="bg-neutral rounded-box text-neutral-content flex flex-col p-2">
+              <span class="countdown font-league text-5xl text-center text-primary">
+                <span style="--value:{{ b?.trikot }};"></span>
+              </span>
+            </div>
+            <label class="swap font-league uppercase ">
+              {{ b?.name }}
+            </label>
+          </div>
+          }
+        </div>
       </div>
       }@else {
       <div class="flex flex-col items-center">
@@ -94,6 +127,7 @@ export class RotationPlanerPageComponent implements OnInit {
   eventService = inject(EventsService);
   playerService = inject(PlayerService);
   session = select(SessionState.session);
+  @ViewChild('rangeSlider') rangeSlider!: ElementRef<HTMLInputElement>;
   /**
    *
    */
@@ -118,6 +152,8 @@ export class RotationPlanerPageComponent implements OnInit {
   rotationSlider = 1;
   selectedEvent?: string;
   lastAction?: ActionDTO;
+  hasMoved = false;
+  bank: (PlayerDTO | undefined)[] = [];
   /**
    *
    */
@@ -142,24 +178,34 @@ export class RotationPlanerPageComponent implements OnInit {
         true
       );
     });
+    interval(4000)
+      .pipe(takeWhile(() => !this.hasMoved))
+      .subscribe(() => {
+        if (this.rotationSlider === 6) this.rotationSlider = 1;
+        else this.rotationSlider += 1;
+      });
   }
   /**
    *
    * @returns
    */
   private async updateProps() {
+    const playerRoationObjectMap = new Map<string | number, PlayerDTO>();
     if (!this.event) return;
     this.router.navigate([SVB_APP_ROUTES.root + SVB_APP_ROUTES.roationPlaner, this.event.id]);
     // biome-ignore lint/style/noNonNullAssertion: <explanation>
-    const ids = Object.entries(this.event?.home_team_start_rotation!);
-    const map = new Map<string | number, PlayerDTO>();
-    const players = await this.playerService.getPlayerList(ids.map((i) => i[1]));
+    const home_roation_ids = Object.entries(this.event?.home_team_start_rotation!);
+    const rotationids = Object.values(Object.fromEntries(home_roation_ids));
+
+    const players = await this.playerService.getPlayerList([...home_roation_ids.map((i) => i[1]), ...without(this.event.attendees, ...rotationids)]);
     // biome-ignore lint/complexity/noForEach: <explanation>
-    ids.forEach(([key, value]) => {
+    home_roation_ids.forEach(([key, value]) => {
       // biome-ignore lint/style/noNonNullAssertion: <explanation>
-      map.set(Number(key), players.find((p) => p.id === value)!);
+      playerRoationObjectMap.set(Number(key), players.find((p) => p.id === value)!);
     });
-    this.roatedPlayer = map;
+    this.roatedPlayer = playerRoationObjectMap;
+    console.log(without(this.event.attendees, ...rotationids));
+    this.bank = without(this.event.attendees, ...rotationids).map((id) => find(players, { id }));
   }
 
   /**
