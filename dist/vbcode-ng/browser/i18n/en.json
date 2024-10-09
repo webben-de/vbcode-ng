@@ -38,5 +38,10 @@
   "filtered-type": "Filtered type",
   "from": "from",
   "upcomming-events": "Upcomming Events",
-  "past-events": "Past Events"
+  "past-events": "Past Events",
+  "home": "Heim",
+  "See Rotation Preview": "see_rotation_preview",
+  "result-home": "Result Home",
+  "result-away": "Result Away",
+  "event-finished": "Event finished"
 }
