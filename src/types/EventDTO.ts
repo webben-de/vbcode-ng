@@ -4,6 +4,7 @@ export interface createEventDTO {
   attendees: string[];
   date: Date;
   result_home: number;
+  media_links: string[];
   result_away: number;
   home_team: string;
   home_team_start_rotation: { [x: number]: string };
@@ -19,6 +20,7 @@ export interface EventDTO extends createEventDTO {
 }
 export interface EventResponse {
   id: string;
+  media_links: string[];
   attendees: string[];
   away_team: TeamDTO;
   away_team_start_rotation: string[];

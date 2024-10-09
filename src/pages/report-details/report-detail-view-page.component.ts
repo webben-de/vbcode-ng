@@ -47,13 +47,39 @@ import { ActionsByPlayerComponent } from './actions-by-player.component';
   ],
   template: `
     <div class="flex justify-between items-center">
-      <h1 class="!text-sm font-medium truncate">{{ game.title }}</h1>
+      <h1 class="!text-sm font-medium truncate">{{ event.title }}</h1>
       <div class="fixed bottom-2 right-2 flex flex-col gap-2">
-        <button mat-fab [routerLink]="[ROUTES.root, ROUTES.dataentry, game.id]"><mat-icon>add</mat-icon></button>
-        @if(game.owner && game.id){
-        <button mat-fab (click)="deleteEvent(game.id)"><mat-icon>delete</mat-icon></button>
+        <button mat-fab [routerLink]="[ROUTES.root, ROUTES.dataentry, event.id]"><mat-icon>add</mat-icon></button>
+        <button mat-fab [routerLink]="[ROUTES.root, ROUTES.editGame, event.id]"><mat-icon>edit</mat-icon></button>
+        @if(event.owner && event.id){
+        <button mat-fab (click)="deleteEvent(event.id)"><mat-icon>delete</mat-icon></button>
         }
       </div>
+    </div>
+    <div class="flex w-full justify-between ">
+      <a [routerLink]="[ROUTES.root, ROUTES.roationPlaner, event.id]" class="btn btn-outline-primary">{{ 'rotation-planer' | transloco }}</a>
+      <ul class="flex gap-2">
+        @for (item of event.media_links; track $index) {
+        <li class="flex items-center justify-center">
+          <a class="btn btn-xs w-12 h-12" [href]="item" target="_blank"
+            >@if (item.includes('youtube')) {
+            <svg width="48" height="48" viewBox="0 0 48 48">
+              <title>youtube</title>
+              <path
+                class="fill-[#FF0000]"
+                d="M10,15L15.19,12L10,9V15M21.56,7.17C21.69,7.64 21.78,8.27 21.84,9.07C21.91,9.87 21.94,10.56 21.94,11.16L22,12C22,14.19 21.84,15.8 21.56,16.83C21.31,17.73 20.73,18.31 19.83,18.56C19.36,18.69 18.5,18.78 17.18,18.84C15.88,18.91 14.69,18.94 13.59,18.94L12,19C7.81,19 5.2,18.84 4.17,18.56C3.27,18.31 2.69,17.73 2.44,16.83C2.31,16.36 2.22,15.73 2.16,14.93C2.09,14.13 2.06,13.44 2.06,12.84L2,12C2,9.81 2.16,8.2 2.44,7.17C2.69,6.27 3.27,5.69 4.17,5.44C4.64,5.31 5.5,5.22 6.82,5.16C8.12,5.09 9.31,5.06 10.41,5.06L12,5C16.19,5 18.8,5.16 19.83,5.44C20.73,5.69 21.31,6.27 21.56,7.17Z"
+              />
+            </svg>
+            }@else {
+            <svg width="48" height="48">
+              <title>video-outline</title>
+              <path d="M15,8V16H5V8H15M16,6H4A1,1 0 0,0 3,7V17A1,1 0 0,0 4,18H16A1,1 0 0,0 17,17V13.5L21,17.5V6.5L17,10.5V7A1,1 0 0,0 16,6Z" />
+            </svg>
+            }
+          </a>
+        </li>
+        }
+      </ul>
     </div>
     <div class="flex flex-col gap-8 " id="export">
       <mat-form-field>
@@ -110,7 +136,7 @@ export class ReportDetailViewComponent implements OnInit {
    *
    */
   grad_options_list = grad_options_list.map((g) => g.name);
-  game!: EventDTO;
+  event!: EventDTO;
   actions: ActionDTO[] = [];
 
   gradePie: EChartsOption = {};
@@ -142,7 +168,7 @@ export class ReportDetailViewComponent implements OnInit {
   }
 
   private async updateStats(a: ActionDTO[], game: EventDTO) {
-    this.game = game;
+    this.event = game;
     this.actions = a;
     this.groupedByPlayer = sortBy(Object.entries(groupBy(a, 'player_id.name')), (a) => a[1]).reverse();
     this.groupedByKind = Object.entries(groupBy(a, 'kind'));
@@ -263,11 +289,11 @@ export class ReportDetailViewComponent implements OnInit {
    */
   async reloadSet($event?: number | string) {
     this.currentSet = $event;
-    if (!this.game?.id) return;
-    if (!$event || $event === 'Alle') this.actions = await this.actionsService.getActionsOfEvent(this.game.id);
-    else this.actions = await this.actionsService.getActionsOfEventOfSet(this.game.id, $event as number);
+    if (!this.event?.id) return;
+    if (!$event || $event === 'Alle') this.actions = await this.actionsService.getActionsOfEvent(this.event.id);
+    else this.actions = await this.actionsService.getActionsOfEventOfSet(this.event.id, $event as number);
     this.stats = defaults;
-    this.updateStats(this.actions, this.game);
+    this.updateStats(this.actions, this.event);
   }
 
   /**
