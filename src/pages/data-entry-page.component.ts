@@ -64,7 +64,7 @@ type abbMap = {
   template: `
     <div class="flex flex-col p-5">
       <span class="text-xl">{{ 'enter-data' | transloco }}</span>
-      @let a = this.actions; @if (a) {
+      @let a = this.actions; @if (a && a[a.length - 1] ) {
 
       <p class="flex gap-4">
         {{ 'last-action' | transloco }}:
@@ -232,9 +232,7 @@ export class DataEntryComponent implements OnInit {
     }
   }
   async updateActions() {
-    console.log('lol', this.event);
     if (!this.event) return;
-    console.log('update', this.event.attendees);
     this.actions = await this.actionService.getActionsOfEvent(this.event.id);
     this.player = await this.playerService.getPlayerList(this.event?.attendees);
   }
