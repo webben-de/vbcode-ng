@@ -13,6 +13,7 @@ export interface createEventDTO {
   owner: string;
   shared_with: string[];
   title: string;
+  notes: string;
   visibility: 'Public' | 'Private';
 }
 export interface EventDTO extends createEventDTO {
@@ -35,4 +36,5 @@ export interface EventResponse {
   shared_with: string[];
   title: string;
   visibility: 'Public' | 'Private';
+  notes: string;
 }

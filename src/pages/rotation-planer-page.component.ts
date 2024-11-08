@@ -20,7 +20,7 @@ import { EventsService } from '../services/events.service';
 import { MetadataService } from '../services/metadata.service';
 import { PlayerService } from '../services/player.service';
 import type { ActionDTO } from '../types/ActionDTO';
-import type { EventResponse } from '../types/EventDTO';
+import type { EventDTO, EventResponse, createEventDTO } from '../types/EventDTO';
 import type { PlayerDTO } from '../types/PlayerDTO';
 import { RotationGridItemComponent } from './atoms/vbGridItem.component';
 
@@ -115,6 +115,16 @@ import { RotationGridItemComponent } from './atoms/vbGridItem.component';
           </div>
           }
         </div>
+        <h3>Notes</h3>
+        <textarea
+          class="textarea "
+          placeholder="Bio"
+          style="field-sizing: content;"
+          [value]="event.notes || ''"
+          (change)="updateNotes(notes)"
+          #notes
+          [disabled]="event.owner !== session()?.user?.id"
+        ></textarea>
       </div>
       }@else {
       <div class="flex flex-col items-center">
@@ -126,6 +136,13 @@ import { RotationGridItemComponent } from './atoms/vbGridItem.component';
   `,
 })
 export class RotationPlanerPageComponent implements OnInit {
+  async updateNotes(_t71: HTMLTextAreaElement) {
+    try {
+      await this.eventService.createEvent({ ...this.event, notes: _t71.value } as any);
+    } catch (error) {
+      this.snack.open('Error saving Note', 'OK', { duration: 2000 });
+    }
+  }
   copyLinkToClipboard() {
     navigator.clipboard.writeText(document.location.href);
     this.snack.open('Copy to clipboard');
