@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1729677509832,
+  "timestamp": 1731063626384,
   "index": "https://svb.web-ben.de/index.html",
   "assetGroups": [
     {
@@ -22,6 +22,7 @@
         "https://svb.web-ben.de/chunk-7U6GB7ED.js",
         "https://svb.web-ben.de/chunk-7VTJPXTT.js",
         "https://svb.web-ben.de/chunk-AC5BHCOO.js",
+        "https://svb.web-ben.de/chunk-AE3PWVYM.js",
         "https://svb.web-ben.de/chunk-AJZP2OPH.js",
         "https://svb.web-ben.de/chunk-AOFIJYTA.js",
         "https://svb.web-ben.de/chunk-AV4NV7VE.js",
@@ -42,7 +43,6 @@
         "https://svb.web-ben.de/chunk-OIJTL5GY.js",
         "https://svb.web-ben.de/chunk-PUIBGWJ5.js",
         "https://svb.web-ben.de/chunk-QL2RDFS7.js",
-        "https://svb.web-ben.de/chunk-QOOY2HJV.js",
         "https://svb.web-ben.de/chunk-R2NFIBY2.js",
         "https://svb.web-ben.de/chunk-SECEFDB3.js",
         "https://svb.web-ben.de/chunk-TAITHJF6.js",
@@ -59,10 +59,10 @@
         "https://svb.web-ben.de/chunk-ZV26CFN4.js",
         "https://svb.web-ben.de/favicon.ico",
         "https://svb.web-ben.de/index.html",
-        "https://svb.web-ben.de/main-DGCRC7RZ.js",
+        "https://svb.web-ben.de/main-2SNCHCMQ.js",
         "https://svb.web-ben.de/manifest.webmanifest",
         "https://svb.web-ben.de/polyfills-DXJ4KTXW.js",
-        "https://svb.web-ben.de/styles-3L7JYIFX.css"
+        "https://svb.web-ben.de/styles-VIIPZGU6.css"
       ],
       "patterns": []
     },
@@ -239,6 +239,7 @@
     "https://svb.web-ben.de/chunk-7U6GB7ED.js": "dcaf2013e46f96cd91b5a360f1f5a08f21ab65bb",
     "https://svb.web-ben.de/chunk-7VTJPXTT.js": "0ab72424c6783baadc680031e2defedb509ab472",
     "https://svb.web-ben.de/chunk-AC5BHCOO.js": "8212404895315d278e2130a5075a516998b42951",
+    "https://svb.web-ben.de/chunk-AE3PWVYM.js": "585f9d07d648cb20038b60b2d942c334e72dcf1f",
     "https://svb.web-ben.de/chunk-AJZP2OPH.js": "2d66f65e8598fd647b727c55e7ec91a463bc543a",
     "https://svb.web-ben.de/chunk-AOFIJYTA.js": "29634e1120bb371eb3545c6c85eac3fdad21bb02",
     "https://svb.web-ben.de/chunk-AV4NV7VE.js": "4c85d9eab8821783138e7ca56973a25c279e883e",
@@ -259,7 +260,6 @@
     "https://svb.web-ben.de/chunk-OIJTL5GY.js": "9714ed717c0a0d302cb919e7ce2c2da04027e5b1",
     "https://svb.web-ben.de/chunk-PUIBGWJ5.js": "dfaed3131f21d271e9c905b04c513f2619527ad3",
     "https://svb.web-ben.de/chunk-QL2RDFS7.js": "4a51f39826f53223099410feb0525fe3fd3733d6",
-    "https://svb.web-ben.de/chunk-QOOY2HJV.js": "af397b382747cdb50d89baeb303d34bb05402f66",
     "https://svb.web-ben.de/chunk-R2NFIBY2.js": "e93a424e8692aa43b6c3dc12ba5592a1abf440b8",
     "https://svb.web-ben.de/chunk-SECEFDB3.js": "9e38a2e18cda508cfd301aff2feb502c40eb41a9",
     "https://svb.web-ben.de/chunk-TAITHJF6.js": "680ce837e6bc0ba7dd86569269bec26539c6c818",
@@ -392,8 +392,8 @@
     "https://svb.web-ben.de/icons/windows11/Wide310x150Logo.scale-150.png": "d1198ef0cc225912fecb45ec3b7ce4ab87da9e79",
     "https://svb.web-ben.de/icons/windows11/Wide310x150Logo.scale-200.png": "1937a51d7803a29629d7679d5939d4d32f7e7406",
     "https://svb.web-ben.de/icons/windows11/Wide310x150Logo.scale-400.png": "008fcd83131d664d4bd768c619a101e04e4a9af9",
-    "https://svb.web-ben.de/index.html": "3736372a9f30f77be6d9b6cde03979295426dc91",
-    "https://svb.web-ben.de/main-DGCRC7RZ.js": "c3997fce6aef0674638b09e30dd539dee13f8726",
+    "https://svb.web-ben.de/index.html": "f64ccc6144609cf41102408079cfc5ca78fda872",
+    "https://svb.web-ben.de/main-2SNCHCMQ.js": "610e1ae16b50be79614cf2f3d39d82f48703a45e",
     "https://svb.web-ben.de/manifest.webmanifest": "11cba30992663d1b8529a0567b80299227ac5522",
     "https://svb.web-ben.de/media/league-spartan-latin-ext-wght-normal-4T5O5SJY.woff2": "e6d1c54410b320dd6c34a85259444e7b204cd9ba",
     "https://svb.web-ben.de/media/league-spartan-latin-wght-normal-TRIG2WAE.woff2": "5ac8ea32ad1434f65d9deba384986ba07e6592a2",
@@ -415,7 +415,7 @@
     "https://svb.web-ben.de/media/noto-sans-vietnamese-400-normal-VDAOFCNQ.woff": "81bd22fdfc0640b851696a5dc193e44cab3fc0b6",
     "https://svb.web-ben.de/media/noto-sans-vietnamese-400-normal-ZYURYFYW.woff2": "aea48a102edb0a38c912010f64dd5a851cdea43c",
     "https://svb.web-ben.de/polyfills-DXJ4KTXW.js": "d45c76c5960bab3ace7fd6d211b9579456241f8a",
-    "https://svb.web-ben.de/styles-3L7JYIFX.css": "a64cf402b836df11af90760978aa430ee3747061",
+    "https://svb.web-ben.de/styles-VIIPZGU6.css": "df93e43b7b8080e24398e4877686f10b589eee47",
     "https://svb.web-ben.de/trikot.svg": "3025d4990e25064fb03fca0ece4365fa43bcae48",
     "https://svb.web-ben.de/volleyball.svg": "db0809818da2d7985defea975dd0e91a0f7b3f63"
   },
