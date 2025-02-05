@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { CommonModule } from '@angular/common';
-import { Component, type ElementRef, type OnInit, ViewChild, inject } from '@angular/core';
+import { Component, type ElementRef, type OnDestroy, type OnInit, ViewChild, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,7 +13,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { select } from '@ngxs/store';
 import { find, without } from 'lodash';
-import { interval, takeWhile } from 'rxjs';
+import { type Subscription, interval, takeWhile } from 'rxjs';
 import { SVB_APP_ROUTES } from '../app/ROUTES';
 import { SessionState } from '../app/session.state';
 import { EventsService } from '../services/events.service';
@@ -95,7 +95,7 @@ import { RotationGridItemComponent } from './atoms/vbGridItem.component';
           data-tip="move to stop auto-rotation"
           #rangeSlider
         />
-        @if (!hasMoved) {
+        @if (!hasMoved){
 
         <p>{{ 'move-the-slider-preview-each-rotation-on-the-curt' | transloco }}</p>
         }
@@ -135,10 +135,17 @@ import { RotationGridItemComponent } from './atoms/vbGridItem.component';
     </div>
   `,
 })
-export class RotationPlanerPageComponent implements OnInit {
+export class RotationPlanerPageComponent implements OnInit, OnDestroy {
+  ngOnDestroy(): void {
+    if (this.sub) this.sub.unsubscribe();
+  }
   async updateNotes(_t71: HTMLTextAreaElement) {
     try {
-      await this.eventService.createEvent({ ...this.event, notes: _t71.value } as any);
+      await this.eventService.createEvent({
+        ...this.event,
+        notes: _t71.value,
+        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      } as any);
     } catch (error) {
       this.snack.open('Error saving Note', 'OK', { duration: 2000 });
     }
@@ -205,11 +212,14 @@ export class RotationPlanerPageComponent implements OnInit {
     }
     return 0;
   }
+  private sub?: Subscription;
+
   /**
    *
    */
   async ngOnInit(): Promise<void> {
     this.route.queryParams.subscribe((params) => {
+      // biome-ignore lint/complexity/useLiteralKeys: <explanation>
       const rotation = params['rotation'];
       if (rotation) {
         this.rotationSlider = +rotation;
@@ -232,12 +242,13 @@ export class RotationPlanerPageComponent implements OnInit {
       );
     });
     this.route.queryParams.subscribe((params) => {
+      // biome-ignore lint/complexity/useLiteralKeys: <explanation>
       const rotation = params['rotation'];
       if (rotation) {
         this.rotationSlider = +rotation;
       }
     });
-    interval(4000)
+    this.sub = interval(4000)
       .pipe(takeWhile(() => !this.hasMoved))
       .subscribe(() => {
         if (this.rotationSlider === 6) this.rotationSlider = 1;
