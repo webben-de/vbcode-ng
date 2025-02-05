@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, type OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { select, Store } from '@ngxs/store';
+import { type Store, select } from '@ngxs/store';
 import { groupBy, sortBy } from 'lodash';
 import { SessionState } from '../../app/session.state';
 import { gradePrios } from '../../components/grade-options';
@@ -63,11 +63,9 @@ export class PlayerLastGameStatsComponent implements OnInit {
    */
   route = inject(ActivatedRoute);
   actionsService = inject(ActionsService);
-  constructor(private store: Store) {
-    this.store.select(SessionState.session).subscribe((session) => {
-      console.log(session);
-    });
-  }
+  // constructor(private store: Store) {
+  // this.store.select(SessionState.session).subscribe((session) => {});
+  // }
   /**
    *
    */
@@ -81,7 +79,6 @@ export class PlayerLastGameStatsComponent implements OnInit {
   async ngOnInit() {
     const player = this.user_player();
 
-    console.log(player);
     if (player) {
       this.actions = this.actionsService.getActionsOfLastEventByPlayer(player);
 

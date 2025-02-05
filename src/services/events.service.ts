@@ -9,10 +9,6 @@ import { SupabaseService } from './supabase.service';
   providedIn: 'root',
 })
 export class EventsService {
-  async getActionsCount(id: string) {
-    const data = await this.supabase.from('actions').select('id', { count: 'exact' });
-    return data;
-  }
   supabase = inject(SupabaseService).supabase;
   playerService = inject(PlayerService);
   user_player = select(SessionState.user_player);
@@ -68,5 +64,13 @@ export class EventsService {
       console.error(error);
       throw new Error(error as string);
     }
+  }
+  /**
+   * Get the count of actions for a specific game.
+   * @param id - The ID of the game.
+   * @returns The count of actions for the specified game.
+   */
+  async getActionsCount(id: string) {
+    return await this.supabase.from('actions').select('id', { count: 'exact' }).eq('game_id', id);
   }
 }

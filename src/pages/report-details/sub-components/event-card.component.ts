@@ -27,7 +27,10 @@ import type { EventResponse } from '../../../types/EventDTO';
           }
           <div class="badge badge-secondary">{{ item.date }}</div>
         </span>
-        <div class="badge badge-outline">{{ actions }}</div>
+        <div class="badge badge-outline flex justify-between">
+          <mat-icon>data_usage</mat-icon>
+          {{ actions.length }}
+        </div>
         <p>{{ item.home_team.name }} vs {{ item.away_team?.name || 'TBD' }}</p>
         @if (item.result_home && item.result_away) {
         <p class="bg-green">{{ item.result_home }} - {{ item.result_away }}</p>
@@ -50,14 +53,28 @@ import type { EventResponse } from '../../../types/EventDTO';
   host: { class: 'flex w-full' },
 })
 export class EventCardComponent implements OnInit {
+  /** Application routes */
   ROUTES = SVB_APP_ROUTES;
+
+  /** Service to fetch event actions */
   actionService = inject(EventsService);
+
+  /** Event data input */
   event = input<EventResponse>({} as EventResponse);
+
+  /** Number of actions related to the event */
   actions?: any | number;
+
+  /** Current date */
   currentDate = new Date();
+
+  /** Session state selector */
   session = select(SessionState.session);
+
+  /**
+   * OnInit lifecycle hook to fetch actions count for the event
+   */
   async ngOnInit() {
-    console.log(this.event());
     this.actions = (await this.actionService.getActionsCount(this.event().id)).data || 0;
   }
 }

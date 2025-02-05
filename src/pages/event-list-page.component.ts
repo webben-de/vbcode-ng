@@ -14,6 +14,9 @@ import type { EventResponse } from '../types/EventDTO';
 import type { groupEvent } from './groupEvent';
 import { EventCardComponent } from './report-details/sub-components/event-card.component';
 
+/**
+ * Component representing the list of games.
+ */
 @Component({
   selector: 'app-game-list-page',
   standalone: true,
@@ -45,16 +48,36 @@ import { EventCardComponent } from './report-details/sub-components/event-card.c
   `,
 })
 export class GamesListPageComponent implements OnInit {
+  /**
+   * Service to fetch events.
+   */
+  eventsService = inject(EventsService);
+  /**
+   * Application routes.
+   */
+  ROUTES = SVB_APP_ROUTES;
+  /**
+   * Signal for the current session state.
+   */
+  session = select(SessionState.session);
+  /**
+   * Grouped events categorized as upcoming and past.
+   */
   upcomingEvents: groupEvent = {
     upcomming: [],
     past: [],
   };
-  session = select(SessionState.session);
+  /**
+   * The current date.
+   */
   currentDate = new Date();
-  eventsService = inject(EventsService);
+  /**
+   * Observable for the list of events.
+   */
   events = this.eventsService.getEvents();
-
-  ROUTES = SVB_APP_ROUTES;
+  /**
+   * Initializes the component and groups events into upcoming and past categories.
+   */
   async ngOnInit() {
     const events = await this.events;
     this.upcomingEvents = groupBy(events, (event: EventResponse) =>
