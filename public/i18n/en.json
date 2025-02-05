@@ -44,5 +44,10 @@
   "result-home": "Result Home",
   "result-away": "Result Away",
   "event-finished": "Event finished",
-  "visibility": "Visibility"
+  "visibility": "Visibility",
+  "players": "Players",
+  "create-a-new-team": "Create a new Team",
+  "name": "Name",
+  "see-all-your-teams-here": "See all your teams here",
+  "setter": "setter"
 }

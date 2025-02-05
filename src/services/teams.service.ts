@@ -5,6 +5,15 @@ import { SupabaseService } from './supabase.service';
   providedIn: 'root',
 })
 export class TeamsService {
+  async addPlayerToTeam(id: string, id1: string) {
+    const allPlayerOfTeam = (await this.supabase.from('teams').select('players').eq('id', id).single()).data;
+    if (!allPlayerOfTeam) return;
+    return this.supabase
+      .from('teams')
+      .update({ players: [...allPlayerOfTeam.players, id1] })
+      .eq('id', id)
+      .select();
+  }
   async createTeam(value: createTeamDTO) {
     return (await this.supabase.from('teams').upsert(value).select()).data;
   }

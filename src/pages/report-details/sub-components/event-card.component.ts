@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, type OnInit, inject, input } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { select } from '@ngxs/store';
 import { SVB_APP_ROUTES } from '../../../app/ROUTES';
 import { SessionState } from '../../../app/session.state';
+import { EventsService } from '../../../services/events.service';
 import type { EventResponse } from '../../../types/EventDTO';
 
 @Component({
@@ -26,6 +27,7 @@ import type { EventResponse } from '../../../types/EventDTO';
           }
           <div class="badge badge-secondary">{{ item.date }}</div>
         </span>
+        <div class="badge badge-outline">{{ actions }}</div>
         <p>{{ item.home_team.name }} vs {{ item.away_team?.name || 'TBD' }}</p>
         @if (item.result_home && item.result_away) {
         <p class="bg-green">{{ item.result_home }} - {{ item.result_away }}</p>
@@ -47,10 +49,15 @@ import type { EventResponse } from '../../../types/EventDTO';
   `,
   host: { class: 'flex w-full' },
 })
-export class EventCardComponent {
+export class EventCardComponent implements OnInit {
   ROUTES = SVB_APP_ROUTES;
-
-  event = input.required<EventResponse>();
+  actionService = inject(EventsService);
+  event = input<EventResponse>({} as EventResponse);
+  actions?: any | number;
   currentDate = new Date();
   session = select(SessionState.session);
+  async ngOnInit() {
+    console.log(this.event());
+    this.actions = (await this.actionService.getActionsCount(this.event().id)).data || 0;
+  }
 }

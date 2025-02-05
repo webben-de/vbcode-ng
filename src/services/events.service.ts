@@ -9,6 +9,10 @@ import { SupabaseService } from './supabase.service';
   providedIn: 'root',
 })
 export class EventsService {
+  async getActionsCount(id: string) {
+    const data = await this.supabase.from('actions').select('id', { count: 'exact' });
+    return data;
+  }
   supabase = inject(SupabaseService).supabase;
   playerService = inject(PlayerService);
   user_player = select(SessionState.user_player);

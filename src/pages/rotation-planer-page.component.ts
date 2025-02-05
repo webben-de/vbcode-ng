@@ -67,7 +67,7 @@ import { RotationGridItemComponent } from './atoms/vbGridItem.component';
       @if (event) {
 
       <div class="flex flex-col justify-evenly gap-4">
-        <h6 class="text-md">{{ 'rotation' | transloco }}: {{ rotationSlider }}</h6>
+        <h6 class="text-md">{{ 'setter' | transloco }}: {{ convertRoationCountToSetterPosition }}</h6>
 
         <mat-slide-toggle #toggleTrikot [checked]="true">
           <span class="!text-primary">
@@ -90,7 +90,7 @@ import { RotationGridItemComponent } from './atoms/vbGridItem.component';
           class="range range-accent"
           [(ngModel)]="rotationSlider"
           [class.tooltip]="!hasMoved"
-          (ngModelChange)="hasMoved = true"
+          (ngModelChange)="onSliderChange($event)"
           class="tooltip tooltip-open tooltip-secondary"
           data-tip="move to stop auto-rotation"
           #rangeSlider
@@ -188,10 +188,35 @@ export class RotationPlanerPageComponent implements OnInit {
   get slider() {
     return String(this.rotationSlider);
   }
+  get convertRoationCountToSetterPosition() {
+    switch (this.rotationSlider) {
+      case 1:
+        return 1;
+      case 2:
+        return 6;
+      case 3:
+        return 5;
+      case 4:
+        return 4;
+      case 5:
+        return 3;
+      case 6:
+        return 2;
+    }
+    return 0;
+  }
   /**
    *
    */
   async ngOnInit(): Promise<void> {
+    this.route.queryParams.subscribe((params) => {
+      const rotation = params['rotation'];
+      if (rotation) {
+        this.rotationSlider = +rotation;
+        this.hasMoved = true;
+        this.updateRouteWithRotation();
+      }
+    });
     this.route.data.subscribe(async (data) => {
       // biome-ignore lint/complexity/useLiteralKeys: <explanation>
       this.event = data['game'];
@@ -206,12 +231,33 @@ export class RotationPlanerPageComponent implements OnInit {
         true
       );
     });
+    this.route.queryParams.subscribe((params) => {
+      const rotation = params['rotation'];
+      if (rotation) {
+        this.rotationSlider = +rotation;
+      }
+    });
     interval(4000)
       .pipe(takeWhile(() => !this.hasMoved))
       .subscribe(() => {
         if (this.rotationSlider === 6) this.rotationSlider = 1;
         else this.rotationSlider += 1;
+        this.updateRouteWithRotation();
       });
+  }
+
+  onSliderChange(value: number) {
+    this.rotationSlider = value;
+    this.hasMoved = true;
+    this.updateRouteWithRotation();
+  }
+
+  private updateRouteWithRotation() {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { rotation: this.rotationSlider },
+      queryParamsHandling: 'merge',
+    });
   }
   /**
    *
@@ -232,7 +278,6 @@ export class RotationPlanerPageComponent implements OnInit {
       playerRoationObjectMap.set(Number(key), players.find((p) => p.id === value)!);
     });
     this.roatedPlayer = playerRoationObjectMap;
-    console.log(without(this.event.attendees, ...rotationids));
     this.bank = without(this.event.attendees, ...rotationids).map((id) => find(players, { id }));
   }
 

@@ -8,6 +8,19 @@ import { SupabaseService } from './supabase.service';
   providedIn: 'root',
 })
 export class PlayerService {
+  async getPlayersOfTeam(id: string) {
+    return (await this.supabase.from('teams').select('*, players (*)').eq('id', id)).data as any;
+  }
+  async createPlayer(id: string, player: { name: string; trikot: string }) {
+    const playerResponse = await this.supabase
+      .from('players')
+      .upsert({ ...player })
+      .select('*')
+      .single();
+    if (playerResponse.error) throw new Error(playerResponse.error.message);
+
+    return await this.supabase.from('teams').upsert({ id, players: [playerResponse.data?.id] });
+  }
   supabase = inject(SupabaseService).supabase;
   store = inject(Store);
   /**
