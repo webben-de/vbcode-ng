@@ -1,0 +1,1 @@
+var r=function(e){return e.report="report",e.reportDetail="report/details",e.reportDetailId="report/details/:id",e.roationPlaner="rotation-planer",e.create="create",e.editGame="edit-game",e.teams="teams",e.games="games",e.dataentry="dataentry",e.login="login",e.root="/",e.user="user",e}(r||{});export{r as a};
