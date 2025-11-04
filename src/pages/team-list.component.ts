@@ -11,6 +11,9 @@ import { TeamsService } from '../services/teams.service';
   template: `
     <!-- Teams Page with a list of all team -->
     <div class="flex flex-col p-4">
+      <div class="mb-4">
+        <a [routerLink]="[ROUTES.root, ROUTES.teams, 'create']" class="text-blue-600 hover:underline">+ Create New Team</a>
+      </div>
       <div class="relative overflow-x-auto">
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

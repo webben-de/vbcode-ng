@@ -200,15 +200,30 @@ import { SingleRoationFormControlComponent } from './atoms/single-roation-form-c
         <a class="btn btn-outline btn-secondary" [routerLink]="[ROUTES.root, ROUTES.roationPlaner, createGameForm.controls.id.value]">{{
           'See Rotation Preview' | transloco
         }}</a>
+
+        <button class="btn btn-outline btn-error" type="button" (click)="deleteGame()">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+            />
+          </svg>
+          {{ 'delete-game' | transloco }}
+        </button>
         }
       </p>
     </div>
   `,
 })
 export class CreateGamePageComponent implements OnInit {
-  addMediaLink($event: any, inp: any) {
+  addMediaLink($event: Event, inp: HTMLInputElement) {
     $event.preventDefault();
-    const v = $event.target?.value;
+    const target = $event.target as HTMLInputElement;
+    const v = target?.value;
+    if (!v) return;
+
     const val = this.createGameForm.controls.media_links.value;
     if (val && val.length > 0) {
       this.createGameForm.controls.media_links.setValue([...val, v]);
@@ -264,7 +279,7 @@ export class CreateGamePageComponent implements OnInit {
       new FormControl<string | null>(null),
     ]),
     away_team: new FormControl<string | undefined>(undefined),
-    owner: new FormControl<string>(this.session()!.user.id, Validators.required),
+    owner: new FormControl<string>(this.session()?.user.id || '', Validators.required),
     shared_with: new FormControl<string[]>([]),
     visibility: new FormControl<'Public' | 'Private'>('Private'),
   });
@@ -290,6 +305,26 @@ export class CreateGamePageComponent implements OnInit {
     }
   }
   /**
+   * Delete the current game
+   */
+  async deleteGame() {
+    const gameId = this.createGameForm.controls.id.value;
+    if (!gameId) return;
+
+    const confirmed = confirm('Möchten Sie dieses Spiel wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.');
+    if (!confirmed) return;
+
+    try {
+      await this.eventsService.deleteEvent(gameId);
+      this.snack.open('Spiel erfolgreich gelöscht', 'OK', { duration: 3000 });
+      this.router.navigate([this.ROUTES.root, this.ROUTES.games]);
+    } catch (error) {
+      this.snack.open('Fehler beim Löschen des Spiels: ' + error, 'OK', {
+        duration: 3000,
+      });
+    }
+  }
+  /**
    *
    */
   async OnHomeTeamChange($event?: string) {
@@ -304,8 +339,10 @@ export class CreateGamePageComponent implements OnInit {
     this.route.data.subscribe((data) => {
       // biome-ignore lint/complexity/useLiteralKeys: <explanation>
       if (data['game']) this.createGameForm.patchValue(data['game'] as EventDTO);
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      this.OnHomeTeamChange(this.createGameForm.controls.home_team.value as any);
+      const homeTeamValue = this.createGameForm.controls.home_team.value;
+      if (homeTeamValue) {
+        this.OnHomeTeamChange(homeTeamValue);
+      }
     });
     this.teams = await this.teamService.getTeams();
   }

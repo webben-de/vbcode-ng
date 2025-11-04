@@ -27,6 +27,10 @@ export class TeamsService {
     if (data && data.length > 0) return data[0];
     return {} as TeamDTO;
   }
+
+  async deleteTeam(id: string) {
+    return await this.supabase.from('teams').delete().eq('id', id);
+  }
 }
 
 export interface TeamDTO {

@@ -20,7 +20,7 @@ import { EventsService } from '../services/events.service';
 import { MetadataService } from '../services/metadata.service';
 import { PlayerService } from '../services/player.service';
 import type { ActionDTO } from '../types/ActionDTO';
-import type { EventDTO, EventResponse, createEventDTO } from '../types/EventDTO';
+import type { EventResponse, createEventDTO } from '../types/EventDTO';
 import type { PlayerDTO } from '../types/PlayerDTO';
 import { RotationGridItemComponent } from './atoms/vbGridItem.component';
 
@@ -42,94 +42,194 @@ import { RotationGridItemComponent } from './atoms/vbGridItem.component';
     TranslocoModule,
   ],
   template: `
-    <div class="flex flex-col w-full h-full p-5 justify-center gap-8">
-      <div class="flex flex-col">
-        <mat-form-field>
-          <mat-label>{{ 'event' | transloco }}</mat-label>
-          <mat-select placeholder="Select Game" [(ngModel)]="selectedEvent" (valueChange)="handleGameChange($event)">
-            @for (item of events|async; track $index) {
-            <mat-option [value]="item.id">
-              {{ item.title }}
-            </mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-        <div class="flex justify-between">
-          @if(session()?.user?.id === event?.owner) {
-          <a [routerLink]="[ROUTES.root + ROUTES.editGame, selectedEvent]">{{ 'edit-this-event' | transloco }}</a>
-          <button class="btn w-16 h-8" (click)="copyLinkToClipboard()">
-            <mat-icon class="text-primary">link</mat-icon>
+    <div class="max-w-7xl mx-auto w-full p-6">
+      <!-- Header Card -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">{{ 'rotation-planer' | transloco }}</h1>
+
+        <!-- Event Selection -->
+        <div class="mb-4">
+          <mat-form-field class="w-full">
+            <mat-label>{{ 'event' | transloco }}</mat-label>
+            <mat-select placeholder="Select Game" [(ngModel)]="selectedEvent" (valueChange)="handleGameChange($event)">
+              @for (item of events|async; track $index) {
+              <mat-option [value]="item.id">
+                {{ item.title }}
+              </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Action Buttons -->
+        @if(session()?.user?.id === event?.owner) {
+        <div class="flex gap-3">
+          <a
+            [routerLink]="[ROUTES.root + ROUTES.editGame, selectedEvent]"
+            class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+          >
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+              />
+            </svg>
+            {{ 'edit-this-event' | transloco }}
+          </a>
+          <button
+            (click)="copyLinkToClipboard()"
+            class="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium"
+          >
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+              />
+            </svg>
+            Link kopieren
           </button>
-          }
         </div>
-      </div>
-      <hr />
-      @if (event) {
-
-      <div class="flex flex-col justify-evenly gap-4">
-        <h6 class="text-md">{{ 'setter' | transloco }}: {{ convertRoationCountToSetterPosition }}</h6>
-
-        <mat-slide-toggle #toggleTrikot [checked]="true">
-          <span class="!text-primary">
-            {{ 'show' | transloco }} {{ toggleTrikot.checked ? ('Trikotnumber' | transloco) : ('BasePosition' | transloco) }}</span
-          ></mat-slide-toggle
-        >
-        <div class="grid grid-cols-3 gap-8 grid-rows-2 justify-center  border-2 p-8 ">
-          <app-grid-item [currentRotation]="slider" [index]="1" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
-          <app-grid-item [currentRotation]="slider" [index]="2" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
-          <app-grid-item [currentRotation]="slider" [index]="3" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
-          <app-grid-item [currentRotation]="slider" [index]="4" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
-          <app-grid-item [currentRotation]="slider" [index]="5" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
-          <app-grid-item [currentRotation]="slider" [index]="6" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
-        </div>
-        <input
-          type="range"
-          min="1"
-          max="6"
-          value="1"
-          class="range range-accent"
-          [(ngModel)]="rotationSlider"
-          [class.tooltip]="!hasMoved"
-          (ngModelChange)="onSliderChange($event)"
-          class="tooltip tooltip-open tooltip-secondary"
-          data-tip="move to stop auto-rotation"
-          #rangeSlider
-        />
-        @if (!hasMoved){
-
-        <p>{{ 'move-the-slider-preview-each-rotation-on-the-curt' | transloco }}</p>
         }
-        <hr />
-        <h3>Bank</h3>
-        <div class="grid grid-cols-6 gap-2 grid-rows-1 justify-center">
-          @for(b of bank; track $index){
-          <div class="flex flex-col justify-center items-center gap-2 border border-1 p-3 ">
-            <div class="bg-neutral rounded-box text-neutral-content flex flex-col p-2">
-              <span class="countdown font-league text-5xl text-center text-primary">
-                <span style="--value:{{ b?.trikot }};"></span>
-              </span>
+      </div>
+
+      @if (event) {
+      <!-- Main Content -->
+      <div class="space-y-6">
+        <!-- Setter Info & Toggle -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                <span class="text-2xl font-bold text-blue-600">{{ convertRoationCountToSetterPosition }}</span>
+              </div>
+              <div>
+                <p class="text-sm text-gray-600">{{ 'setter' | transloco }}</p>
+                <p class="text-lg font-semibold text-gray-800">Position {{ convertRoationCountToSetterPosition }}</p>
+              </div>
             </div>
-            <label class="swap font-league uppercase ">
-              {{ b?.name }}
-            </label>
+
+            <mat-slide-toggle #toggleTrikot [checked]="true" class="ml-auto">
+              <span class="text-gray-700 text-sm">
+                {{ 'show' | transloco }} {{ toggleTrikot.checked ? ('Trikotnumber' | transloco) : ('BasePosition' | transloco) }}
+              </span>
+            </mat-slide-toggle>
           </div>
+        </div>
+
+        <!-- Court Grid -->
+        <div class="bg-white rounded-lg shadow-md p-8">
+          <h2 class="text-xl font-bold text-gray-800 mb-6">Spielfeld - Rotation {{ rotationSlider }}</h2>
+          <div class="grid grid-cols-3 gap-6 grid-rows-2 max-w-4xl mx-auto border-4 border-blue-600 rounded-lg p-8 bg-gradient-to-b from-blue-50 to-white">
+            <app-grid-item [currentRotation]="slider" [index]="1" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
+            <app-grid-item [currentRotation]="slider" [index]="2" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
+            <app-grid-item [currentRotation]="slider" [index]="3" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
+            <app-grid-item [currentRotation]="slider" [index]="4" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
+            <app-grid-item [currentRotation]="slider" [index]="5" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
+            <app-grid-item [currentRotation]="slider" [index]="6" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
+          </div>
+
+          <!-- Rotation Slider -->
+          <div class="mt-8 px-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm font-medium text-gray-700">Rotation</span>
+              <span class="text-lg font-bold text-blue-600">{{ rotationSlider }}</span>
+            </div>
+            <input
+              type="range"
+              min="1"
+              max="6"
+              value="1"
+              [(ngModel)]="rotationSlider"
+              (ngModelChange)="onSliderChange($event)"
+              class="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+              #rangeSlider
+            />
+            <div class="flex justify-between mt-1">
+              @for(i of [1,2,3,4,5,6]; track $index) {
+              <span class="text-xs text-gray-500">{{ i }}</span>
+              }
+            </div>
+
+            @if (!hasMoved){
+            <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p class="text-sm text-blue-800">{{ 'move-the-slider-preview-each-rotation-on-the-curt' | transloco }}</p>
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+
+        <!-- Bank Section -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+              />
+            </svg>
+            Bank
+          </h3>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            @for(b of bank; track $index){
+            <div class="flex flex-col items-center gap-3 p-4 bg-gray-50 rounded-lg border-2 border-gray-200 hover:border-blue-400 transition-colors">
+              <div class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 text-white flex items-center justify-center shadow-lg">
+                <span class="text-3xl font-bold">{{ b?.trikot }}</span>
+              </div>
+              <span class="text-sm font-medium text-gray-800 text-center uppercase">{{ b?.name }}</span>
+            </div>
+            }
+          </div>
+        </div>
+
+        <!-- Notes Section -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+              />
+            </svg>
+            Notes
+          </h3>
+          <textarea
+            class="w-full min-h-32 px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none transition-colors resize-y disabled:bg-gray-50 disabled:cursor-not-allowed"
+            placeholder="Notizen zum Spiel..."
+            [value]="event.notes || ''"
+            (change)="updateNotes(notes)"
+            #notes
+            [disabled]="event.owner !== session()?.user?.id"
+          ></textarea>
+          @if(event.owner !== session()?.user?.id) {
+          <p class="mt-2 text-sm text-gray-500">Nur der Ersteller kann Notizen bearbeiten</p>
           }
         </div>
-        <h3>Notes</h3>
-        <textarea
-          class="textarea "
-          placeholder="Bio"
-          style="field-sizing: content;"
-          [value]="event.notes || ''"
-          (change)="updateNotes(notes)"
-          #notes
-          [disabled]="event.owner !== session()?.user?.id"
-        ></textarea>
       </div>
-      }@else {
-      <div class="flex flex-col items-center">
-        <mat-icon class="!h-20 ">swipe_up</mat-icon>
-        <p>{{ 'please-select-an-event-to-see-information-here' | transloco }}</p>
+      } @else {
+      <!-- Empty State -->
+      <div class="bg-white rounded-lg shadow-md p-12">
+        <div class="flex flex-col items-center text-center">
+          <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+            <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-semibold text-gray-700 mb-2">Kein Event ausgewählt</h3>
+          <p class="text-gray-500">{{ 'please-select-an-event-to-see-information-here' | transloco }}</p>
+        </div>
       </div>
       }
     </div>
@@ -144,8 +244,7 @@ export class RotationPlanerPageComponent implements OnInit, OnDestroy {
       await this.eventService.createEvent({
         ...this.event,
         notes: _t71.value,
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      } as any);
+      } as unknown as createEventDTO);
     } catch (error) {
       this.snack.open('Error saving Note', 'OK', { duration: 2000 });
     }

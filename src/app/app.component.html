@@ -1,57 +1,201 @@
-<mat-drawer-container class="!bg-neutral !text-neutral-content">
-  <mat-drawer class="!bg-secondary !text-primary" #drawer mode="side" closed>
-    <mat-list>
-      <mat-list-item>
-        <a [routerLink]="[ROUTES.root]">Home</a>
-      </mat-list-item>
-      @if (session()) {
-      <mat-list-item>
-        <a [routerLink]="[ROUTES.root + ROUTES.roationPlaner]">{{ 'rotation-planer' | transloco }}</a>
-      </mat-list-item>
-      <mat-list-item>
-        <a [routerLink]="[ROUTES.root + ROUTES.games]">{{ 'game-overview' | transloco }}</a>
-      </mat-list-item>
-      <mat-list-item>
-        <a [routerLink]="[ROUTES.root + ROUTES.dataentry]">{{ 'data-input' | transloco }}</a>
-      </mat-list-item>
-      <mat-list-item>
-        <a [routerLink]="[ROUTES.root + ROUTES.report]">{{ 'game-reports' | transloco }}</a>
-      </mat-list-item>
-      <mat-list-item>
-        <a [routerLink]="[ROUTES.root + ROUTES.teams]">{{ 'teams' | transloco }}</a>
-      </mat-list-item>
-      <mat-list-item>
-        <a (click)="logout()">Logout</a>
-      </mat-list-item>
-      }@else{
-      <mat-list-item>
-        <a [routerLink]="[ROUTES.root + ROUTES.login]" routerLinkActive="router-link-active">Login</a>
-      </mat-list-item>
-      }
-    </mat-list>
-  </mat-drawer>
-  <mat-drawer-content>
-    <mat-toolbar class="flex justify-between items-center max-w-screen overflow-hidden !bg-neutral !text-primary">
-      <div class="flex">
-        <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon" (click)="drawer.toggle()">
-          <mat-icon>menu</mat-icon>
-        </button>
-        <a class="btn btn-ghost text-xl" [routerLink]="[ROUTES.root]">(S)VB Code</a>
-      </div>
-      <div class="flex gap-8">
-        @if (!session()) {
-        <a class="text-sm" [routerLink]="[ROUTES.root, ROUTES.login]">Login</a>
-        }@else{
-        <a class="text-sm" [routerLink]="[ROUTES.root, ROUTES.user]">{{ session()?.user?.email }}</a>
+<div class="min-h-screen flex bg-gray-50">
+  <!-- Mobile Menu Overlay -->
+  @if (isDrawerOpen()) {
+  <div class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden" (click)="toggleDrawer()"></div>
+  }
 
+  <!-- Sidebar Navigation -->
+  <aside
+    [class.translate-x-0]="isDrawerOpen()"
+    class="fixed top-0 left-0 h-screen w-64 bg-white shadow-xl transform -translate-x-full transition-transform duration-300 ease-in-out z-50 lg:translate-x-0 lg:static lg:z-auto overflow-y-auto"
+  >
+    <div class="p-6 border-b border-gray-200">
+      <h2 class="text-xl font-bold text-gray-800">(S)VB Code</h2>
+    </div>
+
+    <nav class="p-4">
+      <ul class="space-y-2">
+        <li>
+          <a
+            [routerLink]="[ROUTES.root]"
+            routerLinkActive="bg-blue-50 text-blue-700 font-medium"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+              />
+            </svg>
+            Home
+          </a>
+        </li>
+
+        @if (session()) {
+        <li>
+          <a
+            [routerLink]="[ROUTES.root + ROUTES.roationPlaner]"
+            routerLinkActive="bg-blue-50 text-blue-700 font-medium"
+            class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              />
+            </svg>
+            {{ 'rotation-planer' | transloco }}
+          </a>
+        </li>
+        <li>
+          <a
+            [routerLink]="[ROUTES.root + ROUTES.games]"
+            routerLinkActive="bg-blue-50 text-blue-700 font-medium"
+            class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              />
+            </svg>
+            {{ 'game-overview' | transloco }}
+          </a>
+        </li>
+        <li>
+          <a
+            [routerLink]="[ROUTES.root + ROUTES.dataentry]"
+            routerLinkActive="bg-blue-50 text-blue-700 font-medium"
+            class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+              />
+            </svg>
+            {{ 'data-input' | transloco }}
+          </a>
+        </li>
+        <li>
+          <a
+            [routerLink]="[ROUTES.root + ROUTES.report]"
+            routerLinkActive="bg-blue-50 text-blue-700 font-medium"
+            class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+            {{ 'game-reports' | transloco }}
+          </a>
+        </li>
+        <li>
+          <a
+            [routerLink]="[ROUTES.root + ROUTES.teams]"
+            routerLinkActive="bg-blue-50 text-blue-700 font-medium"
+            class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+              />
+            </svg>
+            {{ 'teams' | transloco }}
+          </a>
+        </li>
+
+        <li class="pt-4 mt-4 border-t border-gray-200">
+          <button (click)="logout()" class="flex items-center w-full px-4 py-3 text-red-600 rounded-lg hover:bg-red-50 transition-colors">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+              />
+            </svg>
+            Logout
+          </button>
+        </li>
+        } @else {
+        <li>
+          <a
+            [routerLink]="[ROUTES.root + ROUTES.login]"
+            routerLinkActive="bg-blue-50 text-blue-700 font-medium"
+            class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+          >
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
+              />
+            </svg>
+            Login
+          </a>
+        </li>
         }
-      </div>
-    </mat-toolbar>
+      </ul>
+    </nav>
+  </aside>
 
-    <router-outlet></router-outlet>
-    <!-- <app-buttom-nav></app-buttom-nav> -->
-  </mat-drawer-content>
-</mat-drawer-container>
-<footer class="bg-neutral text-center p-4">
-  <p>&copy; 2023 SV Beyendorf Volleyball</p>
-</footer>
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col min-w-0">
+    <!-- Top Navigation Bar -->
+    <header class="bg-white shadow-sm sticky top-0 z-30">
+      <div class="flex items-center justify-between px-4 py-3">
+        <div class="flex items-center">
+          <button (click)="toggleDrawer()" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors mr-3" aria-label="Toggle menu">
+            <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <a [routerLink]="[ROUTES.root]" class="text-xl font-bold text-gray-800 hover:text-blue-600 transition-colors"> (S)VB Code </a>
+        </div>
+
+        <div class="flex items-center gap-4">
+          @if (!session()) {
+          <a [routerLink]="[ROUTES.root, ROUTES.login]" class="text-sm text-gray-600 hover:text-blue-600 transition-colors font-medium"> Login </a>
+          } @else {
+          <a [routerLink]="[ROUTES.root, ROUTES.user]" class="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600 transition-colors">
+            <div class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-medium">
+              {{ (session()?.user?.email || 'U')[0].toUpperCase() }}
+            </div>
+            <span class="hidden sm:inline font-medium">{{ session()?.user?.email }}</span>
+          </a>
+          }
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="flex-1 p-4 lg:p-6">
+      <router-outlet></router-outlet>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 py-4">
+      <div class="text-center text-sm text-gray-600">
+        <p>&copy; {{ currentYear }} SV Beyendorf Volleyball</p>
+      </div>
+    </footer>
+  </div>
+</div>

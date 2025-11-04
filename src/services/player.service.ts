@@ -51,8 +51,8 @@ export class PlayerService {
    * @returns
    */
   async getPlayerList(ids: string[]) {
-    const res = (await this.supabase.from('players').select('*').in('id', ids)).data as PlayerDTO[];
-    return res;
+    const res = (await this.supabase.from('players').select('*').in('id', ids))?.data as PlayerDTO[];
+    return res ?? [];
   }
   /**
    *
@@ -60,5 +60,17 @@ export class PlayerService {
    */
   async getPlayers() {
     return (await this.supabase.from('players').select('*')).data as PlayerDTO[];
+  }
+  /**
+   * Update player information
+   * @param id - Player ID
+   * @param updates - Partial player data to update
+   * @returns Updated player
+   */
+  async updatePlayer(id: string, updates: Partial<PlayerDTO>) {
+    const response = await this.supabase.from('players').update(updates).eq('id', id).select('*').single();
+
+    if (response.error) throw new Error(response.error.message);
+    return response.data as PlayerDTO;
   }
 }
