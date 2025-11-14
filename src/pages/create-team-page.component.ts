@@ -257,6 +257,12 @@ export class CreateTeamPageComponent implements OnInit {
       // Ensure team.id is a string
       const teamId: string = typeof this.team.id === 'string' ? this.team.id : this.team.id ? String(this.team.id) : '';
       if (!teamId) throw new Error('Team ID is missing');
+
+      // Ensure name and trikot are strings
+      if (!name || !trikot) {
+        throw new Error('Name and trikot are required');
+      }
+
       const response = await this.playerService.createPlayer(teamId, { name, trikot });
       // Type guard for response.data
       type TeamResponse = { players: string[] };

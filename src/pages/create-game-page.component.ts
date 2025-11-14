@@ -11,7 +11,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 import { select } from '@ngxs/store';
-import { SVB_APP_ROUTES } from 'src/app/ROUTES';
 import { SessionState } from '../app/session.state';
 import { PristineEventPipe } from '../pipes/pristineEvent.pipe';
 import { EventsService } from '../services/events.service';
@@ -22,6 +21,7 @@ import type { EventDTO, createEventDTO } from '../types/EventDTO';
 import type { PlayerDTO } from '../types/PlayerDTO';
 import { AttendeesSelectFormControlComponent } from './atoms/attendees-select-form-control.component';
 import { SingleRoationFormControlComponent } from './atoms/single-roation-form-control.component';
+import { SVB_APP_ROUTES } from '../app/ROUTES';
 
 @Component({
   selector: 'app-create-game-page',

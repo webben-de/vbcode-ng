@@ -11,7 +11,6 @@ import { TranslocoModule, translate } from '@jsverse/transloco';
 import type { EChartsOption, TitleComponentOption } from 'echarts';
 import { countBy, groupBy, sortBy } from 'lodash';
 import { NgxEchartsDirective } from 'ngx-echarts';
-import type { ActionDTO } from 'src/types/ActionDTO';
 import { SVB_APP_ROUTES } from '../../app/ROUTES';
 import { defaults } from '../../components/defaults';
 import { gradDescriptionMap, grad_options_list } from '../../components/grade-options';
@@ -27,6 +26,7 @@ import { ActionByKindComponent } from './action-by-kind.component';
 import { ActionHorizontalTimelineComponent } from './action-horizontal-timeline.component';
 import { ActionsByGradeComponent } from './actions-by-grade.component';
 import { ActionsByPlayerComponent } from './actions-by-player.component';
+import { ActionDTO } from '../../types/ActionDTO';
 @Component({
   selector: 'app-game-game-detail-view',
   host: { class: 'flex flex-col p-5 gap-4' },

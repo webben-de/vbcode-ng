@@ -7,12 +7,12 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { select } from '@ngxs/store';
 import { endOfDay, startOfDay } from 'date-fns';
 import { groupBy } from 'lodash';
-import { SVB_APP_ROUTES } from 'src/app/ROUTES';
 import { SessionState } from '../app/session.state';
 import { EventsService } from '../services/events.service';
 import type { EventResponse } from '../types/EventDTO';
 import type { groupEvent } from './groupEvent';
 import { EventCardComponent } from './report-details/sub-components/event-card.component';
+import { SVB_APP_ROUTES } from '../app/ROUTES';
 
 /**
  * Component representing the list of games.

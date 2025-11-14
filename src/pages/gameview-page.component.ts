@@ -7,13 +7,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
 import type { EChartsOption } from 'echarts';
 import { NgxEchartsDirective } from 'ngx-echarts';
-import type { ActionDTO } from 'src/types/ActionDTO';
 import { SVB_APP_ROUTES } from '../app/ROUTES';
 import { kindFilterPipe } from '../pipes/filterKind.pipe';
 import { ActionsService } from '../services/action.service';
 import { EventsService } from '../services/events.service';
 import { SupabaseService } from '../services/supabase.service';
 import { ActionKind } from '../types/ActionKind';
+import { ActionDTO } from '../types/ActionDTO';
 
 @Component({
   selector: 'app-gameview',

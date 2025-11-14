@@ -4,12 +4,18 @@ import { SessionState, SetMyPlayer } from '../app/session.state';
 import type { PlayerDTO } from '../types/PlayerDTO';
 import { SupabaseService } from './supabase.service';
 
+interface TeamWithPlayers {
+  id: string;
+  name: string;
+  players: PlayerDTO[];
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class PlayerService {
   async getPlayersOfTeam(id: string) {
-    return (await this.supabase.from('teams').select('*, players (*)').eq('id', id)).data as any;
+    return (await this.supabase.from('teams').select('*, players (*)').eq('id', id)).data as TeamWithPlayers[] | null;
   }
   async createPlayer(id: string, player: { name: string; trikot: string }) {
     const playerResponse = await this.supabase
