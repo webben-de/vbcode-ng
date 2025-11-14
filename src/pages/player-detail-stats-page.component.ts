@@ -3,8 +3,11 @@ import { Component, type OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -73,7 +76,10 @@ interface EventPerformance {
     ReactiveFormsModule,
     MatCardModule,
     MatButtonModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     MatFormFieldModule,
+    MatInputModule,
     MatSelectModule,
     MatTabsModule,
     MatChipsModule,
@@ -103,7 +109,165 @@ interface EventPerformance {
         </div>
       </div>
 
-      @if (isLoading) {
+      <!-- Filters -->
+      @if (!isLoading && performances.length > 0) {
+      <mat-card class="mb-6">
+        <mat-card-content>
+          <div class="flex flex-col md:flex-row gap-4 items-end">
+            <!-- Event Type Filter -->
+            <mat-form-field class="flex-1">
+              <mat-label>{{ 'event-type' | transloco }}</mat-label>
+              <mat-select [formControl]="eventTypeFilter">
+                <mat-option value="all">{{ 'all-events' | transloco }}</mat-option>
+                <mat-option value="game">{{ 'games' | transloco }}</mat-option>
+                <mat-option value="training">{{ 'training-sessions' | transloco }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Date Range Preset -->
+            <mat-form-field class="flex-1">
+              <mat-label>{{ 'time-period' | transloco }}</mat-label>
+              <mat-select [formControl]="dateRangePreset" (selectionChange)="onDateRangePresetChange()">
+                <mat-option value="all">{{ 'all-time' | transloco }}</mat-option>
+                <mat-option value="last-7">{{ 'last-7-days' | transloco }}</mat-option>
+                <mat-option value="last-30">{{ 'last-30-days' | transloco }}</mat-option>
+                <mat-option value="last-90">{{ 'last-90-days' | transloco }}</mat-option>
+                <mat-option value="last-6-months">{{ 'last-6-months' | transloco }}</mat-option>
+                <mat-option value="last-year">{{ 'last-year' | transloco }}</mat-option>
+                <mat-option value="custom">{{ 'custom-range' | transloco }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <!-- Custom Date Range -->
+            @if (dateRangePreset.value === 'custom') {
+            <mat-form-field class="flex-1">
+              <mat-label>{{ 'start-date' | transloco }}</mat-label>
+              <input matInput [matDatepicker]="startPicker" [formControl]="startDateControl" (dateChange)="onCustomDateChange()" />
+              <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+              <mat-datepicker #startPicker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field class="flex-1">
+              <mat-label>{{ 'end-date' | transloco }}</mat-label>
+              <input matInput [matDatepicker]="endPicker" [formControl]="endDateControl" (dateChange)="onCustomDateChange()" />
+              <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+              <mat-datepicker #endPicker></mat-datepicker>
+            </mat-form-field>
+            }
+
+            <!-- Comparison Mode Toggle -->
+            <button mat-raised-button [color]="comparisonMode ? 'primary' : ''" (click)="toggleComparisonMode()" class="whitespace-nowrap">
+              <mat-icon>{{ comparisonMode ? 'compare' : 'compare_arrows' }}</mat-icon>
+              {{ comparisonMode ? ('comparison-active' | transloco) : ('enable-comparison' | transloco) }}
+            </button>
+
+            <!-- Reset Filters -->
+            <button mat-icon-button matTooltip="{{ 'reset-filters' | transloco }}" (click)="resetFilters()">
+              <mat-icon>refresh</mat-icon>
+            </button>
+          </div>
+
+          <!-- Comparison Period Selector -->
+          @if (comparisonMode) {
+          <div class="mt-4 p-4 bg-blue-50 rounded-lg">
+            <h3 class="text-sm font-semibold mb-3 text-blue-900">{{ 'comparison-settings' | transloco }}</h3>
+            <div class="flex flex-col md:flex-row gap-4 items-end">
+              <mat-form-field class="flex-1">
+                <mat-label>{{ 'compare-with' | transloco }}</mat-label>
+                <mat-select [formControl]="comparisonPeriodPreset" (selectionChange)="onComparisonPresetChange()">
+                  <mat-option value="previous-period">{{ 'previous-period' | transloco }}</mat-option>
+                  <mat-option value="previous-month">{{ 'previous-month' | transloco }}</mat-option>
+                  <mat-option value="previous-quarter">{{ 'previous-quarter' | transloco }}</mat-option>
+                  <mat-option value="previous-year">{{ 'previous-year' | transloco }}</mat-option>
+                  <mat-option value="custom">{{ 'custom-period' | transloco }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              @if (comparisonPeriodPreset.value === 'custom') {
+              <mat-form-field class="flex-1">
+                <mat-label>{{ 'comparison-start' | transloco }}</mat-label>
+                <input matInput [matDatepicker]="compStartPicker" [formControl]="comparisonStartDateControl" (dateChange)="onComparisonCustomDateChange()" />
+                <mat-datepicker-toggle matSuffix [for]="compStartPicker"></mat-datepicker-toggle>
+                <mat-datepicker #compStartPicker></mat-datepicker>
+              </mat-form-field>
+
+              <mat-form-field class="flex-1">
+                <mat-label>{{ 'comparison-end' | transloco }}</mat-label>
+                <input matInput [matDatepicker]="compEndPicker" [formControl]="comparisonEndDateControl" (dateChange)="onComparisonCustomDateChange()" />
+                <mat-datepicker-toggle matSuffix [for]="compEndPicker"></mat-datepicker-toggle>
+                <mat-datepicker #compEndPicker></mat-datepicker>
+              </mat-form-field>
+              }
+            </div>
+
+            <!-- Comparison Stats Summary -->
+            @if (comparisonStats) {
+            <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div class="bg-white p-3 rounded-lg shadow-sm">
+                <div class="text-xs text-gray-600">{{ 'efficiency-change' | transloco }}</div>
+                <div
+                  class="text-lg font-bold"
+                  [class.text-green-600]="comparisonStats.efficiencyChange > 0"
+                  [class.text-red-600]="comparisonStats.efficiencyChange < 0"
+                  [class.text-gray-600]="comparisonStats.efficiencyChange === 0"
+                >
+                  {{ comparisonStats.efficiencyChange > 0 ? '+' : '' }}{{ comparisonStats.efficiencyChange }}%
+                </div>
+              </div>
+              <div class="bg-white p-3 rounded-lg shadow-sm">
+                <div class="text-xs text-gray-600">{{ 'actions-change' | transloco }}</div>
+                <div
+                  class="text-lg font-bold"
+                  [class.text-green-600]="comparisonStats.actionsChange > 0"
+                  [class.text-red-600]="comparisonStats.actionsChange < 0"
+                  [class.text-gray-600]="comparisonStats.actionsChange === 0"
+                >
+                  {{ comparisonStats.actionsChange > 0 ? '+' : '' }}{{ comparisonStats.actionsChange }}
+                </div>
+              </div>
+              <div class="bg-white p-3 rounded-lg shadow-sm">
+                <div class="text-xs text-gray-600">{{ 'aces-change' | transloco }}</div>
+                <div
+                  class="text-lg font-bold"
+                  [class.text-green-600]="comparisonStats.acesChange > 0"
+                  [class.text-red-600]="comparisonStats.acesChange < 0"
+                  [class.text-gray-600]="comparisonStats.acesChange === 0"
+                >
+                  {{ comparisonStats.acesChange > 0 ? '+' : '' }}{{ comparisonStats.acesChange }}
+                </div>
+              </div>
+              <div class="bg-white p-3 rounded-lg shadow-sm">
+                <div class="text-xs text-gray-600">{{ 'errors-change' | transloco }}</div>
+                <div
+                  class="text-lg font-bold"
+                  [class.text-red-600]="comparisonStats.errorsChange > 0"
+                  [class.text-green-600]="comparisonStats.errorsChange < 0"
+                  [class.text-gray-600]="comparisonStats.errorsChange === 0"
+                >
+                  {{ comparisonStats.errorsChange > 0 ? '+' : '' }}{{ comparisonStats.errorsChange }}
+                </div>
+              </div>
+            </div>
+            }
+          </div>
+          }
+
+          <!-- Active Filters Display -->
+          @if (hasActiveFilters()) {
+          <div class="mt-4 flex flex-wrap gap-2 items-center">
+            <span class="text-sm text-gray-600">{{ 'active-filters' | transloco }}:</span>
+            @if (eventTypeFilter.value !== 'all') {
+            <span class="badge badge-primary">{{ eventTypeFilter.value === 'game' ? ('games' | transloco) : ('training-sessions' | transloco) }}</span>
+            } @if (dateRangePreset.value !== 'all') {
+            <span class="badge badge-secondary">{{ getDateRangeLabel() }}</span>
+            } @if (comparisonMode) {
+            <span class="badge badge-accent">{{ 'comparison-mode' | transloco }}</span>
+            }
+          </div>
+          }
+        </mat-card-content>
+      </mat-card>
+      } @if (isLoading) {
       <div class="flex justify-center items-center py-20">
         <div class="loading loading-spinner loading-lg"></div>
       </div>
@@ -177,6 +341,18 @@ interface EventPerformance {
           </mat-card-content>
         </mat-card>
       </div>
+
+      <!-- Action by Grade Heatmap -->
+      <mat-card class="mb-6">
+        <mat-card-header>
+          <mat-card-title>{{ 'action-grade-breakdown' | transloco }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          @if (actionGradeHeatmapOptions) {
+          <div echarts [options]="actionGradeHeatmapOptions" class="w-full h-[400px]"></div>
+          }
+        </mat-card-content>
+      </mat-card>
 
       <!-- Action Breakdown Statistics -->
       <mat-card class="mb-6">
@@ -471,6 +647,23 @@ export class PlayerDetailStatsPageComponent implements OnInit {
   eventTypeFilter = new FormControl<'all' | 'game' | 'training'>('all');
   selectedSessionsControl = new FormControl<EventPerformance[]>([]);
 
+  // Date range filtering
+  dateRangePreset = new FormControl<string>('all');
+  startDateControl = new FormControl<Date | null>(null);
+  endDateControl = new FormControl<Date | null>(null);
+
+  // Comparison mode
+  comparisonMode = false;
+  comparisonPeriodPreset = new FormControl<string>('previous-period');
+  comparisonStartDateControl = new FormControl<Date | null>(null);
+  comparisonEndDateControl = new FormControl<Date | null>(null);
+  comparisonStats: {
+    efficiencyChange: number;
+    actionsChange: number;
+    acesChange: number;
+    errorsChange: number;
+  } | null = null;
+
   overallSpiderChartOptions: EChartsOption | null = null;
   comparisonChartOptions: EChartsOption | null = null;
 
@@ -495,16 +688,45 @@ export class PlayerDetailStatsPageComponent implements OnInit {
 
   gradeChartOptions: EChartsOption | null = null;
   actionGradeChartOptions: EChartsOption | null = null;
+  actionGradeHeatmapOptions: EChartsOption | null = null;
 
   // Action-specific evolution charts
   selectedAction = new FormControl<string>('serve');
   actionEvolutionChartOptions: EChartsOption | null = null;
   actionGradeEvolutionChartOptions: EChartsOption | null = null;
+  selectedTabIndex = 0;
 
   get filteredPerformances(): EventPerformance[] {
     const filterType = this.eventTypeFilter.value;
-    if (filterType === 'all') return this.performances;
-    return this.performances.filter((p) => p.event.event_type === filterType);
+    let filtered = filterType === 'all' ? this.performances : this.performances.filter((p) => p.event.event_type === filterType);
+
+    // Apply date range filter
+    const dateRange = this.getActiveDateRange();
+    if (dateRange) {
+      filtered = filtered.filter((p) => {
+        const eventDate = new Date(p.event.date);
+        return eventDate >= dateRange.start && eventDate <= dateRange.end;
+      });
+    }
+
+    return filtered;
+  }
+
+  get comparisonPerformances(): EventPerformance[] {
+    if (!this.comparisonMode) return [];
+
+    const filterType = this.eventTypeFilter.value;
+    let filtered = filterType === 'all' ? this.performances : this.performances.filter((p) => p.event.event_type === filterType);
+
+    const comparisonRange = this.getComparisonDateRange();
+    if (comparisonRange) {
+      filtered = filtered.filter((p) => {
+        const eventDate = new Date(p.event.date);
+        return eventDate >= comparisonRange.start && eventDate <= comparisonRange.end;
+      });
+    }
+
+    return filtered;
   }
 
   async ngOnInit() {
@@ -534,6 +756,226 @@ export class PlayerDetailStatsPageComponent implements OnInit {
     this.selectedAction.valueChanges.subscribe(() => {
       this.generateActionEvolutionCharts();
     });
+
+    // Watch for filter changes to recalculate stats
+    this.eventTypeFilter.valueChanges.subscribe(() => this.recalculateStats());
+    this.dateRangePreset.valueChanges.subscribe(() => this.recalculateStats());
+  }
+
+  // Date range and comparison methods
+  getActiveDateRange(): { start: Date; end: Date } | null {
+    const preset = this.dateRangePreset.value;
+    const now = new Date();
+
+    if (preset === 'all') return null;
+
+    if (preset === 'custom') {
+      const start = this.startDateControl.value;
+      const end = this.endDateControl.value;
+      if (start && end) {
+        return { start, end };
+      }
+      return null;
+    }
+
+    const start = new Date();
+    switch (preset) {
+      case 'last-7':
+        start.setDate(now.getDate() - 7);
+        break;
+      case 'last-30':
+        start.setDate(now.getDate() - 30);
+        break;
+      case 'last-90':
+        start.setDate(now.getDate() - 90);
+        break;
+      case 'last-6-months':
+        start.setMonth(now.getMonth() - 6);
+        break;
+      case 'last-year':
+        start.setFullYear(now.getFullYear() - 1);
+        break;
+      default:
+        return null;
+    }
+
+    return { start, end: now };
+  }
+
+  getComparisonDateRange(): { start: Date; end: Date } | null {
+    if (!this.comparisonMode) return null;
+
+    const preset = this.comparisonPeriodPreset.value;
+
+    if (preset === 'custom') {
+      const start = this.comparisonStartDateControl.value;
+      const end = this.comparisonEndDateControl.value;
+      if (start && end) {
+        return { start, end };
+      }
+      return null;
+    }
+
+    const currentRange = this.getActiveDateRange();
+    if (!currentRange) return null;
+
+    const duration = currentRange.end.getTime() - currentRange.start.getTime();
+
+    let start: Date;
+    let end: Date;
+
+    switch (preset) {
+      case 'previous-period':
+        end = new Date(currentRange.start);
+        start = new Date(end.getTime() - duration);
+        break;
+      case 'previous-month':
+        end = new Date();
+        end.setMonth(end.getMonth() - 1);
+        start = new Date(end);
+        start.setMonth(start.getMonth() - 1);
+        break;
+      case 'previous-quarter':
+        end = new Date();
+        end.setMonth(end.getMonth() - 3);
+        start = new Date(end);
+        start.setMonth(start.getMonth() - 3);
+        break;
+      case 'previous-year':
+        end = new Date();
+        end.setFullYear(end.getFullYear() - 1);
+        start = new Date(end);
+        start.setFullYear(start.getFullYear() - 1);
+        break;
+      default:
+        return null;
+    }
+
+    return { start, end };
+  }
+
+  onDateRangePresetChange() {
+    if (this.dateRangePreset.value !== 'custom') {
+      this.startDateControl.setValue(null);
+      this.endDateControl.setValue(null);
+    }
+    this.recalculateStats();
+  }
+
+  onCustomDateChange() {
+    this.recalculateStats();
+  }
+
+  onComparisonPresetChange() {
+    if (this.comparisonPeriodPreset.value !== 'custom') {
+      this.comparisonStartDateControl.setValue(null);
+      this.comparisonEndDateControl.setValue(null);
+    }
+    this.calculateComparisonStats();
+  }
+
+  onComparisonCustomDateChange() {
+    this.calculateComparisonStats();
+  }
+
+  toggleComparisonMode() {
+    this.comparisonMode = !this.comparisonMode;
+    if (this.comparisonMode) {
+      this.calculateComparisonStats();
+    } else {
+      this.comparisonStats = null;
+    }
+  }
+
+  resetFilters() {
+    this.eventTypeFilter.setValue('all');
+    this.dateRangePreset.setValue('all');
+    this.startDateControl.setValue(null);
+    this.endDateControl.setValue(null);
+    this.comparisonMode = false;
+    this.comparisonPeriodPreset.setValue('previous-period');
+    this.comparisonStartDateControl.setValue(null);
+    this.comparisonEndDateControl.setValue(null);
+    this.comparisonStats = null;
+    this.recalculateStats();
+  }
+
+  hasActiveFilters(): boolean {
+    return this.eventTypeFilter.value !== 'all' || this.dateRangePreset.value !== 'all' || this.comparisonMode;
+  }
+
+  getDateRangeLabel(): string {
+    const preset = this.dateRangePreset.value;
+    if (preset === 'custom') {
+      const start = this.startDateControl.value;
+      const end = this.endDateControl.value;
+      if (start && end) {
+        return `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`;
+      }
+      return 'Custom Range';
+    }
+    return preset || 'All Time';
+  }
+
+  recalculateStats() {
+    if (this.filteredPerformances.length > 0) {
+      this.calculateOverallStats();
+      this.generateOverallSpiderChart();
+      this.generateActionEvolutionCharts();
+    }
+    if (this.comparisonMode) {
+      this.calculateComparisonStats();
+    }
+  }
+
+  calculateComparisonStats() {
+    if (!this.comparisonMode) {
+      this.comparisonStats = null;
+      return;
+    }
+
+    const currentPerfs = this.filteredPerformances;
+    const comparisonPerfs = this.comparisonPerformances;
+
+    if (currentPerfs.length === 0 || comparisonPerfs.length === 0) {
+      this.comparisonStats = null;
+      return;
+    }
+
+    // Calculate current period stats
+    let currentActions = 0;
+    let currentAces = 0;
+    let currentErrors = 0;
+    let currentEfficiency = 0;
+
+    for (const perf of currentPerfs) {
+      currentActions += perf.totalActions;
+      currentAces += perf.gradeStats.aces;
+      currentErrors += perf.gradeStats.errors;
+      currentEfficiency += perf.efficiency;
+    }
+    const currentAvgEff = currentPerfs.length > 0 ? currentEfficiency / currentPerfs.length : 0;
+
+    // Calculate comparison period stats
+    let compActions = 0;
+    let compAces = 0;
+    let compErrors = 0;
+    let compEfficiency = 0;
+
+    for (const perf of comparisonPerfs) {
+      compActions += perf.totalActions;
+      compAces += perf.gradeStats.aces;
+      compErrors += perf.gradeStats.errors;
+      compEfficiency += perf.efficiency;
+    }
+    const compAvgEff = comparisonPerfs.length > 0 ? compEfficiency / comparisonPerfs.length : 0;
+
+    this.comparisonStats = {
+      efficiencyChange: Math.round(currentAvgEff - compAvgEff),
+      actionsChange: currentActions - compActions,
+      acesChange: currentAces - compAces,
+      errorsChange: currentErrors - compErrors,
+    };
   }
 
   async loadPlayerData(playerId: string) {
@@ -717,6 +1159,8 @@ export class PlayerDetailStatsPageComponent implements OnInit {
     this.generateGradeChart();
     // Generate action-grade heatmap
     this.generateActionGradeChart();
+    // Generate action-grade breakdown heatmap
+    this.generateActionGradeHeatmap();
   }
 
   private generateGradeChart() {
@@ -832,6 +1276,266 @@ export class PlayerDetailStatsPageComponent implements OnInit {
             show: true,
             position: 'top',
             formatter: '{c}%',
+          },
+        },
+      ],
+    };
+  }
+
+  private generateActionGradeHeatmap() {
+    // Aggregate action-grade breakdown across all performances
+    const actionGradeData: { serve: GradeStats; receive: GradeStats; attack: GradeStats; block: GradeStats; defense: GradeStats; set: GradeStats } = {
+      serve: { aces: 0, excellent: 0, good: 0, ok: 0, poor: 0, errors: 0 },
+      receive: { aces: 0, excellent: 0, good: 0, ok: 0, poor: 0, errors: 0 },
+      attack: { aces: 0, excellent: 0, good: 0, ok: 0, poor: 0, errors: 0 },
+      block: { aces: 0, excellent: 0, good: 0, ok: 0, poor: 0, errors: 0 },
+      defense: { aces: 0, excellent: 0, good: 0, ok: 0, poor: 0, errors: 0 },
+      set: { aces: 0, excellent: 0, good: 0, ok: 0, poor: 0, errors: 0 },
+    };
+
+    for (const perf of this.performances) {
+      const breakdown = perf.actionGradeBreakdown;
+
+      // Sum up each action type's grades
+      actionGradeData.serve.aces += breakdown.serve.aces;
+      actionGradeData.serve.excellent += breakdown.serve.excellent;
+      actionGradeData.serve.good += breakdown.serve.good;
+      actionGradeData.serve.ok += breakdown.serve.ok;
+      actionGradeData.serve.poor += breakdown.serve.poor;
+      actionGradeData.serve.errors += breakdown.serve.errors;
+
+      actionGradeData.receive.aces += breakdown.receive.aces;
+      actionGradeData.receive.excellent += breakdown.receive.excellent;
+      actionGradeData.receive.good += breakdown.receive.good;
+      actionGradeData.receive.ok += breakdown.receive.ok;
+      actionGradeData.receive.poor += breakdown.receive.poor;
+      actionGradeData.receive.errors += breakdown.receive.errors;
+
+      actionGradeData.attack.aces += breakdown.attack.aces;
+      actionGradeData.attack.excellent += breakdown.attack.excellent;
+      actionGradeData.attack.good += breakdown.attack.good;
+      actionGradeData.attack.ok += breakdown.attack.ok;
+      actionGradeData.attack.poor += breakdown.attack.poor;
+      actionGradeData.attack.errors += breakdown.attack.errors;
+
+      actionGradeData.block.aces += breakdown.block.aces;
+      actionGradeData.block.excellent += breakdown.block.excellent;
+      actionGradeData.block.good += breakdown.block.good;
+      actionGradeData.block.ok += breakdown.block.ok;
+      actionGradeData.block.poor += breakdown.block.poor;
+      actionGradeData.block.errors += breakdown.block.errors;
+
+      actionGradeData.defense.aces += breakdown.defense.aces;
+      actionGradeData.defense.excellent += breakdown.defense.excellent;
+      actionGradeData.defense.good += breakdown.defense.good;
+      actionGradeData.defense.ok += breakdown.defense.ok;
+      actionGradeData.defense.poor += breakdown.defense.poor;
+      actionGradeData.defense.errors += breakdown.defense.errors;
+
+      actionGradeData.set.aces += breakdown.set.aces;
+      actionGradeData.set.excellent += breakdown.set.excellent;
+      actionGradeData.set.good += breakdown.set.good;
+      actionGradeData.set.ok += breakdown.set.ok;
+      actionGradeData.set.poor += breakdown.set.poor;
+      actionGradeData.set.errors += breakdown.set.errors;
+    }
+
+    // Prepare data for stacked bar chart
+    const actions = ['Serve', 'Receive', 'Attack', 'Block', 'Defense', 'Set'];
+    const acesData = [
+      actionGradeData.serve.aces,
+      actionGradeData.receive.aces,
+      actionGradeData.attack.aces,
+      actionGradeData.block.aces,
+      actionGradeData.defense.aces,
+      actionGradeData.set.aces,
+    ];
+    const excellentData = [
+      actionGradeData.serve.excellent,
+      actionGradeData.receive.excellent,
+      actionGradeData.attack.excellent,
+      actionGradeData.block.excellent,
+      actionGradeData.defense.excellent,
+      actionGradeData.set.excellent,
+    ];
+    const goodData = [
+      actionGradeData.serve.good,
+      actionGradeData.receive.good,
+      actionGradeData.attack.good,
+      actionGradeData.block.good,
+      actionGradeData.defense.good,
+      actionGradeData.set.good,
+    ];
+    const okData = [
+      actionGradeData.serve.ok,
+      actionGradeData.receive.ok,
+      actionGradeData.attack.ok,
+      actionGradeData.block.ok,
+      actionGradeData.defense.ok,
+      actionGradeData.set.ok,
+    ];
+    const poorData = [
+      actionGradeData.serve.poor,
+      actionGradeData.receive.poor,
+      actionGradeData.attack.poor,
+      actionGradeData.block.poor,
+      actionGradeData.defense.poor,
+      actionGradeData.set.poor,
+    ];
+    const errorsData = [
+      actionGradeData.serve.errors,
+      actionGradeData.receive.errors,
+      actionGradeData.attack.errors,
+      actionGradeData.block.errors,
+      actionGradeData.defense.errors,
+      actionGradeData.set.errors,
+    ];
+
+    this.actionGradeHeatmapOptions = {
+      title: {
+        text: '',
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow',
+        },
+        formatter: (params: unknown) => {
+          const paramArray = params as Array<{ seriesName: string; value: number; marker: string; axisValue?: string }>;
+          let result = `<strong>${paramArray[0].axisValue || ''}</strong><br/>`;
+          let total = 0;
+          paramArray.forEach((item) => {
+            total += item.value;
+            result += `${item.marker} ${item.seriesName}: ${item.value}<br/>`;
+          });
+          result += `<strong>Total: ${total}</strong>`;
+          return result;
+        },
+      },
+      legend: {
+        data: ['Aces', 'Excellent', 'Good', 'OK', 'Poor', 'Errors'],
+        bottom: 0,
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '12%',
+        containLabel: true,
+      },
+      xAxis: {
+        type: 'category',
+        data: actions,
+      },
+      yAxis: {
+        type: 'value',
+      },
+      series: [
+        {
+          name: 'Aces',
+          type: 'bar',
+          stack: 'total',
+          emphasis: {
+            focus: 'series',
+          },
+          data: acesData,
+          itemStyle: { color: '#10b981' },
+          label: {
+            show: true,
+            position: 'inside',
+            formatter: (params: unknown) => {
+              const p = params as { value: number };
+              return p.value > 0 ? p.value.toString() : '';
+            },
+          },
+        },
+        {
+          name: 'Excellent',
+          type: 'bar',
+          stack: 'total',
+          emphasis: {
+            focus: 'series',
+          },
+          data: excellentData,
+          itemStyle: { color: '#3b82f6' },
+          label: {
+            show: true,
+            position: 'inside',
+            formatter: (params: unknown) => {
+              const p = params as { value: number };
+              return p.value > 0 ? p.value.toString() : '';
+            },
+          },
+        },
+        {
+          name: 'Good',
+          type: 'bar',
+          stack: 'total',
+          emphasis: {
+            focus: 'series',
+          },
+          data: goodData,
+          itemStyle: { color: '#8b5cf6' },
+          label: {
+            show: true,
+            position: 'inside',
+            formatter: (params: unknown) => {
+              const p = params as { value: number };
+              return p.value > 0 ? p.value.toString() : '';
+            },
+          },
+        },
+        {
+          name: 'OK',
+          type: 'bar',
+          stack: 'total',
+          emphasis: {
+            focus: 'series',
+          },
+          data: okData,
+          itemStyle: { color: '#f59e0b' },
+          label: {
+            show: true,
+            position: 'inside',
+            formatter: (params: unknown) => {
+              const p = params as { value: number };
+              return p.value > 0 ? p.value.toString() : '';
+            },
+          },
+        },
+        {
+          name: 'Poor',
+          type: 'bar',
+          stack: 'total',
+          emphasis: {
+            focus: 'series',
+          },
+          data: poorData,
+          itemStyle: { color: '#ef4444' },
+          label: {
+            show: true,
+            position: 'inside',
+            formatter: (params: unknown) => {
+              const p = params as { value: number };
+              return p.value > 0 ? p.value.toString() : '';
+            },
+          },
+        },
+        {
+          name: 'Errors',
+          type: 'bar',
+          stack: 'total',
+          emphasis: {
+            focus: 'series',
+          },
+          data: errorsData,
+          itemStyle: { color: '#dc2626' },
+          label: {
+            show: true,
+            position: 'inside',
+            formatter: (params: unknown) => {
+              const p = params as { value: number };
+              return p.value > 0 ? p.value.toString() : '';
+            },
           },
         },
       ],
@@ -1072,6 +1776,10 @@ export class PlayerDetailStatsPageComponent implements OnInit {
     };
     const key = efficiencyMap[actionType];
     return key ? (perf[key] as number) : 0;
+  }
+
+  onTabChange(index: number) {
+    this.selectedTabIndex = index;
   }
 
   private generateActionEvolutionCharts() {
