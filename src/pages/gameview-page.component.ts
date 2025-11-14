@@ -20,10 +20,10 @@ import { ActionKind } from '../types/ActionKind';
   imports: [RouterModule, CommonModule, kindFilterPipe, MatFormField, MatInputModule, NgxEchartsDirective, FormsModule, ReactiveFormsModule, MatSelectModule],
   standalone: true,
   template: `
-    <div class="flex flex-col max-w-full overflow-hidden">
-      <div class="flex gap-8 p-5">
-        <form [formGroup]="gameF" class="flex gap-4">
-          <mat-form-field>
+    <div class="flex flex-col max-w-full overflow-hidden p-3 md:p-0">
+      <div class="flex gap-4 md:gap-8 p-3 md:p-5">
+        <form [formGroup]="gameF" class="flex flex-col sm:flex-row gap-3 md:gap-4 w-full sm:w-auto">
+          <mat-form-field class="w-full sm:w-auto">
             <mat-label>Game:</mat-label>
             <mat-select formControlName="game_id">
               @for (item of events|async; track $index) {
@@ -33,7 +33,7 @@ import { ActionKind } from '../types/ActionKind';
               }
             </mat-select>
           </mat-form-field>
-          <mat-form-field>
+          <mat-form-field class="w-full sm:w-auto">
             <mat-label>Satz:</mat-label>
 
             <mat-select placeholder="Satz" formControlName="game_set" [value]="'Alle'">
@@ -44,8 +44,8 @@ import { ActionKind } from '../types/ActionKind';
         </form>
       </div>
       <hr />
-      <div class="flex w-full justify-between p-5">
-        <div class="stats stats-vertical shadow w-1/2">
+      <div class="flex flex-col md:flex-row w-full justify-between p-3 md:p-5 gap-4">
+        <div class="stats stats-vertical shadow w-full md:w-1/2">
           <div class="stat">
             <div class="stat-title">Angriffe</div>
             <div class="stat-value text-secondary">
@@ -65,7 +65,7 @@ import { ActionKind } from '../types/ActionKind';
             </div>
           </div>
         </div>
-        <div class="stats stats-vertical shadow w-1/2">
+        <div class="stats stats-vertical shadow w-full md:w-1/2">
           <div class="stat">
             <div class="stat-title">Blocks</div>
             <div class="stat-value text-secondary">
@@ -92,8 +92,10 @@ import { ActionKind } from '../types/ActionKind';
           </div>
         </div>
       </div>
-      <a class="btn" [routerLink]="[ROUTES.root, ROUTES.report, 'details', gameF.controls.game_id.value]">Details</a>
-      <div echarts [options]="pieChartDist" class="h-40 w-full"></div>
+      <div class="px-3 md:px-5 pb-3 md:pb-5">
+        <a class="btn w-full sm:w-auto" [routerLink]="[ROUTES.root, ROUTES.report, 'details', gameF.controls.game_id.value]">Details</a>
+      </div>
+      <div echarts [options]="pieChartDist" class="h-40 md:h-60 w-full px-3 md:px-5"></div>
       <hr />
     </div>
   `,

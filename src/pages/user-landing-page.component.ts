@@ -38,15 +38,15 @@ import { PlayerLastGameStatsComponent } from './user-dashboard/player-last-game-
     <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       <!-- Header -->
       <header class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-lg">
-        <div class="container mx-auto px-4 py-6">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-4">
-              <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                <mat-icon class="!text-3xl !w-8 !h-8">dashboard</mat-icon>
+        <div class="container mx-auto px-3 md:px-4 py-4 md:py-6">
+          <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
+            <div class="flex items-center gap-3 md:gap-4">
+              <div class="w-10 h-10 md:w-12 md:h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                <mat-icon class="!text-2xl md:!text-3xl !w-6 md:!w-8 !h-6 md:!h-8">dashboard</mat-icon>
               </div>
               <div>
-                <h1 class="text-3xl font-bold">Mein Dashboard</h1>
-                <p class="text-blue-100 text-sm">Willkommen zurück, {{ getUserName() }}</p>
+                <h1 class="text-xl md:text-3xl font-bold">Mein Dashboard</h1>
+                <p class="text-blue-100 text-xs md:text-sm">Willkommen zurück, {{ getUserName() }}</p>
               </div>
             </div>
             <div class="flex items-center gap-2">
@@ -56,7 +56,7 @@ import { PlayerLastGameStatsComponent } from './user-dashboard/player-last-game-
               <mat-menu #menu="matMenu">
                 <button mat-menu-item disabled>
                   <mat-icon>email</mat-icon>
-                  <span class="text-sm">{{ session()?.user?.email }}</span>
+                  <span class="text-xs md:text-sm">{{ session()?.user?.email }}</span>
                 </button>
                 <mat-divider></mat-divider>
                 <button mat-menu-item (click)="logout()">
@@ -70,54 +70,56 @@ import { PlayerLastGameStatsComponent } from './user-dashboard/player-last-game-
       </header>
 
       <!-- Main Content -->
-      <main class="container mx-auto px-4 py-8">
+      <main class="container mx-auto px-3 md:px-4 py-4 md:py-8">
         <!-- Quick Actions -->
-        <section class="mb-8">
-          <h2 class="text-2xl font-bold text-gray-900 mb-4">Schnellzugriff</h2>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <section class="mb-6 md:mb-8">
+          <h2 class="text-lg md:text-2xl font-bold text-gray-900 mb-3 md:mb-4">Schnellzugriff</h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
             <a [routerLink]="[ROUTES.root, ROUTES.teams]" class="group">
-              <mat-card class="!p-4 text-center hover:shadow-xl transition-all duration-300 cursor-pointer group-hover:scale-105">
-                <mat-icon class="!text-4xl !w-12 !h-12 text-blue-600 mb-2 group-hover:text-blue-700">groups</mat-icon>
-                <h3 class="text-sm font-semibold text-gray-900">Meine Teams</h3>
+              <mat-card class="!p-3 md:!p-4 text-center hover:shadow-xl transition-all duration-300 cursor-pointer group-hover:scale-105">
+                <mat-icon class="!text-3xl md:!text-4xl !w-10 md:!w-12 !h-10 md:!h-12 text-blue-600 mb-1 md:mb-2 group-hover:text-blue-700">groups</mat-icon>
+                <h3 class="text-xs md:text-sm font-semibold text-gray-900">Meine Teams</h3>
               </mat-card>
             </a>
 
             <a [routerLink]="[ROUTES.root, ROUTES.games]" class="group">
-              <mat-card class="!p-4 text-center hover:shadow-xl transition-all duration-300 cursor-pointer group-hover:scale-105">
-                <mat-icon class="!text-4xl !w-12 !h-12 text-indigo-600 mb-2 group-hover:text-indigo-700">event</mat-icon>
-                <h3 class="text-sm font-semibold text-gray-900">Spiele</h3>
+              <mat-card class="!p-3 md:!p-4 text-center hover:shadow-xl transition-all duration-300 cursor-pointer group-hover:scale-105">
+                <mat-icon class="!text-3xl md:!text-4xl !w-10 md:!w-12 !h-10 md:!h-12 text-indigo-600 mb-1 md:mb-2 group-hover:text-indigo-700">event</mat-icon>
+                <h3 class="text-xs md:text-sm font-semibold text-gray-900">Spiele</h3>
               </mat-card>
             </a>
 
             <a [routerLink]="[ROUTES.root, ROUTES.dataentry]" class="group">
-              <mat-card class="!p-4 text-center hover:shadow-xl transition-all duration-300 cursor-pointer group-hover:scale-105">
-                <mat-icon class="!text-4xl !w-12 !h-12 text-purple-600 mb-2 group-hover:text-purple-700">input</mat-icon>
-                <h3 class="text-sm font-semibold text-gray-900">Daten erfassen</h3>
+              <mat-card class="!p-3 md:!p-4 text-center hover:shadow-xl transition-all duration-300 cursor-pointer group-hover:scale-105">
+                <mat-icon class="!text-3xl md:!text-4xl !w-10 md:!w-12 !h-10 md:!h-12 text-purple-600 mb-1 md:mb-2 group-hover:text-purple-700">input</mat-icon>
+                <h3 class="text-xs md:text-sm font-semibold text-gray-900">Daten erfassen</h3>
               </mat-card>
             </a>
 
             <a [routerLink]="[ROUTES.root, ROUTES.report]" class="group">
-              <mat-card class="!p-4 text-center hover:shadow-xl transition-all duration-300 cursor-pointer group-hover:scale-105">
-                <mat-icon class="!text-4xl !w-12 !h-12 text-pink-600 mb-2 group-hover:text-pink-700">assessment</mat-icon>
-                <h3 class="text-sm font-semibold text-gray-900">Reports</h3>
+              <mat-card class="!p-3 md:!p-4 text-center hover:shadow-xl transition-all duration-300 cursor-pointer group-hover:scale-105">
+                <mat-icon class="!text-3xl md:!text-4xl !w-10 md:!w-12 !h-10 md:!h-12 text-pink-600 mb-1 md:mb-2 group-hover:text-pink-700"
+                  >assessment</mat-icon
+                >
+                <h3 class="text-xs md:text-sm font-semibold text-gray-900">Reports</h3>
               </mat-card>
             </a>
           </div>
         </section>
 
         <!-- User Profile Card -->
-        <section class="mb-8">
-          <mat-card class="!p-6">
-            <div class="flex items-start justify-between mb-4">
-              <div class="flex items-center gap-4">
+        <section class="mb-6 md:mb-8">
+          <mat-card class="!p-4 md:!p-6">
+            <div class="flex items-start justify-between mb-3 md:mb-4">
+              <div class="flex items-center gap-3 md:gap-4">
                 <div
-                  class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-2xl font-bold"
+                  class="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white text-lg md:text-2xl font-bold"
                 >
                   {{ getUserInitials() }}
                 </div>
                 <div>
-                  <h3 class="text-xl font-bold text-gray-900">{{ getUserName() }}</h3>
-                  <p class="text-gray-600">{{ session()?.user?.email }}</p>
+                  <h3 class="text-base md:text-xl font-bold text-gray-900">{{ getUserName() }}</h3>
+                  <p class="text-xs md:text-base text-gray-600 truncate max-w-[200px] md:max-w-none">{{ session()?.user?.email }}</p>
                 </div>
               </div>
               <button mat-icon-button [matMenuTriggerFor]="profileMenu">
@@ -126,7 +128,7 @@ import { PlayerLastGameStatsComponent } from './user-dashboard/player-last-game-
               <mat-menu #profileMenu="matMenu">
                 <button mat-menu-item disabled>
                   <mat-icon>settings</mat-icon>
-                  <span>Einstellungen (Bald verfügbar)</span>
+                  <span class="text-xs md:text-sm">Einstellungen (Bald verfügbar)</span>
                 </button>
               </mat-menu>
             </div>
@@ -134,7 +136,7 @@ import { PlayerLastGameStatsComponent } from './user-dashboard/player-last-game-
         </section>
 
         <!-- Games and Stats Grid -->
-        <div class="grid lg:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
           <!-- Player Events -->
           <div>
             <app-player-event-list />
@@ -147,25 +149,27 @@ import { PlayerLastGameStatsComponent } from './user-dashboard/player-last-game-
         </div>
 
         <!-- Additional Info Section -->
-        <section class="mt-8">
-          <mat-card class="!p-6">
-            <div class="flex items-start gap-4">
+        <section class="mt-6 md:mt-8">
+          <mat-card class="!p-4 md:!p-6">
+            <div class="flex flex-col sm:flex-row items-start gap-3 md:gap-4">
               <div class="flex-shrink-0">
-                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <mat-icon class="text-blue-600">info</mat-icon>
+                <div class="w-10 h-10 md:w-12 md:h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <mat-icon class="text-blue-600 !text-xl md:!text-2xl">info</mat-icon>
                 </div>
               </div>
-              <div class="flex-1">
-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Erste Schritte</h3>
-                <p class="text-gray-600 mb-4">Beginne mit der Erfassung deiner Spieldaten, um detaillierte Statistiken und Analysen zu erhalten.</p>
-                <div class="flex gap-2">
-                  <a [routerLink]="[ROUTES.root, ROUTES.dataentry]" mat-raised-button color="primary">
+              <div class="flex-1 w-full">
+                <h3 class="text-base md:text-lg font-semibold text-gray-900 mb-2">Erste Schritte</h3>
+                <p class="text-sm md:text-base text-gray-600 mb-3 md:mb-4">
+                  Beginne mit der Erfassung deiner Spieldaten, um detaillierte Statistiken und Analysen zu erhalten.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-2">
+                  <a [routerLink]="[ROUTES.root, ROUTES.dataentry]" mat-raised-button color="primary" class="w-full sm:w-auto">
                     <mat-icon class="mr-2">add</mat-icon>
-                    Daten erfassen
+                    <span class="text-sm md:text-base">Daten erfassen</span>
                   </a>
-                  <a [routerLink]="[ROUTES.root, ROUTES.teams, 'create']" mat-stroked-button>
+                  <a [routerLink]="[ROUTES.root, ROUTES.teams, 'create']" mat-stroked-button class="w-full sm:w-auto">
                     <mat-icon class="mr-2">group_add</mat-icon>
-                    Team erstellen
+                    <span class="text-sm md:text-base">Team erstellen</span>
                   </a>
                 </div>
               </div>

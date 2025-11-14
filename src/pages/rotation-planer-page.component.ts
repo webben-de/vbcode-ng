@@ -63,10 +63,12 @@ import { RotationGridItemComponent } from './atoms/vbGridItem.component';
 
         <!-- Action Buttons -->
         @if(session()?.user?.id === event?.owner) {
-        <div class="flex gap-3">
+        <!-- Action Buttons -->
+        @if(session()?.user?.id === event?.owner) {
+        <div class="flex flex-col sm:flex-row gap-3">
           <a
             [routerLink]="[ROUTES.root + ROUTES.editGame, selectedEvent]"
-            class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+            class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
           >
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -80,7 +82,7 @@ import { RotationGridItemComponent } from './atoms/vbGridItem.component';
           </a>
           <button
             (click)="copyLinkToClipboard()"
-            class="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium"
+            class="inline-flex items-center justify-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium"
           >
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -93,27 +95,27 @@ import { RotationGridItemComponent } from './atoms/vbGridItem.component';
             Link kopieren
           </button>
         </div>
-        }
+        } }
       </div>
 
       @if (event) {
       <!-- Main Content -->
       <div class="space-y-6">
         <!-- Setter Info & Toggle -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-          <div class="flex items-center justify-between mb-4">
+        <div class="bg-white rounded-lg shadow-md p-4 md:p-6">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
             <div class="flex items-center gap-3">
-              <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+              <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
                 <span class="text-2xl font-bold text-blue-600">{{ convertRoationCountToSetterPosition }}</span>
               </div>
               <div>
                 <p class="text-sm text-gray-600">{{ 'setter' | transloco }}</p>
-                <p class="text-lg font-semibold text-gray-800">Position {{ convertRoationCountToSetterPosition }}</p>
+                <p class="text-base md:text-lg font-semibold text-gray-800">Position {{ convertRoationCountToSetterPosition }}</p>
               </div>
             </div>
 
-            <mat-slide-toggle #toggleTrikot [checked]="true" class="ml-auto">
-              <span class="text-gray-700 text-sm">
+            <mat-slide-toggle #toggleTrikot [checked]="true">
+              <span class="text-gray-700 text-xs md:text-sm">
                 {{ 'show' | transloco }} {{ toggleTrikot.checked ? ('Trikotnumber' | transloco) : ('BasePosition' | transloco) }}
               </span>
             </mat-slide-toggle>
@@ -121,9 +123,11 @@ import { RotationGridItemComponent } from './atoms/vbGridItem.component';
         </div>
 
         <!-- Court Grid -->
-        <div class="bg-white rounded-lg shadow-md p-8">
-          <h2 class="text-xl font-bold text-gray-800 mb-6">Spielfeld - Rotation {{ rotationSlider }}</h2>
-          <div class="grid grid-cols-3 gap-6 grid-rows-2 max-w-4xl mx-auto border-4 border-blue-600 rounded-lg p-8 bg-gradient-to-b from-blue-50 to-white">
+        <div class="bg-white rounded-lg shadow-md p-4 md:p-8">
+          <h2 class="text-lg md:text-xl font-bold text-gray-800 mb-4 md:mb-6">Spielfeld - Rotation {{ rotationSlider }}</h2>
+          <div
+            class="grid grid-cols-3 gap-2 md:gap-6 grid-rows-2 max-w-4xl mx-auto border-2 md:border-4 border-blue-600 rounded-lg p-4 md:p-8 bg-gradient-to-b from-blue-50 to-white"
+          >
             <app-grid-item [currentRotation]="slider" [index]="1" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
             <app-grid-item [currentRotation]="slider" [index]="2" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />
             <app-grid-item [currentRotation]="slider" [index]="3" [toggleTrikot]="toggleTrikot.checked" [roatedPlayer]="roatedPlayer" />

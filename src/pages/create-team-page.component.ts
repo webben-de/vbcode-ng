@@ -41,47 +41,55 @@ import type { PlayerDTO } from '../types/PlayerDTO';
     OnlyAvailablePipe,
   ],
   template: `
-    <div class="flex flex-col items-start gap-6 h-full p-8 max-w-6xl mx-auto">
+    <div class="flex flex-col items-start gap-4 md:gap-6 h-full p-4 md:p-8 max-w-6xl mx-auto w-full">
       <!-- Header -->
-      <div class="w-full flex justify-between items-center">
-        <h2 class="text-2xl font-bold">
+      <div class="w-full flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <h2 class="text-xl md:text-2xl font-bold">
           {{ isEditMode ? ('edit-team' | transloco) : ('create-a-new-team' | transloco) }}
         </h2>
-        <div class="flex gap-2">
+        <div class="flex flex-col sm:flex-row gap-2">
           @if (isEditMode) {
-          <button mat-button color="warn" (click)="deleteTeam()" [disabled]="isSaving()">
+          <button mat-button color="warn" (click)="deleteTeam()" [disabled]="isSaving()" class="w-full sm:w-auto">
             <mat-icon>delete</mat-icon>
-            {{ 'delete-team' | transloco }}
+            <span class="hidden sm:inline">{{ 'delete-team' | transloco }}</span>
           </button>
           }
-          <a [routerLink]="[ROUTES.root, ROUTES.teams]" mat-button>
+          <a [routerLink]="[ROUTES.root, ROUTES.teams]" mat-button class="w-full sm:w-auto">
             <mat-icon>arrow_back</mat-icon>
-            {{ 'back-to-teams' | transloco }}
+            <span class="hidden sm:inline">{{ 'back-to-teams' | transloco }}</span>
           </a>
         </div>
       </div>
 
       <!-- Team Name Form -->
+      <!-- Team Details Card -->
       <mat-card class="w-full">
         <mat-card-content>
           <form [formGroup]="teamFormGroup" (ngSubmit)="saveTeam()" class="flex flex-col gap-4">
             <mat-form-field class="w-full">
               <mat-label>{{ 'team-name' | transloco }}</mat-label>
-              <input matInput placeholder="{{ 'enter-team-name' | transloco }}" formControlName="name" required />
-              @if (teamFormGroup.get('name')?.hasError('required') && teamFormGroup.get('name')?.touched) {
+              <input matInput formControlName="name" [placeholder]="'enter-team-name' | transloco" />
+              @if (teamFormGroup.get('name')?.hasError('required')) {
               <mat-error>{{ 'team-name-required' | transloco }}</mat-error>
               }
             </mat-form-field>
 
-            <div class="flex gap-2">
-              <button mat-raised-button color="primary" type="submit" [disabled]="teamFormGroup.invalid || isSaving()">
+            <mat-form-field class="w-full">
+              <mat-label>{{ 'description' | transloco }}</mat-label>
+              <textarea matInput formControlName="description" rows="3" [placeholder]="'enter-team-description' | transloco"></textarea>
+            </mat-form-field>
+
+            <div class="flex flex-col sm:flex-row gap-2 sm:justify-end">
+              <button mat-raised-button color="primary" type="submit" [disabled]="teamFormGroup.invalid || isSaving()" class="w-full sm:w-auto">
                 @if (isSaving()) {
-                <mat-icon>hourglass_empty</mat-icon>
+                <mat-icon>
+                  <mat-spinner diameter="20"></mat-spinner>
+                </mat-icon>
                 }
                 {{ isEditMode ? ('save-changes' | transloco) : ('create-team' | transloco) }}
               </button>
               @if (isEditMode) {
-              <button mat-button type="button" (click)="resetForm()" [disabled]="isSaving()">
+              <button mat-button type="button" (click)="resetForm()" [disabled]="isSaving()" class="w-full sm:w-auto">
                 {{ 'reset' | transloco }}
               </button>
               }
@@ -94,21 +102,21 @@ import type { PlayerDTO } from '../types/PlayerDTO';
       @if (isEditMode) {
       <mat-card class="w-full">
         <mat-card-content>
-          <h3 class="text-xl font-semibold mb-4">{{ 'team-players' | transloco }}</h3>
+          <h3 class="text-lg md:text-xl font-semibold mb-4">{{ 'team-players' | transloco }}</h3>
 
           <!-- Players Table -->
           @if (isLoadingPlayers()) {
-          <div class="flex justify-center p-8">
+          <div class="flex justify-center p-4 md:p-8">
             <mat-spinner diameter="40"></mat-spinner>
           </div>
           } @else if (players.length === 0) {
-          <div class="text-center p-8 text-gray-500">
-            <mat-icon class="text-4xl mb-2">people_outline</mat-icon>
-            <p>{{ 'no-players-yet' | transloco }}</p>
+          <div class="text-center p-4 md:p-8 text-gray-500">
+            <mat-icon class="text-3xl md:text-4xl mb-2">people_outline</mat-icon>
+            <p class="text-sm md:text-base">{{ 'no-players-yet' | transloco }}</p>
           </div>
           } @else {
           <div class="overflow-x-auto">
-            <table mat-table [dataSource]="players" class="w-full">
+            <table mat-table [dataSource]="players" class="w-full min-w-[500px]">
               <!-- Name Column -->
               <ng-container matColumnDef="name">
                 <th mat-header-cell *matHeaderCellDef>{{ 'name' | transloco }}</th>
@@ -173,42 +181,38 @@ import type { PlayerDTO } from '../types/PlayerDTO';
           </div>
           }
           <!-- Add Players Section -->
-          <div class="mt-6 pt-6 border-t border-gray-200">
-            <h4 class="text-lg font-medium mb-4">{{ 'add-players' | transloco }}</h4>
+          <!-- Add Player Section -->
+          <div class="mt-4 md:mt-6 p-3 md:p-4 bg-gray-50 rounded-lg">
+            <h4 class="text-base md:text-lg font-semibold mb-3 md:mb-4">{{ 'add-player' | transloco }}</h4>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- Add Existing Player -->
-              <div class="flex flex-col gap-2">
-                <label class="text-sm font-medium text-gray-700">{{ 'add-existing-player' | transloco }}</label>
-                <mat-form-field class="w-full">
-                  <mat-label>{{ 'select-player' | transloco }}</mat-label>
-                  <input type="text" matInput [formControl]="existingPlayerControl" [matAutocomplete]="auto" placeholder="{{ 'search-player' | transloco }}" />
-                  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="addExistingPlayer($event)" [displayWith]="displayPlayerName">
-                    @for (player of (availablePlayers | async | onlyAvailable: players); track player.id) {
-                    <mat-option [value]="player">
-                      {{ player.name }}
-                      @if (player.trikot) {
-                      <span class="text-gray-500">(#{{ player.trikot }})</span>
-                      }
-                    </mat-option>
-                    }
-                  </mat-autocomplete>
-                </mat-form-field>
-              </div>
+            <!-- Add Existing Player -->
+            <div class="mb-4">
+              <h5 class="text-xs md:text-sm font-medium mb-2">{{ 'add-existing-player' | transloco }}</h5>
+              <mat-form-field class="w-full">
+                <mat-label>{{ 'search-player' | transloco }}</mat-label>
+                <input matInput [formControl]="existingPlayerControl" [matAutocomplete]="auto" [placeholder]="'type-to-search' | transloco" />
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayPlayerName" (optionSelected)="onPlayerSelected($event)">
+                  @for (player of (availablePlayers | async | onlyAvailable: (players)); track player.id) {
+                  <mat-option [value]="player"> {{ player.name }} (#{{ player.trikot }}) </mat-option>
+                  }
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
 
-              <!-- Create New Player -->
-              <div class="flex flex-col gap-2">
-                <label class="text-sm font-medium text-gray-700">{{ 'create-new-player' | transloco }}</label>
-                <form [formGroup]="newPlayerFormGroup" (ngSubmit)="createAndAddPlayer()" class="flex gap-2">
-                  <mat-form-field class="flex-1">
-                    <mat-label>{{ 'player-name' | transloco }}</mat-label>
-                    <input matInput formControlName="name" placeholder="{{ 'enter-name' | transloco }}" />
+            <!-- Add New Player -->
+            <div>
+              <h5 class="text-xs md:text-sm font-medium mb-2">{{ 'create-new-player' | transloco }}</h5>
+              <div class="flex gap-2 items-start">
+                <form [formGroup]="newPlayerFormGroup" (ngSubmit)="addNewPlayer()" class="flex flex-col sm:flex-row gap-2 items-stretch sm:items-start w-full">
+                  <mat-form-field class="flex-1 w-full">
+                    <mat-label>{{ 'name' | transloco }}</mat-label>
+                    <input matInput formControlName="name" [placeholder]="'player-name' | transloco" />
                     @if (newPlayerFormGroup.get('name')?.hasError('required') && newPlayerFormGroup.get('name')?.touched) {
-                    <mat-error>{{ 'name-required' | transloco }}</mat-error>
+                    <mat-error>{{ 'required' | transloco }}</mat-error>
                     }
                   </mat-form-field>
 
-                  <mat-form-field class="w-24">
+                  <mat-form-field class="w-full sm:w-24">
                     <mat-label>{{ 'jersey' | transloco }}</mat-label>
                     <input matInput type="number" formControlName="trikot" placeholder="#" />
                     @if (newPlayerFormGroup.get('trikot')?.hasError('required') && newPlayerFormGroup.get('trikot')?.touched) {
@@ -216,8 +220,15 @@ import type { PlayerDTO } from '../types/PlayerDTO';
                     }
                   </mat-form-field>
 
-                  <button mat-raised-button color="accent" type="submit" [disabled]="newPlayerFormGroup.invalid || isSaving()" class="self-start mt-1">
+                  <button
+                    mat-raised-button
+                    color="accent"
+                    type="submit"
+                    [disabled]="newPlayerFormGroup.invalid || isSaving()"
+                    class="self-stretch sm:self-start sm:mt-1 w-full sm:w-auto"
+                  >
                     <mat-icon>person_add</mat-icon>
+                    <span class="sm:hidden ml-2">{{ 'add-player' | transloco }}</span>
                   </button>
                 </form>
               </div>
@@ -238,6 +249,53 @@ import type { PlayerDTO } from '../types/PlayerDTO';
   ],
 })
 export class CreateTeamPageComponent implements OnInit {
+  async addNewPlayer() {
+    if (this.newPlayerFormGroup.invalid) return;
+    const { name, trikot } = this.newPlayerFormGroup.value;
+    try {
+      this.isSaving.set(true);
+      // Ensure team.id is a string
+      const teamId: string = typeof this.team.id === 'string' ? this.team.id : (this.team.id ? String(this.team.id) : '');
+      if (!teamId) throw new Error('Team ID is missing');
+      const response = await this.playerService.createPlayer(teamId, { name, trikot });
+      // Type guard for response.data
+      type TeamResponse = { players: string[] };
+      let newPlayerId: string | undefined;
+      if (response && response.data) {
+        const teamData = Array.isArray(response.data) ? response.data[0] as TeamResponse : response.data as TeamResponse;
+        if (teamData && Array.isArray(teamData.players) && teamData.players.length > 0) {
+          newPlayerId = teamData.players[teamData.players.length - 1];
+        }
+      }
+      if (newPlayerId) {
+        this.team.players = [...(this.team.players || []), newPlayerId];
+        this.teamFormGroup.patchValue({ players: this.team.players });
+        await this.teamsService.createTeam(this.team);
+        await this.loadPlayers();
+        this.snack.open(`${name} hinzugefügt`, 'Close', { duration: 2000 });
+        this.newPlayerFormGroup.reset();
+      } else {
+        this.snack.open('Fehler beim Hinzufügen', 'Close', { duration: 3000 });
+      }
+    } catch (error) {
+      this.snack.open('Fehler beim Hinzufügen', 'Close', { duration: 3000 });
+      console.error('Error adding player:', error);
+    } finally {
+      this.isSaving.set(false);
+    }
+  }
+
+  onPlayerSelected(event: MatAutocompleteSelectedEvent) {
+    const player = event.option.value as PlayerDTO;
+    if (!player || !player.id) return;
+    if (this.team.players.includes(player.id)) return;
+    this.team.players = [...(this.team.players || []), player.id];
+    this.teamFormGroup.patchValue({ players: this.team.players });
+    this.teamsService.createTeam(this.team).then(() => {
+      this.loadPlayers();
+      this.snack.open(`${player.name} hinzugefügt`, 'Close', { duration: 2000 });
+    });
+  }
   // Services
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);

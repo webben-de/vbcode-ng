@@ -43,8 +43,8 @@ import { SingleRoationFormControlComponent } from './atoms/single-roation-form-c
     AttendeesSelectFormControlComponent,
   ],
   template: `
-    <div class="flex flex-col items-start gap-8 h-full p-8">
-      <span class="text-2xl font-bold">
+    <div class="flex flex-col items-start gap-4 md:gap-8 h-full p-4 md:p-8 max-w-4xl mx-auto w-full">
+      <span class="text-xl md:text-2xl font-bold">
         @if (!createGameForm.controls.id.value) {
         {{ 'create-a-new-game' | transloco }}
         }@else {
@@ -57,8 +57,8 @@ import { SingleRoationFormControlComponent } from './atoms/single-roation-form-c
           <mat-label>{{ 'title' | transloco }}</mat-label>
           <input matInput formControlName="title" />
         </mat-form-field>
-        <div class="flex justify-between">
-          <mat-form-field class="w-1/3">
+        <div class="flex flex-col md:flex-row md:justify-between gap-4 md:gap-0">
+          <mat-form-field class="w-full md:w-1/3">
             <mat-label>{{ 'visibility' | transloco }}</mat-label>
             <mat-select formControlName="visibility">
               <mat-option *ngFor="let item of ['Private', 'Public']" [value]="item">
@@ -66,7 +66,7 @@ import { SingleRoationFormControlComponent } from './atoms/single-roation-form-c
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field class="w-1/2">
+          <mat-form-field class="w-full md:w-1/2">
             <mat-label>{{ 'date' | transloco }}</mat-label>
             <input matInput type="date" formControlName="date" />
           </mat-form-field>
@@ -94,9 +94,9 @@ import { SingleRoationFormControlComponent } from './atoms/single-roation-form-c
         <!-- -->
         @if (homeTeam.value) {
 
-        <span class="text-md">{{ 'start-rotation' | transloco }}</span>
-        <p>Bezieht sich nur auf Satz 1 solange diese noch nicht Satzweise abgepasst werden kann</p>
-        <div class="grid grid-cols-3">
+        <span class="text-sm md:text-md font-medium">{{ 'start-rotation' | transloco }}</span>
+        <p class="text-xs md:text-sm text-gray-600">Bezieht sich nur auf Satz 1 solange diese noch nicht Satzweise abgepasst werden kann</p>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
           @for (index of [4,3,2,5,6,1]; track $index) {
           <app-single-roation-form-control
             [playerList]="playerList"
@@ -107,7 +107,7 @@ import { SingleRoationFormControlComponent } from './atoms/single-roation-form-c
           }
         </div>
         }
-        <hr class="my-2" />
+        <hr class="my-4" />
         <div class="">
           <mat-form-field class="w-full">
             <mat-label>{{ 'away-team' | transloco }}</mat-label>
@@ -122,8 +122,8 @@ import { SingleRoationFormControlComponent } from './atoms/single-roation-form-c
 
           @if (awayTeam.value) {
 
-          <span class="text-md">{{ 'start-rotation' | transloco }}</span>
-          <div class="grid grid-cols-3">
+          <span class="text-sm md:text-md font-medium">{{ 'start-rotation' | transloco }}</span>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
             @for (index of [4,3,2,5,6,1]; track $index) {
             <app-single-roation-form-control
               [playerList]="playerList"
@@ -141,29 +141,29 @@ import { SingleRoationFormControlComponent } from './atoms/single-roation-form-c
         </label>
         @if (true || createGameForm.controls.result_home.value || createGameForm.controls.result_away.value) {
 
-        <div class="flex gap-2 w-full">
-          <div class="w-1/2">
+        <div class="flex flex-col md:flex-row gap-2 md:gap-4 w-full">
+          <div class="w-full md:w-1/2">
             <mat-form-field class="w-full">
               <mat-label>{{ 'result-home' | transloco }} </mat-label>
               <input matInput type="number" formControlName="result_home" />
             </mat-form-field>
           </div>
-          <div class="w-1/2">
+          <div class="w-full md:w-1/2">
             <mat-form-field class="w-full">
               <mat-label>{{ 'result-away' | transloco }} </mat-label>
               <input matInput type="number" formControlName="result_away" />
             </mat-form-field>
           </div>
         </div>
-        <div class="flex flex-col">
+        <div class="flex flex-col gap-2">
           <input
             type="text"
             placeholder="Enter link here"
-            class="input input-bordered input-primary w-full max-w-xs"
+            class="input input-bordered input-primary w-full"
             (keydown.enter)="addMediaLink($event, inMedia)"
             #inMedia
           />
-          <ul class="flex gap-2 h-8 my-4">
+          <ul class="flex flex-wrap gap-2 my-2">
             @for (item of this.createGameForm.controls.media_links.value; track $index) {
             <li class="flex">
               <a class="btn btn-xs w-12 h-12" [href]="item" target="_blank">
@@ -190,18 +190,18 @@ import { SingleRoationFormControlComponent } from './atoms/single-roation-form-c
           </ul>
         </div>
         }
-        <button class="btn" [type]="'submit'">{{ 'submit' | transloco }}</button>
+        <button class="btn w-full md:w-auto" [type]="'submit'">{{ 'submit' | transloco }}</button>
       </form>
-      <hr />
-      <p class="flex flex-col  gap-2">
-        <a class="btn btn-outline btn-secondary" [routerLink]="[ROUTES.root, ROUTES.games]">{{ 'see-all-your-games-here' | transloco }}</a>
+      <hr class="my-4" />
+      <div class="flex flex-col gap-2 w-full">
+        <a class="btn btn-outline btn-secondary w-full md:w-auto" [routerLink]="[ROUTES.root, ROUTES.games]">{{ 'see-all-your-games-here' | transloco }}</a>
         @if (createGameForm.controls.id.value) {
 
-        <a class="btn btn-outline btn-secondary" [routerLink]="[ROUTES.root, ROUTES.roationPlaner, createGameForm.controls.id.value]">{{
+        <a class="btn btn-outline btn-secondary w-full md:w-auto" [routerLink]="[ROUTES.root, ROUTES.roationPlaner, createGameForm.controls.id.value]">{{
           'See Rotation Preview' | transloco
         }}</a>
 
-        <button class="btn btn-outline btn-error" type="button" (click)="deleteGame()">
+        <button class="btn btn-outline btn-error w-full md:w-auto" type="button" (click)="deleteGame()">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               stroke-linecap="round"
@@ -213,7 +213,7 @@ import { SingleRoationFormControlComponent } from './atoms/single-roation-form-c
           {{ 'delete-game' | transloco }}
         </button>
         }
-      </p>
+      </div>
     </div>
   `,
 })

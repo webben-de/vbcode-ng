@@ -62,13 +62,13 @@ type abbMap = {
     SortByPlayerRolePipe,
   ],
   template: `
-    <div class="flex flex-col p-5">
-      <span class="text-xl">{{ 'enter-data' | transloco }}</span>
+    <div class="flex flex-col p-4 md:p-6 max-w-7xl mx-auto w-full">
+      <span class="text-lg md:text-xl font-bold mb-4">{{ 'enter-data' | transloco }}</span>
       @let a = this.actions; @if (a && a[a.length - 1] ) {
 
-      <p class="flex gap-4">
-        {{ 'last-action' | transloco }}:
-        <span class="flex gap-4">
+      <p class="flex flex-col sm:flex-row sm:gap-4 gap-2 text-sm md:text-base mb-4">
+        <span class="font-semibold">{{ 'last-action' | transloco }}:</span>
+        <span class="flex flex-wrap gap-2 sm:gap-4">
           <span>
             {{ a[a.length - 1].player_id.name }}
           </span>
