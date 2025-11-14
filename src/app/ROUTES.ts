@@ -11,4 +11,6 @@ export enum SVB_APP_ROUTES {
   login = 'login',
   root = '/',
   user = 'user',
+  playerProgress = 'player-progress',
+  playerDetailStats = 'player-stats',
 }

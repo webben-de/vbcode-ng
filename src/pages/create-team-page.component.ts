@@ -169,9 +169,19 @@ import type { PlayerDTO } from '../types/PlayerDTO';
               <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef></th>
                 <td mat-cell *matCellDef="let player">
-                  <button mat-icon-button color="warn" (click)="removePlayer(player)" [disabled]="isSaving()" [matTooltip]="'remove-player' | transloco">
-                    <mat-icon>delete</mat-icon>
-                  </button>
+                  <div class="flex gap-1">
+                    <a
+                      mat-icon-button
+                      [routerLink]="[ROUTES.root, ROUTES.playerDetailStats, player.id]"
+                      color="primary"
+                      [matTooltip]="'view-player-stats' | transloco"
+                    >
+                      <mat-icon>analytics</mat-icon>
+                    </a>
+                    <button mat-icon-button color="warn" (click)="removePlayer(player)" [disabled]="isSaving()" [matTooltip]="'remove-player' | transloco">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
                 </td>
               </ng-container>
 

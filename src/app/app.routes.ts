@@ -140,6 +140,16 @@ export const appRoutes: Route[] = [
     loadComponent: () => import('../pages/data-entry-page.component').then((mod) => mod.DataEntryComponent),
     canActivate: [authenticationGuard()],
   },
+  {
+    path: SVB_APP_ROUTES.playerProgress,
+    loadComponent: () => import('../pages/player-progress-page.component').then((mod) => mod.PlayerProgressPageComponent),
+    canActivate: [authenticationGuard()],
+  },
+  {
+    path: `${SVB_APP_ROUTES.playerDetailStats}/:id`,
+    loadComponent: () => import('../pages/player-detail-stats-page.component').then((mod) => mod.PlayerDetailStatsPageComponent),
+    canActivate: [authenticationGuard()],
+  },
   { path: SVB_APP_ROUTES.login, component: AuthComponent },
   {
     path: SVB_APP_ROUTES.user,

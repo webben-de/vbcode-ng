@@ -64,7 +64,11 @@ type abbMap = {
   template: `
     <div class="flex flex-col p-4 md:p-6 max-w-7xl mx-auto w-full">
       <span class="text-lg md:text-xl font-bold mb-4">{{ 'enter-data' | transloco }}</span>
-      @let a = this.actions; @if (a && a[a.length - 1] ) {
+      @if (event) {
+      <div class="mb-4 p-3 rounded-lg" [class.bg-blue-50]="event.event_type === 'game'" [class.bg-green-50]="event.event_type === 'training'">
+        <span class="text-sm font-semibold"> {{ event.event_type === 'training' ? ('training' | transloco) : ('game' | transloco) }}: {{ event.title }} </span>
+      </div>
+      } @let a = this.actions; @if (a && a[a.length - 1] ) {
 
       <p class="flex flex-col sm:flex-row sm:gap-4 gap-2 text-sm md:text-base mb-4">
         <span class="font-semibold">{{ 'last-action' | transloco }}:</span>

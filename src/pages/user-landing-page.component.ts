@@ -94,6 +94,15 @@ import { PlayerLastGameStatsComponent } from './user-dashboard/player-last-game-
               </mat-card>
             </a>
 
+            <a [routerLink]="[ROUTES.root, ROUTES.playerProgress]" class="group">
+              <mat-card class="!p-3 md:!p-4 text-center hover:shadow-xl transition-all duration-300 cursor-pointer group-hover:scale-105">
+                <mat-icon class="!text-3xl md:!text-4xl !w-10 md:!w-12 !h-10 md:!h-12 text-green-600 mb-1 md:mb-2 group-hover:text-green-700"
+                  >trending_up</mat-icon
+                >
+                <h3 class="text-xs md:text-sm font-semibold text-gray-900">{{ 'player-progress' | transloco }}</h3>
+              </mat-card>
+            </a>
+
             <a [routerLink]="[ROUTES.root, ROUTES.report]" class="group">
               <mat-card class="!p-3 md:!p-4 text-center hover:shadow-xl transition-all duration-300 cursor-pointer group-hover:scale-105">
                 <mat-icon class="!text-3xl md:!text-4xl !w-10 md:!w-12 !h-10 md:!h-12 text-pink-600 mb-1 md:mb-2 group-hover:text-pink-700"

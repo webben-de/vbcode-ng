@@ -3,6 +3,7 @@ import type { TeamDTO } from '../services/teams.service';
 export interface createEventDTO {
   attendees: string[];
   date: Date;
+  event_type?: 'game' | 'training';
   result_home: number;
   media_links: string[];
   result_away: number;
@@ -23,6 +24,7 @@ export interface EventResponse {
   id: string;
   media_links: string[];
   attendees: string[];
+  event_type: 'game' | 'training';
   away_team: TeamDTO;
   away_team_start_rotation: string[];
   setpoint_results_home: number | null;

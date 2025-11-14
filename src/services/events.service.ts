@@ -47,6 +47,27 @@ export class EventsService {
     return (await this.supabase.from('events').select('*, home_team (*), away_team (*)')).data as EventResponse[];
   }
   /**
+   * Get all training sessions
+   */
+  async getTrainingSessions() {
+    return (await this.supabase.from('events').select('*, home_team (*)').eq('event_type', 'training')).data as EventResponse[];
+  }
+  /**
+   * Get all games (non-training events)
+   */
+  async getGames() {
+    return (await this.supabase.from('events').select('*, home_team (*), away_team (*)').eq('event_type', 'game')).data as EventResponse[];
+  }
+  /**
+   * Get events by type
+   */
+  async getEventsByType(eventType: 'game' | 'training') {
+    if (eventType === 'training') {
+      return this.getTrainingSessions();
+    }
+    return this.getGames();
+  }
+  /**
    *
    * @param opts
    * @returns

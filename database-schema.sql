@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS events (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     title TEXT NOT NULL,
     date TIMESTAMPTZ NOT NULL,
+    event_type TEXT CHECK (event_type IN ('game', 'training')) DEFAULT 'game',
     owner UUID REFERENCES auth.users(id) ON DELETE CASCADE,
     home_team UUID REFERENCES teams(id) ON DELETE SET NULL,
     away_team UUID REFERENCES teams(id) ON DELETE SET NULL,
@@ -90,6 +91,7 @@ CREATE INDEX IF NOT EXISTS idx_teams_players ON teams USING GIN(players);
 -- Events indexes
 CREATE INDEX IF NOT EXISTS idx_events_owner ON events(owner);
 CREATE INDEX IF NOT EXISTS idx_events_date ON events(date DESC);
+CREATE INDEX IF NOT EXISTS idx_events_event_type ON events(event_type);
 CREATE INDEX IF NOT EXISTS idx_events_home_team ON events(home_team);
 CREATE INDEX IF NOT EXISTS idx_events_away_team ON events(away_team);
 CREATE INDEX IF NOT EXISTS idx_events_attendees ON events USING GIN(attendees);
@@ -114,12 +116,13 @@ CREATE INDEX IF NOT EXISTS idx_actions_game_kind_grade ON actions(game_id, kind,
 COMMENT ON TABLE profiles IS 'User profiles linked to Supabase authentication';
 COMMENT ON TABLE players IS 'Players in the volleyball system, can be linked to user accounts';
 COMMENT ON TABLE teams IS 'Volleyball teams with their player rosters';
-COMMENT ON TABLE events IS 'Games/events/matches with teams, results, and metadata';
-COMMENT ON TABLE actions IS 'Individual game actions for statistics tracking (serves, attacks, blocks, etc.)';
+COMMENT ON TABLE events IS 'Games/events/matches and training sessions with teams, results, and metadata';
+COMMENT ON TABLE actions IS 'Individual game/training actions for statistics tracking (serves, attacks, blocks, etc.)';
 
 COMMENT ON COLUMN players.trikot IS 'Jersey/shirt number';
 COMMENT ON COLUMN players.roles IS 'Player roles/positions on the court';
 
+COMMENT ON COLUMN events.event_type IS 'Type of event: game (competitive match) or training (practice session)';
 COMMENT ON COLUMN events.home_team_start_rotation IS 'Starting rotation configuration for home team (JSON object with position mappings)';
 COMMENT ON COLUMN events.away_team_start_rotation IS 'Starting rotation configuration for away team (array of player IDs)';
 COMMENT ON COLUMN events.attendees IS 'Array of player IDs who attended the event';

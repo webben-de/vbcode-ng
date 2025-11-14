@@ -1,4 +1,3 @@
-
 import { Component, type OnInit, inject } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -39,17 +38,20 @@ import { SVB_APP_ROUTES } from '../app/ROUTES';
     TranslocoModule,
     SingleRoationFormControlComponent,
     PristineEventPipe,
-    AttendeesSelectFormControlComponent
-],
+    AttendeesSelectFormControlComponent,
+  ],
   template: `
     <div class="flex flex-col items-start gap-4 md:gap-8 h-full p-4 md:p-8 max-w-4xl mx-auto w-full">
       <span class="text-xl md:text-2xl font-bold">
-        @if (!createGameForm.controls.id.value) {
-          {{ 'create-a-new-game' | transloco }}
-          }@else {
-          {{ 'edit-a-game' | transloco }}
-    
-        }
+        @if (!createGameForm.controls.id.value) { @if (createGameForm.controls.event_type.value === 'training') {
+        {{ 'create-a-new-training' | transloco }}
+        } @else {
+        {{ 'create-a-new-game' | transloco }}
+        } }@else { @if (createGameForm.controls.event_type.value === 'training') {
+        {{ 'edit-a-training' | transloco }}
+        } @else {
+        {{ 'edit-a-game' | transloco }}
+        } }
       </span>
       <form [formGroup]="createGameForm" #form (submit)="createGame()" class="flex flex-col w-full">
         <mat-form-field class="w-full">
@@ -58,31 +60,39 @@ import { SVB_APP_ROUTES } from '../app/ROUTES';
         </mat-form-field>
         <div class="flex flex-col md:flex-row md:justify-between gap-4 md:gap-0">
           <mat-form-field class="w-full md:w-1/3">
+            <mat-label>{{ 'event-type' | transloco }}</mat-label>
+            <mat-select formControlName="event_type">
+              <mat-option value="game">{{ 'game' | transloco }}</mat-option>
+              <mat-option value="training">{{ 'training' | transloco }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="w-full md:w-1/3">
             <mat-label>{{ 'visibility' | transloco }}</mat-label>
             <mat-select formControlName="visibility">
               @for (item of ['Private', 'Public']; track item) {
-                <mat-option [value]="item">
-                  {{ item }}
-                </mat-option>
+              <mat-option [value]="item">
+                {{ item }}
+              </mat-option>
               }
             </mat-select>
           </mat-form-field>
-          <mat-form-field class="w-full md:w-1/2">
+          <mat-form-field class="w-full md:w-1/3">
             <mat-label>{{ 'date' | transloco }}</mat-label>
             <input matInput type="date" formControlName="date" />
           </mat-form-field>
         </div>
         <!-- ALL ATTENDEES AVAILABLE FROM THE (HOME) TEAM -->
-    
+
+        @if (createGameForm.controls.event_type.value === 'game') {
         <hr />
         <span class="text-lg">{{ 'home' | transloco }}</span>
         <mat-form-field class="w-full">
           <mat-label>{{ 'home-team' | transloco }}</mat-label>
           <mat-select formControlName="home_team" (valueChange)="OnHomeTeamChange($event)" #homeTeam>
             @for (item of teams; track $index) {
-              <mat-option [value]="item.id">
-                {{ item.name }}
-              </mat-option>
+            <mat-option [value]="item.id">
+              {{ item.name }}
+            </mat-option>
             }
           </mat-select>
           <mat-hint>
@@ -90,23 +100,23 @@ import { SVB_APP_ROUTES } from '../app/ROUTES';
           </mat-hint>
         </mat-form-field>
         @if (createGameForm.controls.home_team.valid) {
-          <app-attendees-select-form-control [playerList]="playerList" [attendees]="createGameForm.controls.attendees" />
+        <app-attendees-select-form-control [playerList]="playerList" [attendees]="createGameForm.controls.attendees" />
         }
         <!-- -->
         @if (homeTeam.value) {
-    
-          <span class="text-sm md:text-md font-medium">{{ 'start-rotation' | transloco }}</span>
-          <p class="text-xs md:text-sm text-gray-600">Bezieht sich nur auf Satz 1 solange diese noch nicht Satzweise abgepasst werden kann</p>
-          <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
-            @for (index of [4,3,2,5,6,1]; track $index) {
-              <app-single-roation-form-control
-                [playerList]="playerList"
-                [index]="index"
-                [attendees]="createGameForm.controls.attendees.value"
-                [home_team_start_rotation]="createGameForm.controls.home_team_start_rotation"
-                />
-            }
-          </div>
+
+        <span class="text-sm md:text-md font-medium">{{ 'start-rotation' | transloco }}</span>
+        <p class="text-xs md:text-sm text-gray-600">Bezieht sich nur auf Satz 1 solange diese noch nicht Satzweise abgepasst werden kann</p>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+          @for (index of [4,3,2,5,6,1]; track $index) {
+          <app-single-roation-form-control
+            [playerList]="playerList"
+            [index]="index"
+            [attendees]="createGameForm.controls.attendees.value"
+            [home_team_start_rotation]="createGameForm.controls.home_team_start_rotation"
+          />
+          }
+        </div>
         }
         <hr class="my-4" />
         <div class="">
@@ -114,109 +124,128 @@ import { SVB_APP_ROUTES } from '../app/ROUTES';
             <mat-label>{{ 'away-team' | transloco }}</mat-label>
             <mat-select formControlName="away_team" #awayTeam>
               @for (item of teams |pristineEvent: homeTeam.value; track $index) {
-                <mat-option [value]="item.id">
-                  {{ item.name }}
-                </mat-option>
+              <mat-option [value]="item.id">
+                {{ item.name }}
+              </mat-option>
               }
             </mat-select>
           </mat-form-field>
-    
+
           @if (awayTeam.value) {
-    
-            <span class="text-sm md:text-md font-medium">{{ 'start-rotation' | transloco }}</span>
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
-              @for (index of [4,3,2,5,6,1]; track $index) {
-                <app-single-roation-form-control
-                  [playerList]="playerList"
-                  [attendees]="createGameForm.controls.attendees.value"
-                  [index]="index"
-                  [home_team_start_rotation]="createGameForm.controls.away_team_start_rotation"
-                  />
-              }
-            </div>
+
+          <span class="text-sm md:text-md font-medium">{{ 'start-rotation' | transloco }}</span>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+            @for (index of [4,3,2,5,6,1]; track $index) {
+            <app-single-roation-form-control
+              [playerList]="playerList"
+              [attendees]="createGameForm.controls.attendees.value"
+              [index]="index"
+              [home_team_start_rotation]="createGameForm.controls.away_team_start_rotation"
+            />
+            }
+          </div>
           }
         </div>
+        } @if (createGameForm.controls.event_type.value === 'training') {
+        <hr />
+        <span class="text-lg">{{ 'select-team' | transloco }}</span>
+        <mat-form-field class="w-full">
+          <mat-label>{{ 'team' | transloco }}</mat-label>
+          <mat-select formControlName="home_team" (valueChange)="OnHomeTeamChange($event)" #trainingTeam>
+            @for (item of teams; track $index) {
+            <mat-option [value]="item.id">
+              {{ item.name }}
+            </mat-option>
+            }
+          </mat-select>
+          <mat-hint>
+            <a [routerLink]="[ROUTES.root + ROUTES.teams, trainingTeam.value]"> {{ 'edit-this-team' | transloco }} </a>
+          </mat-hint>
+        </mat-form-field>
+        @if (createGameForm.controls.home_team.valid) {
+        <app-attendees-select-form-control [playerList]="playerList" [attendees]="createGameForm.controls.attendees" />
+        } } @if (createGameForm.controls.event_type.value === 'game') {
         <label class="label cursor-pointer">
           <span class="label-text">{{ 'event-finished' | transloco }}</span>
           <input type="checkbox" class="toggle" #eventFinished />
         </label>
         @if (true || createGameForm.controls.result_home.value || createGameForm.controls.result_away.value) {
-    
-          <div class="flex flex-col md:flex-row gap-2 md:gap-4 w-full">
-            <div class="w-full md:w-1/2">
-              <mat-form-field class="w-full">
-                <mat-label>{{ 'result-home' | transloco }} </mat-label>
-                <input matInput type="number" formControlName="result_home" />
-              </mat-form-field>
-            </div>
-            <div class="w-full md:w-1/2">
-              <mat-form-field class="w-full">
-                <mat-label>{{ 'result-away' | transloco }} </mat-label>
-                <input matInput type="number" formControlName="result_away" />
-              </mat-form-field>
-            </div>
+
+        <div class="flex flex-col md:flex-row gap-2 md:gap-4 w-full">
+          <div class="w-full md:w-1/2">
+            <mat-form-field class="w-full">
+              <mat-label>{{ 'result-home' | transloco }} </mat-label>
+              <input matInput type="number" formControlName="result_home" />
+            </mat-form-field>
           </div>
-          <div class="flex flex-col gap-2">
-            <input
-              type="text"
-              placeholder="Enter link here"
-              class="input input-bordered input-primary w-full"
-              (keydown.enter)="addMediaLink($event, inMedia)"
-              #inMedia
-              />
-            <ul class="flex flex-wrap gap-2 my-2">
-              @for (item of this.createGameForm.controls.media_links.value; track $index) {
-                <li class="flex">
-                  <a class="btn btn-xs w-12 h-12" [href]="item" target="_blank">
-                    @if (item.includes('youtube')) {
-                      <svg width="48" height="48">
-                        <title>youtube</title>
-                        <path
-                          class="fill-[#FF0000]"
-                          d="M10,15L15.19,12L10,9V15M21.56,7.17C21.69,7.64 21.78,8.27 21.84,9.07C21.91,9.87 21.94,10.56 21.94,11.16L22,12C22,14.19 21.84,15.8 21.56,16.83C21.31,17.73 20.73,18.31 19.83,18.56C19.36,18.69 18.5,18.78 17.18,18.84C15.88,18.91 14.69,18.94 13.59,18.94L12,19C7.81,19 5.2,18.84 4.17,18.56C3.27,18.31 2.69,17.73 2.44,16.83C2.31,16.36 2.22,15.73 2.16,14.93C2.09,14.13 2.06,13.44 2.06,12.84L2,12C2,9.81 2.16,8.2 2.44,7.17C2.69,6.27 3.27,5.69 4.17,5.44C4.64,5.31 5.5,5.22 6.82,5.16C8.12,5.09 9.31,5.06 10.41,5.06L12,5C16.19,5 18.8,5.16 19.83,5.44C20.73,5.69 21.31,6.27 21.56,7.17Z"
-                          />
-                      </svg>
-                      }@else {
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <title>video-outline</title>
-                        <path
-                          class="fill-secondary"
-                          d="M15,8V16H5V8H15M16,6H4A1,1 0 0,0 3,7V17A1,1 0 0,0 4,18H16A1,1 0 0,0 17,17V13.5L21,17.5V6.5L17,10.5V7A1,1 0 0,0 16,6Z"
-                          />
-                      </svg>
-                    }
-                  </a>
-                </li>
-              }
-            </ul>
+          <div class="w-full md:w-1/2">
+            <mat-form-field class="w-full">
+              <mat-label>{{ 'result-away' | transloco }} </mat-label>
+              <input matInput type="number" formControlName="result_away" />
+            </mat-form-field>
           </div>
-        }
+        </div>
+        <div class="flex flex-col gap-2">
+          <input
+            type="text"
+            placeholder="Enter link here"
+            class="input input-bordered input-primary w-full"
+            (keydown.enter)="addMediaLink($event, inMedia)"
+            #inMedia
+          />
+          <ul class="flex flex-wrap gap-2 my-2">
+            @for (item of this.createGameForm.controls.media_links.value; track $index) {
+            <li class="flex">
+              <a class="btn btn-xs w-12 h-12" [href]="item" target="_blank">
+                @if (item.includes('youtube')) {
+                <svg width="48" height="48">
+                  <title>youtube</title>
+                  <path
+                    class="fill-[#FF0000]"
+                    d="M10,15L15.19,12L10,9V15M21.56,7.17C21.69,7.64 21.78,8.27 21.84,9.07C21.91,9.87 21.94,10.56 21.94,11.16L22,12C22,14.19 21.84,15.8 21.56,16.83C21.31,17.73 20.73,18.31 19.83,18.56C19.36,18.69 18.5,18.78 17.18,18.84C15.88,18.91 14.69,18.94 13.59,18.94L12,19C7.81,19 5.2,18.84 4.17,18.56C3.27,18.31 2.69,17.73 2.44,16.83C2.31,16.36 2.22,15.73 2.16,14.93C2.09,14.13 2.06,13.44 2.06,12.84L2,12C2,9.81 2.16,8.2 2.44,7.17C2.69,6.27 3.27,5.69 4.17,5.44C4.64,5.31 5.5,5.22 6.82,5.16C8.12,5.09 9.31,5.06 10.41,5.06L12,5C16.19,5 18.8,5.16 19.83,5.44C20.73,5.69 21.31,6.27 21.56,7.17Z"
+                  />
+                </svg>
+                }@else {
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <title>video-outline</title>
+                  <path
+                    class="fill-secondary"
+                    d="M15,8V16H5V8H15M16,6H4A1,1 0 0,0 3,7V17A1,1 0 0,0 4,18H16A1,1 0 0,0 17,17V13.5L21,17.5V6.5L17,10.5V7A1,1 0 0,0 16,6Z"
+                  />
+                </svg>
+                }
+              </a>
+            </li>
+            }
+          </ul>
+        </div>
+        } }
         <button class="btn w-full md:w-auto" [type]="'submit'">{{ 'submit' | transloco }}</button>
       </form>
       <hr class="my-4" />
       <div class="flex flex-col gap-2 w-full">
         <a class="btn btn-outline btn-secondary w-full md:w-auto" [routerLink]="[ROUTES.root, ROUTES.games]">{{ 'see-all-your-games-here' | transloco }}</a>
         @if (createGameForm.controls.id.value) {
-    
-          <a class="btn btn-outline btn-secondary w-full md:w-auto" [routerLink]="[ROUTES.root, ROUTES.roationPlaner, createGameForm.controls.id.value]">{{
-            'See Rotation Preview' | transloco
-          }}</a>
-    
-          <button class="btn btn-outline btn-error w-full md:w-auto" type="button" (click)="deleteGame()">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                />
-            </svg>
-            {{ 'delete-game' | transloco }}
-          </button>
+
+        <a class="btn btn-outline btn-secondary w-full md:w-auto" [routerLink]="[ROUTES.root, ROUTES.roationPlaner, createGameForm.controls.id.value]">{{
+          'See Rotation Preview' | transloco
+        }}</a>
+
+        <button class="btn btn-outline btn-error w-full md:w-auto" type="button" (click)="deleteGame()">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+            />
+          </svg>
+          {{ 'delete-game' | transloco }}
+        </button>
         }
       </div>
     </div>
-    `,
+  `,
 })
 export class CreateGamePageComponent implements OnInit {
   addMediaLink($event: Event, inp: HTMLInputElement) {
@@ -258,6 +287,7 @@ export class CreateGamePageComponent implements OnInit {
     id: new FormControl<string | undefined>(undefined),
     title: new FormControl<string>('', Validators.required),
     date: new FormControl<Date>(new Date(), Validators.required),
+    event_type: new FormControl<'game' | 'training'>('game', Validators.required),
     media_links: new FormControl<string[]>(['']),
     attendees: new FormControl<string[]>([]),
     result_home: new FormControl<number | undefined>(undefined),
