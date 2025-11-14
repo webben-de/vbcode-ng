@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 /* eslint-disable @typescript-eslint/adjacent-overload-signatures */
 import { Component, Input, type OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -22,7 +21,6 @@ import { PlayerLastGameStatsComponent } from './user-dashboard/player-last-game-
   standalone: true,
   imports: [
     TranslocoModule,
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
@@ -138,14 +136,7 @@ import { PlayerLastGameStatsComponent } from './user-dashboard/player-last-game-
         <!-- Games and Stats Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
           <!-- Player Events -->
-          <div>
-            <app-player-event-list />
-          </div>
-
-          <!-- Player Stats -->
-          <div>
-            <app-player-last-game-stats />
-          </div>
+          <app-player-event-list />
         </div>
 
         <!-- Additional Info Section -->

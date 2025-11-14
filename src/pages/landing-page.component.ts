@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, type OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -11,7 +11,7 @@ import { SessionState } from '../app/session.state';
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatButtonModule, MatCardModule, MatIconModule],
+  imports: [RouterModule, MatButtonModule, MatCardModule, MatIconModule],
   template: `
     <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       <!-- Hero Section -->

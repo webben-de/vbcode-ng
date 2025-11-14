@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,7 +8,7 @@ import { SVB_APP_ROUTES } from '../../../app/ROUTES';
 @Component({
   selector: 'app-detail-page-back-button',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, MatButtonModule],
+  imports: [RouterModule, MatIconModule, MatButtonModule],
   template: `
     <div class="flex">
       <button mat-fab class="btn  ">

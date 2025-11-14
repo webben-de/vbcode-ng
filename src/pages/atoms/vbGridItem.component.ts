@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, input } from '@angular/core';
 import type { PlayerDTO } from '../../types/PlayerDTO';
 
@@ -6,7 +6,7 @@ import type { PlayerDTO } from '../../types/PlayerDTO';
   selector: 'app-grid-item',
   host: { class: 'p-5 border border-1 flex justify-center items-center h-full' },
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   template: `
     <div class="flex flex-col justify-center items-center gap-2 ">
       @let roation = rotationMap.get(currentRotation()); @let player = roatedPlayer().get(roation!.get(index())!);

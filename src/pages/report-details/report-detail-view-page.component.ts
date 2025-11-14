@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { CommonModule } from '@angular/common';
+
 import { Component, type OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -36,15 +36,14 @@ import { ActionDTO } from '../../types/ActionDTO';
     ActionsByGradeComponent,
     ActionsByPlayerComponent,
     ActionHorizontalTimelineComponent,
-    CommonModule,
     RouterModule,
     NgxEchartsDirective,
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
-    TranslocoModule,
-  ],
+    TranslocoModule
+],
   template: `
     <div class="flex justify-between items-center">
       <h1 class="!text-sm font-medium truncate">{{ event.title }}</h1>

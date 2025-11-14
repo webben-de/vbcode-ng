@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, type OnInit, inject, signal } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { SwUpdate } from '@angular/service-worker';
@@ -12,7 +12,7 @@ import { SessionState, setAuthSession } from './session.state';
 
 @Component({
   standalone: true,
-  imports: [RouterModule, TranslocoModule, CommonModule],
+  imports: [RouterModule, TranslocoModule],
   selector: 'app-root',
   templateUrl: './app.component.html',
 })

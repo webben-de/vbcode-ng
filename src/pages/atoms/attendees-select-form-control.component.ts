@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Input, input } from '@angular/core';
 import { type FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -17,7 +17,7 @@ import type { PlayerDTO } from '../../types/PlayerDTO';
       }
     </mat-select>
   </mat-form-field>`,
-  imports: [MatFormFieldModule, MatSelectModule, CommonModule, TranslocoModule, ReactiveFormsModule],
+  imports: [MatFormFieldModule, MatSelectModule, TranslocoModule, ReactiveFormsModule],
 })
 export class AttendeesSelectFormControlComponent {
   playerList = input.required<(PlayerDTO | null)[]>();

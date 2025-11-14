@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, type OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -21,7 +21,7 @@ import { SVB_APP_ROUTES } from '../app/ROUTES';
   selector: 'app-game-list-page',
   standalone: true,
   host: { class: 'w-full' },
-  imports: [MatListModule, CommonModule, RouterLink, MatIconModule, TranslocoModule, EventCardComponent],
+  imports: [MatListModule, RouterLink, MatIconModule, TranslocoModule, EventCardComponent],
   template: `
     <div class="max-w-7xl mx-auto w-full p-6">
       <!-- Header Section -->

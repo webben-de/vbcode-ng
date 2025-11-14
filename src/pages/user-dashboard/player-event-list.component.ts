@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, type OnInit, inject } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { groupBy } from 'lodash';
@@ -11,7 +11,7 @@ import { EventCardComponent } from '../report-details/sub-components/event-card.
 @Component({
   selector: 'app-player-event-list',
   standalone: true,
-  imports: [CommonModule, EventCardComponent],
+  imports: [EventCardComponent],
   template: `
     <div class="bg-neutral rounded-lg shadow-md p-6 my-4">
       <h2 class="text-2xl font-bold mb-4">Meine Spiele</h2>

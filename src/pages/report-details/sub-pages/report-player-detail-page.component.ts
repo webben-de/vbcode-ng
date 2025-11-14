@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, type OnInit, inject } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, RouterModule } from '@angular/router';
@@ -15,15 +15,14 @@ import { DetailPageBackButtonComponent } from '../sub-components/detail-page-bac
   selector: 'app-report-player-detail-page',
   standalone: true,
   imports: [
-    CommonModule,
     ActionsByGradeComponent,
     RouterModule,
     MatIconModule,
     DetailPageBackButtonComponent,
     TranslocoModule,
     ActionByKindComponent,
-    DetailBreadcrumbsComponent,
-  ],
+    DetailBreadcrumbsComponent
+],
   template: `
     <div class="flex w-full justify-between">
       <app-detail-page-back-button />

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,7 +19,6 @@ import { DetailPageBackButtonComponent } from '../sub-components/detail-page-bac
   host: { class: 'flex flex-col gap-4 p-5 relative' },
   standalone: true,
   imports: [
-    CommonModule,
     ActionsByPlayerComponent,
     ActionByKindComponent,
     RouterModule,
@@ -27,8 +26,8 @@ import { DetailPageBackButtonComponent } from '../sub-components/detail-page-bac
     TranslocoModule,
     MatButtonModule,
     DetailPageBackButtonComponent,
-    DetailBreadcrumbsComponent,
-  ],
+    DetailBreadcrumbsComponent
+],
   template: `
     <div class="flex w-full justify-between">
       <app-detail-page-back-button />
