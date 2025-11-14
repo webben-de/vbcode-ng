@@ -255,14 +255,14 @@ export class CreateTeamPageComponent implements OnInit {
     try {
       this.isSaving.set(true);
       // Ensure team.id is a string
-      const teamId: string = typeof this.team.id === 'string' ? this.team.id : (this.team.id ? String(this.team.id) : '');
+      const teamId: string = typeof this.team.id === 'string' ? this.team.id : this.team.id ? String(this.team.id) : '';
       if (!teamId) throw new Error('Team ID is missing');
       const response = await this.playerService.createPlayer(teamId, { name, trikot });
       // Type guard for response.data
       type TeamResponse = { players: string[] };
       let newPlayerId: string | undefined;
       if (response && response.data) {
-        const teamData = Array.isArray(response.data) ? response.data[0] as TeamResponse : response.data as TeamResponse;
+        const teamData = Array.isArray(response.data) ? (response.data[0] as TeamResponse) : (response.data as TeamResponse);
         if (teamData && Array.isArray(teamData.players) && teamData.players.length > 0) {
           newPlayerId = teamData.players[teamData.players.length - 1];
         }
