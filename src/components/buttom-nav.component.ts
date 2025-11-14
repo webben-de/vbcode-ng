@@ -1,19 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { TranslocoModule } from '@jsverse/transloco';
 import { SVB_APP_ROUTES } from '../app/ROUTES';
 
 @Component({
   selector: 'app-buttom-nav',
   standalone: true,
-  imports: [RouterModule, MatIconModule],
+  imports: [RouterModule, MatIconModule, TranslocoModule],
   template: `
     <div class="btm-nav z-20">
       <button class="text-primary" [routerLink]="[ROUTES.root + ROUTES.report]" [routerLinkActive]="'active'">
         <mat-icon>leaderboard</mat-icon>
       </button>
-      <button class="text-primary" [routerLink]="[ROUTES.root + ROUTES.dataentry]" [routerLinkActive]="'active'">
-        <mat-icon>note_add</mat-icon>
+      <button class="text-primary" [routerLink]="[ROUTES.root + ROUTES.gameDataEntry]" [routerLinkActive]="'active'">
+        <mat-icon>sports_volleyball</mat-icon>
+      </button>
+      <button class="text-primary" [routerLink]="[ROUTES.root + ROUTES.trainingDataEntry]" [routerLinkActive]="'active'">
+        <mat-icon>fitness_center</mat-icon>
       </button>
       <button class="text-primary" [routerLink]="[ROUTES.root, ROUTES.games, ROUTES.create]" [routerLinkActive]="'active'">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

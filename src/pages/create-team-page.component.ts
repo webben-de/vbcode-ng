@@ -390,7 +390,6 @@ export class CreateTeamPageComponent implements OnInit {
     try {
       this.isSaving.set(true);
       const teamData = {
-        id: this.teamFormGroup.value.id || '',
         name: this.teamFormGroup.value.name || '',
         players: this.team.players || [],
       } as TeamDTO;

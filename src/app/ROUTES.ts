@@ -8,6 +8,8 @@ export enum SVB_APP_ROUTES {
   teams = 'teams',
   games = 'games',
   dataentry = 'dataentry',
+  gameDataEntry = 'game-data-entry',
+  trainingDataEntry = 'training-data-entry',
   login = 'login',
   root = '/',
   user = 'user',

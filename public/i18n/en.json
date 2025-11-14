@@ -158,5 +158,12 @@
   "actions-change": "Actions Change",
   "aces-change": "Aces Change",
   "errors-change": "Errors Change",
-  "active-filters": "Active Filters"
+  "active-filters": "Active Filters",
+  "game-data-entry": "Game Data Entry",
+  "training-data-entry": "Training Data Entry",
+  "enter-game-data": "Enter Game Data",
+  "enter-training-data": "Enter Training Data",
+  "enter-game-data-desc": "Record game statistics",
+  "enter-training-data-desc": "Record training session data",
+    "select-game": "Select a game",\n  "select-training": "Select a training session",\n  "dashboard-welcome": "Welcome Back",\n  "loading-dashboard": "Loading dashboard...",\n  "your-statistics": "Your Statistics",\n  "total-games": "Total Games",\n  "total-training-sessions": "Total Training Sessions",\n  "lifetime-performance": "Lifetime Performance",\n  "overall-performance": "Overall Performance",\n  "recent-activity": "Recent Activity",\n  "view-all": "View All",\n  "no-recent-activity": "No recent activity",\n  "start-first-game": "Start First Game",\n  "quick-actions": "Quick Actions",\n  "view-progress": "View Progress",\n  "performance-insights": "Performance Insights",\n  "quality-metrics": "Quality Metrics",\n  "ace-error-ratio": "Ace-Error Ratio",\n  "explore-more": "Explore More",\n  "logout": "Logout"\n}
 }

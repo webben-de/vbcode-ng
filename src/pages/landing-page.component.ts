@@ -1,17 +1,18 @@
-
 import { Component, type OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterModule } from '@angular/router';
 import { Store } from '@ngxs/store';
+import { TranslocoModule } from '@jsverse/transloco';
 import { SVB_APP_ROUTES } from '../app/ROUTES';
 import { SessionState } from '../app/session.state';
+import { QuickAccessNavComponent, createNavCards } from '../components/quick-access-nav.component';
 
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [RouterModule, MatButtonModule, MatCardModule, MatIconModule],
+  imports: [RouterModule, MatButtonModule, MatCardModule, MatIconModule, TranslocoModule, QuickAccessNavComponent],
   template: `
     <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       <!-- Hero Section -->
@@ -121,38 +122,8 @@ import { SessionState } from '../app/session.state';
             <p class="text-xl text-gray-600">Direkt zu den wichtigsten Funktionen</p>
           </div>
 
-          <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-            <a [routerLink]="[ROUTES.root, ROUTES.teams]" class="group">
-              <mat-card class="!p-6 text-center hover:shadow-xl transition-all duration-300 cursor-pointer group-hover:scale-105">
-                <mat-icon class="!text-5xl !w-14 !h-14 text-blue-600 mb-3 group-hover:text-blue-700">groups</mat-icon>
-                <h3 class="text-lg font-semibold text-gray-900 group-hover:text-blue-600">Teams</h3>
-                <p class="text-sm text-gray-500 mt-2">Verwalte deine Teams</p>
-              </mat-card>
-            </a>
-
-            <a [routerLink]="[ROUTES.root, ROUTES.games]" class="group">
-              <mat-card class="!p-6 text-center hover:shadow-xl transition-all duration-300 cursor-pointer group-hover:scale-105">
-                <mat-icon class="!text-5xl !w-14 !h-14 text-indigo-600 mb-3 group-hover:text-indigo-700">event</mat-icon>
-                <h3 class="text-lg font-semibold text-gray-900 group-hover:text-indigo-600">Spiele</h3>
-                <p class="text-sm text-gray-500 mt-2">Alle Events im Überblick</p>
-              </mat-card>
-            </a>
-
-            <a [routerLink]="[ROUTES.root, ROUTES.dataentry]" class="group">
-              <mat-card class="!p-6 text-center hover:shadow-xl transition-all duration-300 cursor-pointer group-hover:scale-105">
-                <mat-icon class="!text-5xl !w-14 !h-14 text-purple-600 mb-3 group-hover:text-purple-700">input</mat-icon>
-                <h3 class="text-lg font-semibold text-gray-900 group-hover:text-purple-600">Datenerfassung</h3>
-                <p class="text-sm text-gray-500 mt-2">Spieldaten eingeben</p>
-              </mat-card>
-            </a>
-
-            <a [routerLink]="[ROUTES.root, ROUTES.report]" class="group">
-              <mat-card class="!p-6 text-center hover:shadow-xl transition-all duration-300 cursor-pointer group-hover:scale-105">
-                <mat-icon class="!text-5xl !w-14 !h-14 text-pink-600 mb-3 group-hover:text-pink-700">assessment</mat-icon>
-                <h3 class="text-lg font-semibold text-gray-900 group-hover:text-pink-600">Reports</h3>
-                <p class="text-sm text-gray-500 mt-2">Auswertungen ansehen</p>
-              </mat-card>
-            </a>
+          <div class="max-w-6xl mx-auto">
+            <app-quick-access-nav [cards]="navCards" [size]="'medium'" [columns]="5"></app-quick-access-nav>
           </div>
         </div>
       </section>
@@ -243,6 +214,7 @@ export class LandingPageComponent implements OnInit {
 
   readonly ROUTES = SVB_APP_ROUTES;
   readonly currentYear = new Date().getFullYear();
+  readonly navCards = createNavCards();
 
   session = this.store.select(SessionState.session);
   userSession: unknown = null;

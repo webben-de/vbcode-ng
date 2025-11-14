@@ -42,13 +42,15 @@ import { ActionDTO } from '../../types/ActionDTO';
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
-    TranslocoModule
-],
+    TranslocoModule,
+  ],
   template: `
     <div class="flex justify-between items-center">
       <h1 class="!text-sm font-medium truncate">{{ event.title }}</h1>
       <div class="fixed bottom-2 right-2 flex flex-col gap-2">
-        <button mat-fab [routerLink]="[ROUTES.root, ROUTES.dataentry, event.id]"><mat-icon>add</mat-icon></button>
+        <button mat-fab [routerLink]="[ROUTES.root, event.event_type === 'game' ? ROUTES.gameDataEntry : ROUTES.trainingDataEntry, event.id]">
+          <mat-icon>add</mat-icon>
+        </button>
         <button mat-fab [routerLink]="[ROUTES.root, ROUTES.editGame, event.id]"><mat-icon>edit</mat-icon></button>
         @if(event.owner && event.id){
         <button mat-fab (click)="deleteEvent(event.id)"><mat-icon>delete</mat-icon></button>

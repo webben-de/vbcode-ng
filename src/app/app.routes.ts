@@ -4,6 +4,7 @@ import { LandingPageComponent } from '../pages/landing-page.component';
 import { UserLandingPageComponent } from '../pages/user-landing-page.component';
 import { SVB_APP_ROUTES } from './ROUTES';
 import { AuthComponent } from './auth.component';
+import { HomeRedirectComponent } from './home-redirect.component';
 import authenticationGuard from './guards/authenticationGuardFn';
 import {
   actionByGradeAndPlayerResolver,
@@ -130,6 +131,28 @@ export const appRoutes: Route[] = [
     loadComponent: () => import('../pages/event-list-page.component').then((mod) => mod.GamesListPageComponent),
   },
   {
+    path: `${SVB_APP_ROUTES.gameDataEntry}/:id`,
+    loadComponent: () => import('../pages/game-data-entry-page.component').then((mod) => mod.GameDataEntryComponent),
+    canActivate: [authenticationGuard()],
+    resolve: { event: eventResolver() },
+  },
+  {
+    path: SVB_APP_ROUTES.gameDataEntry,
+    loadComponent: () => import('../pages/game-data-entry-page.component').then((mod) => mod.GameDataEntryComponent),
+    canActivate: [authenticationGuard()],
+  },
+  {
+    path: `${SVB_APP_ROUTES.trainingDataEntry}/:id`,
+    loadComponent: () => import('../pages/training-data-entry-page.component').then((mod) => mod.TrainingDataEntryComponent),
+    canActivate: [authenticationGuard()],
+    resolve: { event: eventResolver() },
+  },
+  {
+    path: SVB_APP_ROUTES.trainingDataEntry,
+    loadComponent: () => import('../pages/training-data-entry-page.component').then((mod) => mod.TrainingDataEntryComponent),
+    canActivate: [authenticationGuard()],
+  },
+  {
     path: `${SVB_APP_ROUTES.dataentry}/:id`,
     loadComponent: () => import('../pages/data-entry-page.component').then((mod) => mod.DataEntryComponent),
     canActivate: [authenticationGuard()],
@@ -161,6 +184,7 @@ export const appRoutes: Route[] = [
     providers: [provideStates([SessionState])],
     // canActivate: [authenticationGuard()],
   },
-  { path: '', component: LandingPageComponent },
-  { path: '*', component: LandingPageComponent },
+  { path: 'landing', component: LandingPageComponent },
+  { path: '', component: HomeRedirectComponent },
+  { path: '**', redirectTo: '', pathMatch: 'full' },
 ];

@@ -38,9 +38,19 @@
 - Keep templates simple and avoid complex logic
 - Use native control flow (`@if`, `@for`, `@switch`) instead of `*ngIf`, `*ngFor`, `*ngSwitch`
 - Use the async pipe to handle observables
+- every implementation should be responsive and mobile-first
 
 ## Services
 
 - Design services around a single responsibility
 - Use the `providedIn: 'root'` option for singleton services
 - Use the `inject()` function instead of constructor injection
+
+## App Specific
+
+- Use the SVB_APP_ROUTES constant for all routing needs
+- Use the TranslocoModule for all internationalization needs
+- where possible, use the existing shared components and services from the project
+- follow the established folder structure and naming conventions of the project
+- avoid duplicating code that already exists in the project
+- create reusable components for repeated UI patterns
