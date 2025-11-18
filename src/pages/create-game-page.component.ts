@@ -231,6 +231,18 @@ import { SVB_APP_ROUTES } from '../app/ROUTES';
           'See Rotation Preview' | transloco
         }}</a>
 
+        <button class="btn btn-outline btn-primary w-full md:w-auto" type="button" (click)="duplicateGame()">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+            />
+          </svg>
+          {{ 'duplicate-game' | transloco }}
+        </button>
+
         <button class="btn btn-outline btn-error w-full md:w-auto" type="button" (click)="deleteGame()">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -332,6 +344,49 @@ export class CreateGamePageComponent implements OnInit {
       // biome-ignore lint/style/useTemplate: <explanation>
       this.snack.open('Error creating Event:' + error, 'OK', {
         duration: 2000,
+      });
+    }
+  }
+  /**
+   * Duplicate the current game
+   */
+  async duplicateGame() {
+    const currentValues = this.createGameForm.value;
+    if (!currentValues.id) return;
+
+    try {
+      // Create a copy without the ID (so it creates a new record)
+      const duplicatePayload: createEventDTO = {
+        title: `${currentValues.title} (Copy)`,
+        date: currentValues.date,
+        event_type: currentValues.event_type,
+        media_links: currentValues.media_links || [],
+        attendees: currentValues.attendees || [],
+        result_home: currentValues.result_home,
+        result_away: currentValues.result_away,
+        home_team: currentValues.home_team,
+        home_team_start_rotation: currentValues.home_team_start_rotation,
+        away_team_start_rotation: currentValues.away_team_start_rotation,
+        away_team: currentValues.away_team,
+        owner: currentValues.owner,
+        shared_with: currentValues.shared_with || [],
+        visibility: currentValues.visibility,
+      } as createEventDTO;
+
+      // Create new event and get the inserted data
+      const { data, error } = await this.supabase.supabase.from('events').insert(duplicatePayload).select().single();
+
+      if (error) throw error;
+
+      this.snack.open('Event duplicated successfully', 'OK', { duration: 3000 });
+
+      // Navigate to the newly created event
+      if (data?.id) {
+        this.router.navigate([this.ROUTES.root, this.ROUTES.games, data.id]);
+      }
+    } catch (error) {
+      this.snack.open('Error duplicating event: ' + error, 'OK', {
+        duration: 3000,
       });
     }
   }

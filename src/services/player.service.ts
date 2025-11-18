@@ -24,8 +24,12 @@ export class PlayerService {
       .select('*')
       .single();
     if (playerResponse.error) throw new Error(playerResponse.error.message);
-
-    return await this.supabase.from('teams').upsert({ id, players: [playerResponse.data?.id] });
+    const t = (await this.supabase.from('teams').select().eq('id', id).single()).data;
+    await this.supabase
+      .from('teams')
+      .update({ ...t, players: [...t.players, playerResponse.data?.id] })
+      .eq('id', id);
+    return playerResponse;
   }
   supabase = inject(SupabaseService).supabase;
   store = inject(Store);

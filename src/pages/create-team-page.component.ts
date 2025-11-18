@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, type OnInit, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatAutocompleteModule, type MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatAutocomplete, MatAutocompleteModule, type MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -102,7 +102,7 @@ import type { PlayerDTO } from '../types/PlayerDTO';
       @if (isEditMode) {
       <mat-card class="w-full">
         <mat-card-content>
-          <h3 class="text-lg md:text-xl font-semibold mb-4">{{ 'team-players' | transloco }}</h3>
+          <h3 class="text-lg md:text-xl font-semibold mb-4">{{ 'team-players' | transloco }} ({{ players.length }})</h3>
 
           <!-- Players Table -->
           @if (isLoadingPlayers()) {
@@ -274,17 +274,9 @@ export class CreateTeamPageComponent implements OnInit {
       }
 
       const response = await this.playerService.createPlayer(teamId, { name, trikot });
-      // Type guard for response.data
-      type TeamResponse = { players: string[] };
-      let newPlayerId: string | undefined;
-      if (response && response.data) {
-        const teamData = Array.isArray(response.data) ? (response.data[0] as TeamResponse) : (response.data as TeamResponse);
-        if (teamData && Array.isArray(teamData.players) && teamData.players.length > 0) {
-          newPlayerId = teamData.players[teamData.players.length - 1];
-        }
-      }
-      if (newPlayerId) {
-        this.team.players = [...(this.team.players || []), newPlayerId];
+
+      if (response.data?.id) {
+        this.team.players = [...(this.team.players || []), response.data.id];
         this.teamFormGroup.patchValue({ players: this.team.players });
         await this.teamsService.createTeam(this.team);
         await this.loadPlayers();
@@ -310,6 +302,7 @@ export class CreateTeamPageComponent implements OnInit {
     this.teamsService.createTeam(this.team).then(() => {
       this.loadPlayers();
       this.snack.open(`${player.name} hinzugefügt`, 'Close', { duration: 2000 });
+      this.existingPlayerControl.reset();
     });
   }
   // Services

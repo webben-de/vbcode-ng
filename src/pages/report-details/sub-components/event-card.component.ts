@@ -53,7 +53,7 @@ import type { EventResponse } from '../../../types/EventDTO';
         <div class="mb-4 flex-1">
           <div class="flex items-center justify-between bg-gray-50 rounded-lg p-3">
             <div class="flex-1 text-center">
-              <p class="text-sm font-semibold text-gray-800">{{ item.home_team.name }}</p>
+              <p class="text-sm font-semibold text-gray-800">{{ item.home_team?.name }}</p>
               @if (item.result_home !== null && item.result_home !== undefined) {
               <p class="text-2xl font-bold text-blue-600 mt-1">{{ item.result_home }}</p>
               }
@@ -64,7 +64,7 @@ import type { EventResponse } from '../../../types/EventDTO';
             </div>
 
             <div class="flex-1 text-center">
-              <p class="text-sm font-semibold text-gray-800">{{ item.away_team.name || 'TBD' }}</p>
+              <p class="text-sm font-semibold text-gray-800">{{ item.away_team?.name || 'TBD' }}</p>
               @if (item.result_away !== null && item.result_away !== undefined) {
               <p class="text-2xl font-bold text-blue-600 mt-1">{{ item.result_away }}</p>
               }

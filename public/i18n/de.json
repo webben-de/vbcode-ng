@@ -41,6 +41,7 @@
   "date": "Datum",
   "defenses": "Abwehr",
   "delete-game": "Spiel löschen",
+  "duplicate-game": "Spiel duplizieren",
   "delete-team": "Team löschen",
   "description": "Beschreibung",
   "detailed-performance": "Detaillierte Leistungsdaten",
